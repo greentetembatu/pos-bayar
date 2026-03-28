@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Admin - KASIR</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d6efd" />
+
+
+
+
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <h2>PRODUK</h2>
+        <ul>
+          <li>
+            <a href="dashboard.html">Dashboard</a>
+          </li>
+          <li>
+            <a href="kasir.html">Kasir</a>
+          </li>
+          <li class="active">Produk</li>
+          <li>
+            <a href="riwayat.html">Riwayat</a>
+          </li>
+          <button id="installBtn" style="display:none;">Install App</button>
+
+        </ul>
+      </aside>
+      <!-- Content -->
+      <main class="content">
+        <h1>Manajemen Produk</h1>
+        <div class="card" style="display: flex; flex-direction: column">
+          <label>Cari Produk</label>
+          <input
+            type="text"
+            id="searchProduk"
+            placeholder="nama produk..."
+            oninput="renderProduk()"
+          />
+          <span></span>
+          <label>Filter Stok</label>
+          <select id="filterStok" onchange="renderProduk()">
+            <option value="all">Semua</option>
+            <option value="tersedia">Stok Tersedia</option>
+            <option value="habis">Stok Habis</option>
+            <option value="menipis">Stok Menipis (≤ 5)</option>
+          </select>
+        </div>
+
+        <div
+          id="reader"
+          style="width: 100%; max-width: 400px; margin: auto"
+        ></div>
+        <button onclick="mulaiScan()">Buka Kamera Scan</button>
+
+        <!-- Form Produk -->
+        <div class="card" style="display: flex; flex-direction: column">
+          <input type="hidden" id="produkId" />
+          <label>Barcode / SKU</label>
+          <input
+            type="text"
+            id="barcodeProduk"
+            placeholder="Scan atau ketik barcode..."
+            readonly
+            style="background: #f0f0f0"
+          />
+          <label>Nama Produk</label>
+          <input
+            type="text"
+            id="namaProduk"
+            placeholder="Tulis Produk"
+          />
+          <label>Foto Produk</label>
+          <input
+            type="file"
+            id="fotoProduk"
+            accept="image/*"
+            onchange="previewImage(event)"
+          />
+          <img
+            id="imgPreview"
+            src=""
+            style="
+              display: none;
+              width: 100px;
+              height: 100px;
+              object-fit: cover;
+              margin-top: 10px;
+              border-radius: 8px;
+            "
+          />
+          <label>Modal / Unit</label>
+          <input type="number" id="modalProduk" />
+          <label>Harga Jual / Unit</label>
+          <input type="number" id="hargaProduk" />
+          <label>Stok Awal</label>
+          <input type="number" id="stokProduk" min="0" />
+          <button onclick="simpanProduk()">Simpan Produk</button>
+        </div>
+        <!-- Tabel Produk -->
+        <div class="card">
+          <h3>Daftar Produk</h3>
+          <table width="100%">
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Barcode</th>
+                <th>Nama</th>
+                <th>Modal</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="produkTable"></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+    <script src="js/data.js"></script>
+    <script src="js/produk.js"></script>
+    <script src="js/riwayat.js"></script>
+    <!--<script src="js/kasir.js"></script>-->
+    <script src="js/dasboard.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("Service Worker registered"))
+          .catch((err) => console.error("SW failed:", err));
+      }
+    </script>
+  </body>
+</html>

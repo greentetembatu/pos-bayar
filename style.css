@@ -1,0 +1,374 @@
+/* =========================
+   RESET & GLOBAL
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.app {
+  display: flex;
+  min-height: 100vh;
+
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+.sidebar {
+  position: fixed; /* 🔥 bikin nempel */
+  top: 0;
+  left: 0;
+  height: 100vh; /* full tinggi layar */
+  width: 200px;
+
+  background: #0d6efd;
+  color: white;
+  padding: 40px 10px;
+
+  overflow-y: auto; /* kalau menu panjang bisa scroll */
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 12px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.sidebar li a {
+  display: block;
+  color: white;
+}
+
+.sidebar li:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar li.active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* =========================
+   CONTENT
+========================= */
+.content {
+  margin-left: 200px; /* 🔥 WAJIB biar tidak ketimpa sidebar */
+  padding: 24px;
+  width: 100%;
+  top: 20px;
+
+}
+
+.content h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* =========================
+   CARD
+========================= */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   DASHBOARD STATS
+========================= */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stats .card h3 {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.stats .card p {
+  font-size: 22px;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+/* =========================
+   BUTTON
+========================= */
+button,
+.btn-primary {
+  background: #0d6efd;
+  color: white;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover,
+.btn-primary:hover {
+  background: #0b5ed7;
+}
+
+.btn-primary {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* =========================
+   FORM
+========================= */
+label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+/* =========================
+   TABLE
+========================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 14px;
+}
+
+table th {
+  background: #f8f9fa;
+  font-weight: 600;
+}
+
+/* =========================
+   AUTOCOMPLETE (KASIR)
+========================= */
+.autocomplete {
+  position: relative;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 999;
+  display: none;
+}
+
+.autocomplete-item {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.autocomplete-item:hover {
+  background: #f1f5ff;
+}
+
+/* =========================
+   KASIR GRID
+========================= */
+.kasir-grid {
+  display: grid;
+  grid-template-columns: 1fr 120px 140px;
+  gap: 12px;
+  align-items: end;
+}
+
+/* =========================
+   TOTAL AREA
+========================= */
+#totalBelanja {
+  font-size: 22px;
+  color: #0d6efd;
+}
+
+#totalLaba {
+  color: #198754;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+/* =========================
+   RESPONSIVE TABLET
+========================= */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 180px;
+  }
+
+  .content {
+    margin-left: 180px;
+    padding: 16px;
+  }
+
+  .kasir-grid {
+    grid-template-columns: 1fr 100px 120px;
+  }
+}
+
+/* =========================
+   RESPONSIVE MOBILE
+========================= */
+@media (max-width: 768px) {
+
+  /* 🔥 Sidebar jadi atas */
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  /* 🔥 Content full */
+  .content {
+    margin-left: 0;
+    padding: 14px;
+  }
+
+  /* 🔥 Layout jadi vertikal */
+  .app {
+    flex-direction: column;
+  }
+
+  /* 🔥 Grid kasir jadi stack */
+  .kasir-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .kasir-grid input,
+  .kasir-grid select,
+  .kasir-grid button {
+    width: 100%;
+  }
+
+  /* 🔥 Table bisa scroll */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* 🔥 Stats tetap rapi */
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  /* 🔥 Font lebih kecil */
+  .content h1 {
+    font-size: 20px;
+  }
+
+  .stats .card p {
+    font-size: 18px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+
+
+
+
+
+#splash {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+
+
+
+
+
+
+
+
+.download-panel {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.download-panel button {
+  margin-right: 10px;
+  padding: 8px 14px;
+  border: none;
+  background: #0d6efd;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}

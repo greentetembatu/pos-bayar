@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Admin - KASIR</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d6efd" />
+
+
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>DASHBOARD</h2>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li class="active">Dashboard</li>
+        <li><a href="kasir.html">Kasir</a></li>
+        <li><a href="produk.html">Produk</a></li>
+        <li><a href="riwayat.html">Riwayat</a></li>
+        <button id="installBtn" style="display:none;">Install Aplikasi</button>
+        <button class="btn-logout" onclick="logoutKasir()">
+          🚪 Logout
+        </button>
+        
+      </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <!-- HEADER -->
+      <header class="content-header">
+        <h1>Dashboard</h1>
+                <h3>Pengaturan Toko</h4>
+
+<input type="text" id="namaToko" placeholder="Nama Toko">
+<input type="text" id="alamatToko" placeholder="Teks Baris 1">
+<input type="text" id="aditionalToko" placeholder="Teks Baris 2">
+
+<button onclick="simpanPengaturanToko()">Simpan</button>
+
+
+      </header>
+        <a href="kasir.html" class="btn-primary">➜ Buka Kasir</a>
+      <!-- STATISTIC CARDS -->
+      <section class="stats">
+        <div class="card stat-card">
+          <h3>Total Produk</h3>
+          <p id="totalProduk">0</p>
+        </div>
+
+        <div class="card stat-card">
+          <h3>Total Transaksi</h3>
+          <p id="totalTransaksi">0</p>
+        </div>
+
+        <div class="card stat-card">
+          <h3>Omzet</h3>
+          <p id="totalOmzet">Rp 0</p>
+        </div>
+
+        <div class="card stat-card">
+          <h3>Laba</h3>
+          <p id="totalLaba">Rp 0</p>
+        </div>
+      </section>
+
+      <!-- BACKUP SECTION -->
+      <section class="backup-section">
+        <div class="card backup-card">
+          <h3>Cadangan Data (Backup)</h3>
+          <p>
+            Gunakan fitur ini untuk memindahkan data antar perangkat
+            atau sebagai cadangan.
+          </p>
+
+          <div class="backup-actions">
+            <button
+              class="btn-export"
+              onclick="eksporData()"
+            >
+              📤 Ekspor Data JSON
+            </button>
+
+            <label for="importFile" class="btn-import">
+              📥 Impor Data JSON
+            </label>
+
+            <input
+              type="file"
+              id="importFile"
+              accept=".json"
+              onchange="imporData(event)"
+              hidden
+            />
+          </div>
+        </div>
+      </section>
+
+<!--<section class="backup-section">
+  <div class="card backup-card">
+    <h3>Cadangan Data (CSV)</h3>
+    <p>
+      Gunakan fitur ini untuk memindahkan data antar perangkat
+      atau sebagai cadangan dalam format Excel (CSV).
+    </p>
+
+    <div class="backup-actions">
+    -->
+      <!-- EXPORT CSV -->
+      <!--<button
+        class="btn-export"
+        onclick="eksporCSV()"
+      >
+        📤 Ekspor Data CSV
+      </button>
+-->
+      <!-- IMPORT CSV -->
+      <!--<label for="importCSV" class="btn-import">
+        📥 Impor Data CSV
+      </label>
+
+      <input
+        type="file"
+        id="importCSV"
+        accept=".csv"
+        onchange="ImportCSV(event)"
+        hidden
+      />
+
+    </div>
+  </div>
+</section>
+
+-->
+
+
+
+    </main>
+  </div>
+
+  <!-- SCRIPT (TIDAK DIUBAH) -->
+  <script src="js/data.js"></script>
+  <script src="js/dasboard.js"></script>
+  <script src="js/produk.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/riwayat.js"></script>
+  
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("service-worker.js")
+        .then(() => console.log("Service Worker registered"))
+        .catch((err) => console.error("SW failed:", err));
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Admin - KASIR</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d6efd" />
+
+
+
+
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <h2>KASIR</h2>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li class="active">Kasir</li>
+          <li><a href="produk.html">Produk</a></li>
+          <li><a href="riwayat.html">Riwayat</a></li>
+          <button id="installBtn" style="display:none;">Install App</button>
+
+        </ul>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <h1>Kasir</h1>
+
+        <!-- Form Kasir -->
+        <div class="card">
+          <label>Produk</label>
+          <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px">
+            <div class="autocomplete" style="flex: 1">
+              <input
+                type="text"
+                id="produkInput"
+                placeholder="Ketik nama atau barcode..."
+                autocomplete="off"
+              />
+              <div id="produkList" class="autocomplete-list"></div>
+            </div>
+
+            <button
+              onclick="toggleScannerKasir()"
+              id="btnScanKasir"
+              style="padding: 10px 15px"
+            >
+              📷 Scan
+            </button>
+          </div>
+
+          <div
+            id="scannerContainerKasir"
+            style="display: none; margin-bottom: 15px; position: relative"
+          >
+            <div id="laserLine" class="scan-line"></div>
+
+            <div
+              id="readerKasir"
+              style="
+                width: 100%; /* Disarankan 100% untuk layar HP agar lebih mudah scan */
+                border-radius: 8px;
+                overflow: hidden;
+                background: #000;
+              "
+            ></div>
+          </div>
+          <input type="hidden" id="produkId" />
+
+          <label>Jumlah</label>
+          <input type="number" id="qty" value="1" min="1" />
+
+          <button
+            onclick="tambahKeKeranjang()"
+            style="
+              width: 100%;
+              margin-top: 10px;
+              background: #28a745;
+              color: white;
+            "
+          >
+            Tambah ke Keranjang
+          </button>
+        </div>
+
+        <!-- Keranjang -->
+        <div class="card">
+          <h3>Keranjang</h3>
+          <table width="100%" id="keranjangTable">
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Total -->
+<div class="card">
+  <p>Subtotal: <strong id="totalBelanja">Rp 0</strong></p>
+
+  <input 
+    type="number" 
+    id="diskonPersen" 
+    placeholder="Diskon (%)"
+    oninput="updateTotalDiskon()"
+  >
+
+  <p>Potongan: <strong id="nilaiDiskon">Rp 0</strong></p>
+
+  <p><b>Total Bayar:</b> 
+    <strong id="totalAkhir">Rp 0</strong>
+  </p>
+
+  <p>Laba: <strong id="totalLaba">Rp 0</strong></p>
+
+  <button onclick="bayar()">Bayar</button>
+</div>
+      </main>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/dasboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/kasir.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="js/riwayat.js"></script>
+    <script src="js/produk.js"></script>
+    <script src="js/storage.js"></script>
+
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("Service Worker registered"))
+          .catch((err) => console.error("SW failed:", err));
+      }
+    </script>
+  </body>
+</html>
