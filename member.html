@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Member Toko</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 10px;
+        background: #667eea;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 5px;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #5a67d8;
+      }
+
+      /* Desain Kartu Member */
+      .member-card {
+        width: 85.6mm;
+        height: 53.98mm;
+        border-radius: 12px;
+        padding: 20px;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: #e69f08;
+        position: relative;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+
+      .member-card h3 {
+        margin: 0;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 18px;
+      }
+
+      .member-card small {
+        display: block;
+        text-align: center;
+        font-size: 14px;
+        opacity: 1;
+      }
+
+      .member-card hr {
+        border: 0.5px solid rgba(255, 255, 255, 0.3);
+        margin: 10px 0;
+      }
+
+      .info-member p {
+        margin: 2px 0;
+        font-size: 12px;
+        line-height: 2;
+      }
+
+      #barcode {
+        background: #fff;
+        padding: 5px;
+        border-radius: 4px;
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        width: 120px;
+        height: 45px;
+      }
+
+      .search-box {
+        display: flex;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h2>Data Toko</h2>
+        <div class="input-group">
+          <label>Nama Toko</label>
+          <input type="text" id="tokoNama" placeholder="Contoh: Toko Berkah" />
+        </div>
+        <div class="input-group">
+          <label>Alamat Toko</label>
+          <input type="text" id="tokoAlamat" />
+        </div>
+        <div class="input-group">
+          <label>No HP Toko</label>
+          <input type="text" id="tokoHp" />
+        </div>
+        <div class="input-group">
+          <label>Nama Kasir</label>
+          <input type="text" id="kasir" />
+        </div>
+        <button onclick="simpanDataToko()">Simpan Data Toko</button>
+      </div>
+
+      <div class="card">
+        <h2>Input Member Baru</h2>
+        <div class="input-group">
+          <label>Nama Member</label>
+          <input type="text" id="nama" />
+        </div>
+        <div class="input-group">
+          <label>No HP Member</label>
+          <input type="text" id="hp" />
+        </div>
+        <button onclick="simpanData()">Simpan & Buat Kartu</button>
+        <button onclick="downloadCSV()" style="background: #38a169">Download CSV</button>
+      </div>
+
+      <div class="card">
+        <h2>Cari Member</h2>
+        <div class="search-box">
+          <input type="text" id="search" style="flex:1; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / 4 digit akhir nomor" />
+          <button onclick="cariData()">Cari</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Scan Kartu</h2>
+        <div id="reader" style="width: 100%; max-width: 300px; margin-bottom: 10px"></div>
+        <button onclick="startScanner()">Buka Kamera</button>
+      </div>
+
+      <div class="card">
+        <h2>Preview Kartu Member</h2>
+        <div id="kartu" class="member-card" style="display: none">
+          <h3 id="cardToko"></h3>
+          <small id="cardAlamat"></small>
+          <small id="cardHpToko"></small>
+          <hr />
+          <div class="info-member">
+            <p id="cardNama"></p>
+            <p id="cardHp"></p>
+            <p id="cardNo" style="font-weight: bold; color: #fbd38d;"></p>
+          </div>
+          <svg id="barcode"></svg>
+        </div>
+        <br />
+        <button id="btnPrint" onclick="printKartu()" style="display: none; background: #2d3748">Cetak Kartu</button>
+      </div>
+    </div>
+
+    <script>
+      let dataMember = JSON.parse(localStorage.getItem("member")) || [];
+
+      function simpanDataToko() {
+        let data = {
+          tokoNama: document.getElementById("tokoNama").value,
+          tokoAlamat: document.getElementById("tokoAlamat").value,
+          tokoHp: document.getElementById("tokoHp").value,
+          kasir: document.getElementById("kasir").value,
+        };
+        localStorage.setItem("dataToko", JSON.stringify(data));
+        alert("Konfigurasi toko berhasil diperbarui!");
+      }
+
+      function generateNo() {
+        let now = new Date();
+        let tgl = now.getDate().toString().padStart(2, "0");
+        let bln = (now.getMonth() + 1).toString().padStart(2, "0");
+        let thn = now.getFullYear().toString().slice(-2);
+        let urut = (dataMember.length + 1).toString().padStart(4, "0");
+        return `MEM-${tgl}${bln}${thn}${urut}`;
+      }
+
+      function simpanData() {
+        const inpNama = document.getElementById("nama");
+        const inpHp = document.getElementById("hp");
+
+        if (!inpNama.value || !inpHp.value) return alert("Isi nama dan HP!");
+
+        let dataToko = JSON.parse(localStorage.getItem("dataToko")) || {};
+
+        let obj = {
+          tanggal: new Date().toLocaleDateString("id-ID"),
+          kasir: dataToko.kasir || "-",
+          nama: inpNama.value,
+          hp: inpHp.value,
+          no: generateNo(),
+        };
+
+        dataMember.push(obj);
+        localStorage.setItem("member", JSON.stringify(dataMember));
+
+        tampilKartu(obj);
+        
+        // Reset form
+        inpNama.value = "";
+        inpHp.value = "";
+      }
+
+      function tampilKartu(d) {
+        let dataToko = JSON.parse(localStorage.getItem("dataToko")) || {};
+        const kartuEl = document.getElementById("kartu");
+        const btnPrint = document.getElementById("btnPrint");
+        const barcodeEl = document.getElementById("barcode");
+
+        kartuEl.style.display = "block";
+        btnPrint.style.display = "inline-block";
+
+        document.getElementById("cardToko").innerText = dataToko.tokoNama || "NAMA TOKO";
+        document.getElementById("cardAlamat").innerText = dataToko.tokoAlamat || "Alamat belum diatur";
+        document.getElementById("cardHpToko").innerText = "Telp: " + (dataToko.tokoHp || "-");
+
+        document.getElementById("cardNama").innerText = "Nama: " + d.nama;
+        document.getElementById("cardHp").innerText = "WhatsApp: " + d.hp;
+        document.getElementById("cardNo").innerText = "ID: " + d.no;
+
+        JsBarcode("#barcode", d.no, {
+          format: "CODE128",
+          width: 2,
+          height: 40,
+          displayValue: false,
+          background: "#ffffff"
+        });
+      }
+
+function downloadCSV() {
+        if (dataMember.length === 0) return alert("Belum ada data member");
+        
+        let csv = "Tanggal;Kasir;Nama Member;No HP;No Member\n";
+        dataMember.forEach((d) => {
+          csv += `${d.tanggal};${d.kasir};${d.nama};'${d.hp};${d.no}\n`;
+        });
+
+        // Membuat format tanggal DD-MM-YYYY
+        let skrg = new Date();
+        let tgl = skrg.getDate().toString().padStart(2, "0");
+        let bln = (skrg.getMonth() + 1).toString().padStart(2, "0");
+        let thn = skrg.getFullYear();
+        let formatTanggal = `${tgl}-${bln}-${thn}`;
+
+        let blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        let link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        
+        // Nama file baru sesuai permintaan Anda
+        link.download = `data-member-${formatTanggal}.csv`;
+        
+        link.click();
+      }
+      
+      function cariData() {
+        let key = document.getElementById("search").value.toLowerCase();
+        if(!key) return alert("Masukkan kata kunci");
+        
+        let found = dataMember.find(
+          (d) => d.nama.toLowerCase().includes(key) || d.no.endsWith(key)
+        );
+        found ? tampilKartu(found) : alert("Member tidak ditemukan");
+      }
+
+      let scanner = null;
+      function startScanner() {
+        if (scanner) return;
+        scanner = new Html5Qrcode("reader");
+        scanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          (decodedText) => {
+            new Audio("https://www.soundjay.com/button/sounds/beep-07.mp3").play();
+            let found = dataMember.find((d) => d.no === decodedText);
+            if (found) {
+                tampilKartu(found);
+            } else {
+                alert("Barcode tidak terdaftar: " + decodedText);
+            }
+            scanner.stop().then(() => { scanner = null; });
+          }
+        ).catch(err => alert("Kamera bermasalah"));
+      }
+
+      window.onload = function () {
+        let data = JSON.parse(localStorage.getItem("dataToko"));
+        if (data) {
+          document.getElementById("tokoNama").value = data.tokoNama || "";
+          document.getElementById("tokoAlamat").value = data.tokoAlamat || "";
+          document.getElementById("tokoHp").value = data.tokoHp || "";
+          document.getElementById("kasir").value = data.kasir || "";
+        }
+      };
+function printKartu() {
+    // Ambil data dari elemen preview kartu
+    const cardNo = document.getElementById("cardNo").innerText.replace("ID: ", "");
+    const cardToko = document.getElementById("cardToko").innerText;
+    const cardAlamat = document.getElementById("cardAlamat").innerText;
+    const cardHpToko = document.getElementById("cardHpToko").innerText;
+    const cardNama = document.getElementById("cardNama").innerText.replace("Nama: ", "");
+    const cardHp = document.getElementById("cardHp").innerText.replace("WhatsApp: ", "");
+
+    if (!cardNo) {
+        alert("Pilih atau buat kartu member terlebih dahulu!");
+        return;
+    }
+
+    // Susun parameter URL untuk dikirim ke cetak.html
+    const params = new URLSearchParams({
+        no: cardNo,
+        toko: cardToko,
+        alamat: cardAlamat,
+        hpToko: cardHpToko,
+        nama: cardNama,
+        hp: cardHp
+    });
+
+    // Membuka file cetak.html di tab baru dengan membawa data
+    window.open("cetak-member.html?" + params.toString(), "_blank");
+}
+
+    </script>
+  </body>
+</html>
