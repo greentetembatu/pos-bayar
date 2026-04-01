@@ -30,7 +30,7 @@ function saveTransaksi(data) {
 /* ======================
    DATA AWAL (OPTIONAL)
 ====================== */
-(function initProduk() {
+/*(function initProduk() {
   const produk = getProduk();
 
   if (produk.length === 0) {
@@ -53,7 +53,7 @@ function saveTransaksi(data) {
       }
     ]);
   }
-})();
+})();*/
 
 
 
