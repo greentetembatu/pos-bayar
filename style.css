@@ -24,6 +24,7 @@ a {
 .app {
   display: flex;
   min-height: 100vh;
+
 }
 
 /* =========================
@@ -38,7 +39,7 @@ a {
 
   background: #0d6efd;
   color: white;
-  padding: 10px;
+  padding: 40px 10px;
 
   overflow-y: auto; /* kalau menu panjang bisa scroll */
 }
@@ -81,6 +82,7 @@ a {
   margin-left: 200px; /* 🔥 WAJIB biar tidak ketimpa sidebar */
   padding: 24px;
   width: 100%;
+  top: 20px;
 
 }
 
@@ -369,4 +371,238 @@ table th {
   color: white;
   border-radius: 6px;
   cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Container Utama Preview */
+.card-preview-member {
+margin-top: 20px;
+text-align: center;
+}
+
+.card-preview-member h2 {
+  font-family: "Poppins", sans-serif;
+  color: black; /* Agar kontras dengan background body */
+  margin-bottom: 15px;
+
+}
+
+/* Desain Kartu Member (Sesuai dengan spesifikasi Anda) */
+.member-card {
+  width: 85.6mm;
+  height: 53.98mm;
+  border-radius: 12px;
+  padding: 20px;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #e69f08; /* Warna teks emas/kuning agar elegan */
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0 auto; /* Tengah secara horizontal */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  text-align: left; /* Konten di dalam kartu rata kiri */
+  
+}
+
+.member-card h3 {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 18px;
+}
+
+.member-card small {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  opacity: 1;
+}
+
+.member-card hr {
+  border-top: 0.5px solid rgba(255, 255, 255, 0.3);
+  margin: 10px 0;
+}
+
+/* Bagian Detail Member */
+.info-member p {
+  margin: 2px 0;
+  font-size: 12px;
+  line-height: 2;
+          text-transform: uppercase;
+
+
+}
+
+
+/* Barcode */
+#barcodeMember {
+  background: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 120px; /* Ukuran barcode disesuaikan */
+  height: 45px;
+}
+
+/* Tombol Cetak (Samakan dengan style button Anda) */
+#btnPrintMember {
+  padding: 10px 25px;
+  border: none;
+  border-radius: 10px;
+  background: #667eea;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.3s;
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+}
+
+#btnPrintMember:hover {
+  background: #5a67d8;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Sembunyikan elemen saat print kecuali kartunya */
+@media print {
+  body {
+    background: none;
+    padding: 0;
+  }
+  .card-preview-member h2, 
+  #btnPrintMember,
+  .container {
+    display: none !important;
+  }
+  .member-card {
+    margin: 0;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    display: block !important; /* Pastikan muncul saat print */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Container Ringkasan Pembayaran */
+.checkout-box {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #e2e8f0;
+  font-family: "Poppins", sans-serif;
+}
+
+.checkout-box p {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+/* Input Diskon */
+.checkout-box input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #cbd5e0;
+  border-radius: 10px;
+  font-family: "Poppins", sans-serif;
+  transition: border-color 0.3s;
+}
+
+.checkout-box input[type="number"]:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Sorotan Total Bayar */
+.total-highlight {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.total-highlight span {
+  font-weight: 500;
+}
+
+.total-highlight strong {
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* Info Laba (Teks lebih halus) */
+.profit-info {
+  font-size: 12px !important;
+  color: #718096 !important;
+  font-style: italic;
+}
+
+.text-danger {
+  color: #e53e3e !important;
+}
+
+/* Tombol Bayar */
+.btn-pay {
+  width: 100%;
+  padding: 15px;
+  background: #48bb78; /* Hijau agar kontras dengan tema biru */
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-pay:hover {
+  background: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+}
+
+.btn-pay:active {
+  transform: translateY(0);
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "KASIR";
+const CACHE_NAME = "KASIR-V2";
 
 const ASSETS = [
   "./",

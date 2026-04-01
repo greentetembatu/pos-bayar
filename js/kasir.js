@@ -134,10 +134,13 @@ function tambahKeKeranjang() {
   const subtotal = item.harga_jual * qty;
   const laba = (item.harga_jual - item.modal) * qty;
 
+ 
+
   const existing = keranjang.find(k => k.id === item.id);
   if (existing) {
     existing.qty += qty;
     existing.subtotal += subtotal;
+    existing.modal = item.modal; // 🔥 pastikan ada
     existing.laba += laba;
   } else {
     keranjang.push({
@@ -146,6 +149,7 @@ function tambahKeKeranjang() {
       foto: item.foto || "", // TAMBAHKAN INI: Mengambil foto dari data produk
       qty,
       harga: item.harga_jual,
+      modal: item.modal, // 🔥 TAMBAHAN PENTING
       subtotal,
       laba
     });
@@ -166,11 +170,13 @@ function renderKeranjang() {
   tbody.innerHTML = "";
 
   let total = 0;
-  let totalLaba = 0;
+  //let totalLaba = 0;
 
-  keranjang.forEach((item, i) => {
-    total += item.subtotal;
-    totalLaba += item.laba;
+keranjang.forEach((item, i) => {
+  total += item.subtotal;
+
+
+    
 
     const tr = document.createElement("tr");
     // Gunakan placeholder jika foto kosong
@@ -198,7 +204,7 @@ function renderKeranjang() {
     "Rp " + total.toLocaleString("id-ID");
 
   document.getElementById("totalLaba").innerText =
-    "Rp " + totalLaba.toLocaleString("id-ID");
+    "Rp " + totalLaba.toLocaleString("id");
 }
 
 
@@ -208,7 +214,7 @@ function renderKeranjang() {
 
 
 
-function hitungDiskon(total) {
+/*function hitungDiskon(total) {
   const persen = Number(document.getElementById("diskonPersen").value) || 0;
 
   const potongan = total * (persen / 100);
@@ -220,39 +226,50 @@ function hitungDiskon(total) {
     potongan: potongan,
     totalAkhir: totalAkhir
   };
-}
+}*/
 
 
 function updateTotalDiskon() {
-  const total = keranjang.reduce((s, i) => s + i.subtotal, 0);
-  const persen = Number(document.getElementById("diskonPersen").value) || 0;
+  const subtotal = keranjang.reduce((s, i) => s + i.subtotal, 0);
 
-  const potongan = total * (persen / 100);
-  const totalAkhir = total - potongan;
+  const totalModal = keranjang.reduce(
+    (s, i) => s + ((Number(i.modal) || 0) * (Number(i.qty) || 0)),
+    0
+  );
+
+  const persen = Number(document.getElementById("diskonPersen").value) || 0;
+  const potongan = subtotal * (persen / 100);
+
+  const totalAkhir = subtotal - potongan;
+
+  // 🔥 LABA SESUAI KEINGINAN KAMU
+  const labaKotor = subtotal - totalModal;
+  const labaBersih = labaKotor - potongan;
 
   document.getElementById("nilaiDiskon").innerText =
     "Rp " + potongan.toLocaleString("id-ID");
 
   document.getElementById("totalAkhir").innerText =
     "Rp " + totalAkhir.toLocaleString("id-ID");
+
+  document.getElementById("totalLaba").innerText =
+    "Rp " + labaBersih.toLocaleString("id-ID");
 }
-updateTotalDiskon();
+updateTotalDiskon(); // 🔥 supaya laba ikut update
+
 
 
 /* =======================
    UBAH QTY
 ======================= */
-function ubahQty(dashboard, qtyBaru) {
+function ubahQty(index, qtyBaru) {
   qtyBaru = Number(qtyBaru);
   if (qtyBaru <= 0) return;
 
-  const item = keranjang[dashboard];
-  const hargaSatuan = item.subtotal / item.qty;
-  const labaSatuan = item.laba / item.qty;
+  const item = keranjang[index];
 
   item.qty = qtyBaru;
-  item.subtotal = hargaSatuan * qtyBaru;
-  item.laba = labaSatuan * qtyBaru;
+  item.subtotal = item.harga * qtyBaru;
 
   renderKeranjang();
 }
@@ -272,7 +289,11 @@ function hapusItem(dashboard) {
 
 
 
-
+function hitungLaba(totalAwal, totalModal, potonganDiskon) {
+  return (Number(totalAwal) || 0) 
+       - (Number(totalModal) || 0) 
+       - (Number(potonganDiskon) || 0);
+}
 
 
 
@@ -284,38 +305,65 @@ function hapusItem(dashboard) {
 /* =======================
    SIMPAN TRANSAKSI
 ======================= */
-function simpanTransaksi(uang, kembalian, id, diskonData) {
-  const transaksi = getTransaksi();
+/* =======================
+   SIMPAN TRANSAKSI
+======================= */
+function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
+  const transaksi = getTransaksi() || [];
 
-  const totalLaba = keranjang.reduce((s, i) => s + (i.laba || 0), 0);
+  if (!keranjang || keranjang.length === 0) return null;
+
+const totalModal = keranjang.reduce(
+  (s, i) => s + ((Number(i.modal) || 0) * (Number(i.qty) || 0)),
+  0
+);
+
+const totalAwal = diskonData?.totalAwal || 0;
+const potongan = diskonData?.potongan || 0;
+
+const labaKotor = totalAwal - totalModal;
+const totalLaba = labaKotor - potongan;
+
+
+
 
   const kasir = JSON.parse(localStorage.getItem("kasirAktif")) || {};
 
-  transaksi.push({
+  const detailTransaksi = {
     id: id,
     tanggal: new Date().toLocaleString("id-ID"),
+    tanggalISO: new Date().toISOString(),
+
     items: [...keranjang],
 
-    // 🔥 DISKON DATA
-    totalAwal: diskonData.totalAwal,
-    diskon: diskonData.diskon,
-    potongan: diskonData.potongan,
+    // KEUANGAN
+    totalAwal: diskonData?.totalAwal || 0,
+    diskon: diskonData?.diskon || 0,
+    potongan: diskonData?.potongan || 0,
+    total: diskonData?.totalAkhir || 0,
+    totalModal: totalModal, // 🔥 TAMBAHAN
+    totalLaba: totalLaba,
+    uang: uang,
+    kembalian: kembalian,
 
-    total: diskonData.totalAkhir,
-
-    totalLaba,
-    uang,
-    kembalian,
-
+    // KASIR
     kasirId: kasir.id || "-",
-    kasirNama: kasir.nama || "-"
-  });
+    kasirNama: kasir.nama || "-",
 
+    // MEMBER
+    member: dataMember || null,
+    namaMember: dataMember?.nama || "-",
+    idMember: dataMember?.no || "-",
+    hpMember: dataMember?.hp || "-",
+    // TAMBAHAN
+    metode: "cash"
+  };
+
+  transaksi.push(detailTransaksi);
   localStorage.setItem("transaksi", JSON.stringify(transaksi));
+
+  return detailTransaksi;
 }
-
-
-
 
 
 
@@ -327,11 +375,15 @@ function simpanTransaksi(uang, kembalian, id, diskonData) {
    KURANGI STOK
 ======================= */
 function kurangiStok() {
-  const produk = getProduk();
+  if (!keranjang || keranjang.length === 0) return;
+
+  const produk = getProduk() || [];
 
   keranjang.forEach(item => {
     const p = produk.find(pr => pr.id === item.id);
-    if (p) p.stok -= item.qty;
+    if (p) {
+      p.stok = Math.max(0, p.stok - item.qty); // 🔥 anti minus
+    }
   });
 
   saveProduk(produk);
@@ -342,7 +394,9 @@ function kurangiStok() {
 
 
 
-
+/* =======================
+   GENERATE ID
+======================= */
 function generateId() {
   const now = new Date();
 
@@ -360,19 +414,21 @@ function generateId() {
 
 
 
-
+/* =======================
+   HITUNG DISKON
+======================= */
 
 function hitungDiskon(total) {
-  const persen = Number(document.getElementById("diskonPersen")?.value) || 0;
+  const persen = Number(document.getElementById("diskonPersen").value) || 0;
 
   const potongan = total * (persen / 100);
   const totalAkhir = total - potongan;
 
   return {
     totalAwal: total,
-    diskon: persen,
-    potongan,
-    totalAkhir
+    diskon: persen, // 🔥 ganti ini
+    potongan: potongan,
+    totalAkhir: totalAkhir
   };
 }
 
@@ -380,28 +436,25 @@ function hitungDiskon(total) {
 
 
 
-
-
-
-
+/* =======================
+   BAYAR
+======================= */
 function bayar() {
-  if (keranjang.length === 0) {
+  if (!keranjang || keranjang.length === 0) {
     alert("Keranjang kosong");
     return;
   }
 
-  // 🔥 HITUNG TOTAL DULU
+  const dataMember = JSON.parse(localStorage.getItem("memberAktif")) || null;
   const total = keranjang.reduce((sum, item) => sum + item.subtotal, 0);
-
-  // 🔥 HITUNG DISKON
   const diskonData = hitungDiskon(total);
 
   const uang = Number(prompt(
     `Total belanja: Rp ${diskonData.totalAkhir.toLocaleString("id-ID")}\nMasukkan uang bayar:`
   ));
 
-  if (!uang || uang < diskonData.totalAkhir) {
-    alert("Uang tidak cukup");
+  if (isNaN(uang) || uang < diskonData.totalAkhir) {
+    alert("Uang tidak cukup atau tidak valid");
     return;
   }
 
@@ -409,22 +462,38 @@ function bayar() {
   const idTransaksi = generateId();
 
   kurangiStok();
-  simpanTransaksi(uang, kembalian, idTransaksi, diskonData);
 
-  const konfirmasi = confirm(
-    `Pembayaran berhasil!\n\n` +
-    `ID: ${idTransaksi}\n` +
-    `Subtotal: Rp ${diskonData.totalAwal.toLocaleString("id-ID")}\n` +
-    `Diskon: ${diskonData.diskon}%\n` +
-    `Total: Rp ${diskonData.totalAkhir.toLocaleString("id-ID")}\n` +
-    `Bayar: Rp ${uang.toLocaleString("id-ID")}\n` +
-    `Kembali: Rp ${kembalian.toLocaleString("id-ID")}\n\n` +
-    `Cetak struk?`
+  // 🔥 Ambil objek transaksi hasil simpan
+  const transaksi = simpanTransaksi(
+    uang,
+    kembalian,
+    idTransaksi,
+    diskonData,
+    dataMember
   );
 
   const kasir = JSON.parse(localStorage.getItem("kasirAktif")) || {};
 
-  if (konfirmasi) {
+  // 🔥 TAMPILKAN LABA DI KONFIRMASI
+  const konfirmasi = confirm(
+    `Pembayaran berhasil!\n\n` +
+    `ID: ${idTransaksi}\n` +
+    `Member: ${dataMember?.nama || "-"}\n` +
+    `ID Member: ${dataMember?.no || "-"}\n` +
+    `HP: ${dataMember?.hp || "-"}\n` +    
+    `---------------------------\n` +
+    `Subtotal: Rp ${diskonData.totalAwal.toLocaleString("id-ID")}\n` +
+    `Diskon: ${diskonData.diskon}%\n` +
+    `Potongan: Rp ${diskonData.potongan.toLocaleString("id-ID")}\n` +
+    `Total: Rp ${diskonData.totalAkhir.toLocaleString("id-ID")}\n` +
+    `---------------------------\n` +
+    `Bayar: Rp ${uang.toLocaleString("id-ID")}\n` +
+    `Kembali: Rp ${kembalian.toLocaleString("id-ID")}\n` +
+    `Laba Transaksi: Rp ${transaksi.totalLaba.toLocaleString("id-ID")}\n\n` + // 🔥 Baris Laba
+    `Cetak struk?`
+  );
+
+  if (konfirmasi && transaksi) {
     cetakStruk({
       id: idTransaksi,
       total: diskonData.totalAkhir,
@@ -433,17 +502,22 @@ function bayar() {
       potongan: diskonData.potongan,
       uang,
       kembalian,
-      items: keranjang,
+      items: [...keranjang],
       kasirNama: kasir.nama,
-      kasirId: kasir.id
+      kasirId: kasir.id,
+      member: dataMember,
+      laba: transaksi.totalLaba // Kirim laba ke struk jika perlu
     });
   }
 
-  // 🔥 RESET SEMUA
+  // RESET
   keranjang = [];
   renderKeranjang();
 
-  document.getElementById("diskonPersen").value = "";
+  // Bersihkan data member dari storage agar tidak terbawa ke transaksi berikutnya
+  localStorage.removeItem("memberAktif"); 
+
+  if(document.getElementById("diskonPersen")) document.getElementById("diskonPersen").value = "";
   updateTotalDiskon();
 }
 
@@ -459,92 +533,89 @@ function cetakStruk(data) {
   });
 
   let y = 10;
+  const toko = getPengaturanToko() || {};
 
-  // ===== HEADER =====
-const toko = getPengaturanToko();
+  // HEADER
+  doc.setFontSize(12);
+  doc.text(toko.nama || "TOKO", 40, y, { align: "center" });
+  y += 6;
 
-// ===== HEADER =====
-doc.setFontSize(12);
-doc.text(toko.nama, 40, y, { align: "center" });
-y += 6;
-
-doc.setFontSize(9);
-doc.text(toko.alamat, 40, y, { align: "center" });
-y += 6;
-doc.setFontSize(9);
-doc.text(toko.aditional, 40, y, { align: "center" });
-y += 6;
-
-  doc.text("=====================================================", 40, y, { align: "center" });
+  doc.setFontSize(9);
+  doc.text(toko.alamat || "-", 40, y, { align: "center" });
   y += 5;
 
-  // ===== TANGGAL + ID =====
-  doc.text(`Tanggal: ${new Date().toLocaleString("id-ID")}`, 5, y);
-  y += 3;
-
-  doc.text(`ID: #${data.id || "-"}`, 5, y); // 🔥 TAMBAHAN
-  y += 3;
-
-
-  // 🔥 TAMBAHAN KASIR
-  doc.text(`Kasir: ${data.kasirNama || "-"}`, 5, y);
-  y += 3;
-  
-  doc.text(`ID Kasir: ${data.kasirId || "-"}`, 5, y);
-  y += 3;
-
-    doc.text("=====================================================", 40, y, { align: "center" });
+  doc.text(toko.additional || "-", 40, y, { align: "center" });
   y += 5;
-  // ===== ITEM =====
+
+  doc.text("====================================================", 40, y, { align: "center" });
+  y += 5;
+
+  // INFO
+  doc.text(`Tanggal: ${new Date().toLocaleString("id-ID")}`, 4, y);
+  y += 3;
+
+  doc.text(`ID: ${data.id || "-"}`, 4, y);
+  y += 3;
+
+  doc.text(`Kasir: ${data.kasirNama || "-"}`, 4, y);
+  y += 3;
+
+  doc.text(`ID Kasir: ${data.kasirId || "-"}`, 4, y);
+  y += 3;
+
+   doc.text("====================================================", 40, y, { align: "center" });
+  y += 5;
+ 
+  // MEMBER (opsional)
+  if (data.member) {
+    doc.text(`Member: ${data.member.nama}`, 3, y);
+    y += 3;
+
+    doc.text(`ID: ${data.member.no}`, 3, y);
+    y += 3;
+
+    doc.text(`Hp: ${data.member.hp}`, 3, y);
+    y += 3;
+  }
+
+  doc.text("====================================================", 40, y, { align: "center" });
+  y += 5;
+
+  // ITEM
   data.items.forEach(item => {
     doc.text(item.nama, 5, y);
     y += 4;
 
-    doc.text(
-      `${item.qty} x ${item.harga.toLocaleString("id-ID")}`,
-      5,
-      y
-    );
+    doc.text(`${item.qty} x Rp ${item.harga.toLocaleString("id-ID")}`, 5, y);
 
-    doc.text(
-      item.subtotal.toLocaleString("id-ID"),
-      75,
-      y,
-      { align: "right" }
-    );
+    doc.text(item.subtotal.toLocaleString("id-ID"), 75, y, { align: "right" });
     y += 5;
   });
 
-  doc.text("=====================================================", 40, y, { align: "center" });
-  y += 6;
+  doc.text("====================================================", 40, y, { align: "center" });
+  y += 5;
 
-  // ===== TOTAL =====
-// ===== SUBTOTAL =====
-doc.text("SUBTOTAL", 5, y);
-doc.text(data.totalAwal.toLocaleString("id-ID"), 75, y, { align: "right" });
-y += 3;
+  // TOTAL
+  doc.text("SUBTOTAL", 5, y);
+  doc.text((data.totalAwal || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
+  y += 4;
 
-// ===== DISKON =====
-doc.text(`DISKON (${data.diskon || 0}%)`, 5, y);
-doc.text(`- ${data.potongan.toLocaleString("id-ID")}`, 75, y, { align: "right" });
-y += 3;
-
-
-    doc.text("=====================================================", 40, y, { align: "center" });
-  y += 3;
-
+  doc.text(`DISKON (${data.diskon || 0}%)`, 5, y);
+  doc.text(`- ${(data.potongan || 0).toLocaleString("id-ID")}`, 75, y, { align: "right" });
+  y += 4;
 
   doc.text("TOTAL", 5, y);
-  doc.text(data.total.toLocaleString("id-ID"), 75, y, { align: "right" });
-  y += 3;
+  doc.text((data.total || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
+  y += 4;
 
   doc.text("BAYAR", 5, y);
-  doc.text(data.uang.toLocaleString("id-ID"), 75, y, { align: "right" });
-  y += 8;
+  doc.text((data.uang || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
+  y += 4;
 
   doc.text("KEMBALI", 5, y);
-  doc.text(data.kembalian.toLocaleString("id-ID"), 75, y, { align: "right" });
-  y += 8;
+  doc.text((data.kembalian || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
+  y += 6;
+
 
   // ===== FOOTER =====
   doc.text("Terima kasih", 40, y, { align: "center" });
@@ -561,10 +632,9 @@ y += 3;
   doc.text("0852-1405-6596 ||| greentetembatu@gmail.com", 40, y, { align: "center" });
 
   // ===== SIMPAN =====
-  doc.save(`struk-${data.id || Date.now()}.pdf`); // 🔥 pakai ID juga
+
+  doc.save(`struk-${data.id || Date.now()}.pdf`);
 }
-
-
 
 
 

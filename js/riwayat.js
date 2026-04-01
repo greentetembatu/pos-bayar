@@ -1,4 +1,8 @@
-document.addEventListener("DOMContentLoaded", renderRiwayat);
+document.addEventListener("DOMContentLoaded", () => {
+  renderRiwayat();
+  renderRankingMember(); // 🔥 TAMBAHAN
+});
+
 
 /* =======================
    RENDER RIWAYAT
@@ -13,7 +17,7 @@ function renderRiwayat() {
   if (!transaksi || transaksi.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="8" style="text-align:center">
+        <td colspan="10" style="text-align:center">
           Belum ada transaksi
         </td>
       </tr>
@@ -37,8 +41,18 @@ tr.innerHTML = `
   <td>${t.tanggal || "-"}</td>
 
   <!-- 🔥 TAMBAHAN KASIR -->
-  <td>${t.kasirNama || "-"}</td>
-  <td>${t.kasirId || "-"}</td>
+<td>${t.kasirNama || "-"}</td>
+<td>${t.kasirId || "-"}</td>
+
+<!-- 🔥 TAMBAHAN MEMBER -->
+<td>
+  ${t.namaMember || "-"}<br>
+  <small>${t.hpMember || "-"}</small>
+</td>
+<td>${t.idMember || "-"}</td>
+
+
+
 
   <td>
     ${items || "-"}
@@ -53,7 +67,7 @@ tr.innerHTML = `
   <td>
     <button onclick="lihatDetail('${t.id}')">Detail</button>
     <button onclick="cetakStrukRiwayat('${t.id}')">🖨 Cetak</button>
-    <button onclick="hapusTransaksi('${t.id}')" style="color:red">🗑 Hapus</button>
+    <button onclick="hapusTransaksi('${t.id}')" style="color:white">🗑 Hapus</button>
   </td>
 `;
 
@@ -76,7 +90,9 @@ function lihatDetail(id) {
 
   info += `ID: #${t.id}\n`; // 🔥 TAMBAHAN
   info += `Tanggal: ${t.tanggal || "-"}\n\n`;
-  
+  info += `Member: ${t.namaMember || "-"}\n`;
+  info += `ID Member: ${t.idMember || "-"}\n`;
+  info += `HP: ${t.hpMember || "-"}\n\n`;
 
   if (Array.isArray(t.items) && t.items.length > 0) {
     t.items.forEach(i => {
@@ -94,6 +110,8 @@ function lihatDetail(id) {
 const totalAwal = Number(t.totalAwal || t.total || 0);
 const diskon = Number(t.diskon || 0);
 const potongan = Number(t.potongan || 0);
+const total = Number(t.total || 0);
+const laba = Number(t.totalLaba || 0);
 
 info += `SUBTOTAL: Rp ${totalAwal.toLocaleString("id-ID")}\n`;
 info += `DISKON: ${diskon}%\n`;
@@ -138,7 +156,12 @@ cetakStruk({
 
   // kasir
   kasirNama: t.kasirNama,
-  kasirId: t.kasirId
+  kasirId: t.kasirId,
+
+  // MEMBER
+namaMember: t.namaMember,
+idMember: t.idMember,
+hpMember: t.hpMember
 });
 }
 
@@ -246,7 +269,7 @@ function downloadCSV() {
     return;
   }
 
-  let csv = "Tanggal;ID Transaksi;Kasir;ID Kasir;Nama Produk;Qty;Harga;Subtotal Item;Subtotal Transaksi;Diskon (%);Potongan;Total Akhir;Laba\n";
+let csv = "Tanggal;ID Transaksi;Kasir;ID Kasir;Nama Member;ID Member;HP;Nama Produk;Qty;Harga;Subtotal Item;Subtotal Transaksi;Diskon (%);Potongan;Total Akhir;Laba\n";
 
   transaksi.forEach(t => {
     const tanggal = t.tanggal || "-";
@@ -260,6 +283,10 @@ function downloadCSV() {
     const kasirNama = t.kasirNama || "-";
     const kasirId = t.kasirId || "-";
 
+    const namaMember = t.namaMember || "-";
+const idMember = t.idMember || "-";
+const hpMember = t.hpMember || "-";
+
     if (Array.isArray(t.items) && t.items.length > 0) {
       t.items.forEach(i => {
         const nama = `"${i.nama}"`;
@@ -267,7 +294,8 @@ function downloadCSV() {
         const harga = i.harga || 0;
         const subtotal = i.subtotal || 0;
 
-        csv += `${tanggal};${t.id};${kasirNama};${kasirId};${nama};${qty};${harga};${subtotal};${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
+
+        csv += `${tanggal};${t.id};${kasirNama};${kasirId};${namaMember};${idMember};${hpMember};${nama};${qty};${harga};${subtotal};${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
       });
     } else {
       csv += `${tanggal};${t.id};${kasirNama};${kasirId};-;0;0;0;${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
@@ -325,7 +353,6 @@ function cariTransaksi() {
 
 
 
-
 function renderRiwayatCustom(data) {
   const tbody = document.getElementById("riwayatTable");
   if (!tbody) return;
@@ -335,7 +362,7 @@ function renderRiwayatCustom(data) {
   if (!data || data.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="8" style="text-align:center">
+        <td colspan="10" style="text-align:center">
           Tidak ditemukan transaksi
         </td>
       </tr>
@@ -356,18 +383,185 @@ function renderRiwayatCustom(data) {
     tr.innerHTML = `
       <td><b>#${t.id}</b></td>
       <td>${t.tanggal || "-"}</td>
+
       <td>${t.kasirNama || "-"}</td>
       <td>${t.kasirId || "-"}</td>
+
+      <!-- 🔥 MEMBER -->
+      <td>
+        ${t.namaMember || "-"}<br>
+        <small>${t.hpMember || "-"}</small>
+      </td>
+      <td>${t.idMember || "-"}</td>
+
       <td>${items || "-"} ${more}</td>
+
       <td>Rp ${(t.total || 0).toLocaleString("id-ID")}</td>
       <td>Rp ${(t.totalLaba || 0).toLocaleString("id-ID")}</td>
+
       <td>
         <button onclick="lihatDetail('${t.id}')">Detail</button>
         <button onclick="cetakStrukRiwayat('${t.id}')">🖨 Cetak</button>
-        <button onclick="hapusTransaksi('${t.id}')" style="color:red">🗑 Hapus</button>
+        <button onclick="hapusTransaksi('${t.id}')" style="color:white">🗑 Hapus</button>
       </td>
     `;
 
     tbody.appendChild(tr);
   });
+}
+
+
+
+
+
+let currentPage = 1;
+let perPage = 10;
+
+function hitungRankingMember() {
+  const transaksi = getTransaksi();
+  if (!transaksi || transaksi.length === 0) return [];
+
+  const map = {};
+
+  transaksi.forEach(t => {
+    const id = t.idMember;
+
+    // skip jika tidak ada member
+    if (!id) return;
+
+    if (!map[id]) {
+      map[id] = {
+        idMember: id,
+        nama: t.namaMember || "-",
+        hp: t.hpMember || "-",
+        jumlahTransaksi: 0,
+        totalBelanja: 0,
+        totalLaba: 0
+      };
+    }
+
+    map[id].jumlahTransaksi += 1;
+    map[id].totalBelanja += Number(t.total || 0);
+    map[id].totalLaba += Number(t.totalLaba || 0);
+  });
+
+  return Object.values(map).sort((a, b) => 
+    b.jumlahTransaksi - a.jumlahTransaksi
+  );
+}
+
+function renderPagination(totalData) {
+  const totalPage = Math.ceil(totalData / perPage) || 1;
+  const info = document.getElementById("pageInfo");
+
+  if (info) {
+    info.innerText = `Halaman ${currentPage} dari ${totalPage}`;
+  }
+}
+
+function renderRankingMember() {
+  const tbody = document.getElementById("rankingMember");
+  if (!tbody) return;
+
+  const data = hitungRankingMember();
+  tbody.innerHTML = "";
+
+  if (data.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align:center">
+          Belum ada data member
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  const start = (currentPage - 1) * perPage;
+  const end = start + perPage;
+  const pageData = data.slice(start, end);
+
+  pageData.forEach((m, index) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>🏅 ${start + index + 1}</td>
+      <td>${m.nama}</td>
+      <td>${m.idMember}</td>
+      <td>${m.hp}</td>
+      <td>${m.jumlahTransaksi}</td>
+      <td>Rp ${m.totalBelanja.toLocaleString("id-ID")}</td>
+      <td>Rp ${m.totalLaba.toLocaleString("id-ID")}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  renderPagination(data.length);
+}
+
+function nextPage() {
+  const totalData = hitungRankingMember().length;
+  const totalPage = Math.ceil(totalData / perPage);
+
+  if (currentPage < totalPage) {
+    currentPage++;
+    renderRankingMember();
+  }
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderRankingMember();
+  }
+}
+
+// 🔥 WAJIB: panggil saat load
+renderRankingMember();
+
+
+
+
+
+
+
+
+
+
+
+function nextPage() {
+  const totalPage = Math.ceil(rankingData.length / perPage);
+
+  if (currentPage < totalPage) {
+    currentPage++;
+    renderRankingMember();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+function renderPagination(totalData) {
+  const totalPage = Math.ceil(totalData / perPage);
+  const info = document.getElementById("pageInfo");
+
+  if (info) {
+    info.innerText = `Halaman ${currentPage} dari ${totalPage}`;
+  }
+
+  const prevBtn = document.querySelector("button[onclick='prevPage()']");
+  const nextBtn = document.querySelector("button[onclick='nextPage()']");
+
+  if (prevBtn) prevBtn.disabled = currentPage === 1;
+  if (nextBtn) nextBtn.disabled = currentPage === totalPage;
 }

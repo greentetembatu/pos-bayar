@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak Kartu Member</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<style>
+    /* Dasar & Reset */
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+
+    /* Kontainer agar berjejer di layar */
+    .card-print-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: flex-start;
+        
+    }
+
+    /* Ukuran Kartu Standar ID Card */
+    .page {
+        width: 85.6mm;
+        height: 53.98mm;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        /* PAKSA WARNA MUNCUL SAAT DI PRINT */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+
+    }
+
+    /* Kartu Depan */
+    .front {
+        background: #e7ecf5 !important; /* Gunakan !important agar tidak ditimpa browser */
+        color: #e69f08;
+        padding: 15px;
+    }
+.front h3 { 
+        margin: 5px 0; 
+        font-size: 18px; 
+        text-transform: uppercase; 
+        text-align: center; 
+        /* Efek bayangan solid hitam (tanpa blur) */
+        
+    }
+
+    .front small { 
+        display: block; 
+        text-align: center; 
+        font-size: 14px; 
+        opacity: 1; 
+        /* Efek solid 1px agar teks kecil tidak pecah */
+        text-transform: uppercase; 
+
+    }
+
+    .front hr { 
+        border: 1px solid #af8703; 
+        margin: 8px 0; 
+    }
+    
+    .info { 
+        font-size: 12px; 
+        line-height: 1.4; 
+        text-transform: uppercase; 
+
+    }
+
+    .info b { 
+        color: #e69f08; 
+        /* Memberi kontras kuat pada teks ID emas */
+        
+    }
+    /* Barcode di dalam area ID */
+    #barcodeMember{
+        background: white;
+        padding: 4px;
+        position: absolute;
+        bottom: 25px; /* Sesuaikan posisi naik/turun */
+        right: 15px; /* Sesuaikan posisi kanan/kiri */
+        width: 100px;
+        height: 40px;
+        border-radius: 4px;
+    }
+
+    /* Kartu Belakang */
+    .back {
+        background-color: #fff !important;
+        color: #333;
+        border: 1px solid #ddd;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+    }
+    .back img { width: 100%; height: 55%; object-fit: cover; border-radius: 6px; }
+    .snk { font-size: 8px; color: #666; margin-top: 10px; }
+
+    /* PENGATURAN KHUSUS PRINT */
+    @media print {
+        body { 
+            background: none; 
+            padding: 0; 
+        }
+        .card-print-container {
+            display: flex !important; /* Paksa tetap berjejer ke kanan */
+            flex-direction: row !important;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+        /* Hilangkan margin default browser */
+        @page {
+            size: landscape; /* Mengatur kertas jadi landscape agar muat berjejer */
+            margin: 5mm;
+        }
+        .page {
+            box-shadow: none;
+            border: 1px solid #201e1e; /* Beri border tipis untuk panduan potong */
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="card-print-container">
+        <div class="page front">
+            <h3 id="printToko"></h3>
+            <small id="printAlamat"></small>
+            <small id="printHpToko"></small>
+            <hr>
+            <div id="printInfoMember" class="info">
+                </div>
+            <svg id="barcodeMember"></svg>
+        </div>
+
+        <div class="page back">
+            <img src="icons/ADI MARDANI DEV.jpg" alt="Banner">
+            <!--<img src="https://picsum.photos/400/200" alt="Banner">-->
+            <div class="snk">
+                <b>SYARAT & KETENTUAN</b><br>
+                1. Tunjukkan kartu ini saat bertransaksi.<br>
+                2. Tidak dapat dipindahtangankan kepada orang lain.<br>
+                3. Jika ditemukan, harap kembalikan ke alamat toko.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+
+    <script>
+        // 1. Ambil data dari URL (Parameter yang dikirim dari printKartuMember)
+        const params = new URLSearchParams(window.location.search);
+        
+        const dataMember = {
+            toko: params.get('tokoMember') || "NAMA TOKO",
+            alamat: params.get('alamatMember') || "-",
+            hpToko: params.get('hpTokoMember') || "-",
+            nama: params.get('namaMember') || "-",
+            hp: params.get('hpMember') || "-",
+            no: params.get('noMember') || ""
+        };
+
+        // 2. Masukkan data ke elemen HTML
+        document.getElementById("printToko").innerText = dataMember.toko;
+        document.getElementById("printAlamat").innerText = dataMember.alamat;
+        document.getElementById("printHpToko").innerText = dataMember.hpToko;
+        
+        document.getElementById("printInfoMember").innerHTML = `
+            <p>Nama: ${dataMember.nama}</p>
+            <p>WhatsApp: ${dataMember.hp}</p>
+            <p>ID Member: <b>${dataMember.no}</b></p>
+        `;
+
+        // 3. Generate Barcode (Hanya jika nomor member ada)
+        if (dataMember.no) {
+            JsBarcode("#barcodeMember", dataMember.no, {
+                format: "CODE128",
+                width: 1.5,
+                height: 35,
+                displayValue: false,
+                margin: 0,
+                background: "#ffffff"
+            });
+        }
+
+        // 4. Print otomatis setelah data terisi
+        window.onload = function() {
+            if (dataMember.no !== "") {
+                setTimeout(() => {
+                    window.print();
+                    // Opsional: Tutup tab setelah print selesai
+                    // window.close(); 
+                }, 800);
+            } else {
+                alert("Data tidak ditemukan. Silakan kembali ke dashboard.");
+            }
+        };
+    </script>
+</body>
+</html>

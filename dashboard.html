@@ -33,6 +33,7 @@
         <li><a href="kasir.html">Kasir</a></li>
         <li><a href="produk.html">Produk</a></li>
         <li><a href="riwayat.html">Riwayat</a></li>
+        <li><a href="member.html">Member</a></li>
         <button id="installBtn" style="display:none;">Install Aplikasi</button>
         <button class="btn-logout" onclick="logoutKasir()">
           🚪 Logout
@@ -51,7 +52,7 @@
 
 <input type="text" id="namaToko" placeholder="Nama Toko">
 <input type="text" id="alamatToko" placeholder="Teks Baris 1">
-<input type="text" id="aditionalToko" placeholder="Teks Baris 2">
+<input type="text" id="additionalToko" placeholder="Teks Baris 2">
 
 <button onclick="simpanPengaturanToko()">Simpan</button>
 
@@ -59,16 +60,22 @@
       </header>
         <a href="kasir.html" class="btn-primary">➜ Buka Kasir</a>
       <!-- STATISTIC CARDS -->
-      <section class="stats">
-        <div class="card stat-card">
-          <h3>Total Produk</h3>
-          <p id="totalProduk">0</p>
-        </div>
+      <section class="stats" >
+        
+<a href="produk.html" style="text-decoration: none; color: inherit;">
+  <div class="card stat-card">
+    <h3>Total Produk</h3>
+    <p id="totalProduk">0</p>
+  </div>
+</a>
 
-        <div class="card stat-card">
-          <h3>Total Transaksi</h3>
-          <p id="totalTransaksi">0</p>
-        </div>
+
+<a href="riwayat.html" style="text-decoration: none; color: inherit;">
+  <div class="card stat-card">
+    <h3>Total Transaksi</h3>
+    <p id="totalTransaksi">0</p>
+  </div>
+</a>
 
         <div class="card stat-card">
           <h3>Omzet</h3>

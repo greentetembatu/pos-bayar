@@ -1,4 +1,91 @@
-<div class="login-kasir">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>login</title>
+</head>
+<body>
+
+<style>
+  /* CONTAINER (opsional kalau belum ada) */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* BOX LOGIN */
+.login-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 280px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+/* JUDUL */
+.login-box h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* INPUT */
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.login-box input:focus {
+  border-color: #4CAF50;
+}
+
+/* BUTTON */
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+  transition: 0.2s;
+}
+
+/* MASUK */
+.login-box button:nth-of-type(1) {
+  background: #4CAF50;
+}
+
+.login-box button:nth-of-type(1):hover {
+  background: #43a047;
+}
+
+/* DAFTAR */
+.login-box button:nth-of-type(2) {
+  background: #2196F3;
+}
+
+.login-box button:nth-of-type(2):hover {
+  background: #1e88e5;
+}
+</style>
+
+
+
+<div class="login-box">
   <h2>Login Kasir</h2>
 
   <input type="text" id="kasirId" placeholder="ID Kasir" />
@@ -7,6 +94,14 @@
   <button onclick="loginKasir()">Masuk</button>
   <button onclick="tambahKasir()">Daftar</button>
 </div>
+
+
+
+
+
+
+
+
 
 <script>
 
@@ -121,3 +216,6 @@ window.addEventListener("pageshow", function (event) {
 
 
 </script>
+
+</body>
+</html>

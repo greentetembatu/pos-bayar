@@ -152,14 +152,14 @@ function savePengaturanToko(data) {
 function simpanPengaturanToko() {
   const nama = document.getElementById("namaToko").value;
   const alamat = document.getElementById("alamatToko").value;
-  const aditional = document.getElementById("aditionalToko").value;
+  const additional = document.getElementById("additionalToko").value;
 
   if (!nama || !alamat) {
     alert("Nama dan alamat harus diisi");
     return;
   }
 
-  savePengaturanToko({ nama, alamat, aditional });
+  savePengaturanToko({ nama, alamat, additional });
 
   alert("Pengaturan toko berhasil disimpan");
 }
@@ -180,7 +180,7 @@ function loadPengaturanToko() {
 
   document.getElementById("namaToko").value = toko.nama;
   document.getElementById("alamatToko").value = toko.alamat;
-  document.getElementById("aditionalToko").value = toko.aditional;
+  document.getElementById("additionalToko").value = toko.additional;
 }
 
 document.addEventListener("DOMContentLoaded", loadPengaturanToko);
