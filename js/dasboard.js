@@ -175,7 +175,6 @@ function simpanPengaturanToko() {
 
 
 
-document.addEventListener("DOMContentLoaded", loadPengaturanToko);
 function loadPengaturanToko() {
   const toko = getPengaturanToko() || {}; // Tambahkan || {} agar tidak error jika null
 
@@ -184,3 +183,6 @@ function loadPengaturanToko() {
   document.getElementById("alamatToko").value = toko.alamat || "";
   document.getElementById("additionalToko").value = toko.additional || "";
 });
+
+
+document.addEventListener("DOMContentLoaded", loadPengaturanToko);
