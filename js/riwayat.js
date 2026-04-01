@@ -53,7 +53,7 @@ tr.innerHTML = `
   <td>
     <button onclick="lihatDetail('${t.id}')">Detail</button>
     <button onclick="cetakStrukRiwayat('${t.id}')">🖨 Cetak</button>
-    <button onclick="hapusTransaksi('${t.id}')" style="color:white">🗑 Hapus</button>
+    <button onclick="hapusTransaksi('${t.id}')" style="color:red">🗑 Hapus</button>
   </td>
 `;
 
@@ -94,8 +94,6 @@ function lihatDetail(id) {
 const totalAwal = Number(t.totalAwal || t.total || 0);
 const diskon = Number(t.diskon || 0);
 const potongan = Number(t.potongan || 0);
-const total = Number(t.total || 0);
-const laba = Number(t.laba || 0);
 
 info += `SUBTOTAL: Rp ${totalAwal.toLocaleString("id-ID")}\n`;
 info += `DISKON: ${diskon}%\n`;
@@ -366,7 +364,7 @@ function renderRiwayatCustom(data) {
       <td>
         <button onclick="lihatDetail('${t.id}')">Detail</button>
         <button onclick="cetakStrukRiwayat('${t.id}')">🖨 Cetak</button>
-        <button onclick="hapusTransaksi('${t.id}')" style="color:white">🗑 Hapus</button>
+        <button onclick="hapusTransaksi('${t.id}')" style="color:red">🗑 Hapus</button>
       </td>
     `;
 

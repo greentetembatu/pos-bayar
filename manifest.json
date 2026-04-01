@@ -1,7 +1,7 @@
 {
   "name": "KASIR",
-  "short_name": "KASIR-v2",
-  "description": "Aplikasi kasir By: Adi Mardani Dev.",
+  "short_name": "Aplikasi KASIR by MARDANI DEV",
+  "description": "Aplikasi kasir, cepat dan offline",
   "start_url": "login.html",
   "display": "standalone",
   "background_color": "#ffffff",

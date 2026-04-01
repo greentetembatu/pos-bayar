@@ -1,43 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Dashboard Admin - KASIR</title>
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Admin - KASIR</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#0d6efd" />
+  <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d6efd" />
 
-    <link rel="stylesheet" href="riwayat.css" />
-  </head>
+
+
+
+
+  <link rel="stylesheet" href="style.css" />
+</head>
 
   <body>
     <h2>Riwayat Transaksi</h2>
     <ul>
       <button><a href="dashboard.html">Dashboard</a></button>
     </ul>
-    <input
-      type="text"
-      id="searchTransaksi"
-      placeholder="Cari ID / Kasir / Item..."
-      oninput="cariTransaksi()"
-    />
-    <div id="listRiwayat"></div>
+<input 
+  type="text" 
+  id="searchTransaksi" 
+  placeholder="Cari ID / Kasir / Item..." 
+  oninput="cariTransaksi()" 
+/>
+<div id="listRiwayat"></div>
     <table>
       <thead>
         <tr>
-          <th>ID Transaksi</th>
-          <th>Tanggal</th>
-          <th>Kasir</th>
-          <!-- 🔥 -->
-          <th>ID Kasir</th>
-          <!-- 🔥 -->
-          <th>Produk</th>
-          <th>Total</th>
-          <th>Laba</th>
-          <th>Aksi</th>
+<th>ID Transaksi</th>
+<th>Tanggal</th>
+<th>Kasir</th> <!-- 🔥 -->
+<th>ID Kasir</th> <!-- 🔥 -->
+<th>Produk</th>
+<th>Total</th>
+<th>Laba</th>
+<th>Aksi</th>
         </tr>
       </thead>
       <tbody id="riwayatTable"></tbody>
