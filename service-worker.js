@@ -2,17 +2,24 @@ const CACHE_NAME = "KASIR-V2";
 
 const ASSETS = [
   "./",
+  "/index.html",
+  "/login.html",
   "/dashboard.html",
   "/produk.html", // Pastikan file ini ada
   "/kasir.html",
+  "/cetak-member.html",
+  "/member.html",
   "/riwayat.html", // Pastikan file ini ada
   "/style.css",
+  "/riwayat.css",
+  "/member.css",
   "./js/data.js",
   "./js/kasir.js",
   "./js/produk.js", // Tambahkan ini
   "./js/storage.js", // Tambahkan ini
   "./js/riwayat.js", // Tambahkan ini
   "./js/dasboard.js", // Tambahkan ini
+  "./js/member.js", // Tambahkan ini
   "/manifest.json",
   "https://unpkg.com/html5-qrcode", // Cache library eksternal
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
@@ -40,7 +47,7 @@ self.addEventListener("fetch", event => {
           
           // Jika request adalah navigasi halaman, bisa arahkan ke dashboard.html
           if (event.request.mode === 'navigate') {
-            return caches.match('./dashboard.html');
+            return caches.match('./index.html');
           }
         });
     })
