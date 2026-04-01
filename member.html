@@ -62,6 +62,37 @@
         <button onclick="startScannerMember()">Buka Kamera</button>
       </div>
 
+
+
+
+<div class="card" style="margin-top: 20px; border-top: 4px solid #667eea;">
+  <h3>Cadangan Data Member</h3>
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <button onclick="backupDataMember()" style="background: #4a5568;">
+      💾 Backup Data (.json)
+    </button>
+
+    <button onclick="document.getElementById('fileInputMember').click()" style="background: #718096;">
+      📥 Impor Data (.json)
+    </button>
+    
+    <input type="file" id="fileInputMember" accept=".json" onchange="importDataMember(event)" style="display: none;">
+  </div>
+  <small style="display: block; margin-top: 10px; color: #718096;">
+    *Gunakan file .json hasil backup untuk memindahkan data ke laptop/HP lain.
+  </small>
+</div>
+
+
+
+
+
+
+
+
+
+
+      
       <div class="card">
         <h2>Preview Kartu Member</h2>
         <div id="kartuMember" class="member-card" style="display: none; border: 1px solid #ddd; padding: 15px; border-radius: 10px; background: #2d3748; color: white;">
