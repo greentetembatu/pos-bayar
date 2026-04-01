@@ -175,12 +175,12 @@ function simpanPengaturanToko() {
 
 
 
-function loadPengaturanToko() {
-  const toko = getPengaturanToko();
-
-  document.getElementById("namaToko").value = toko.nama;
-  document.getElementById("alamatToko").value = toko.alamat;
-  document.getElementById("additionalToko").value = toko.additional;
-}
-
 document.addEventListener("DOMContentLoaded", loadPengaturanToko);
+function loadPengaturanToko() {
+  const toko = getPengaturanToko() || {}; // Tambahkan || {} agar tidak error jika null
+
+  // Gunakan || "" (string kosong) untuk mencegah munculnya tulisan "undefined"
+  document.getElementById("namaToko").value = toko.nama || "";
+  document.getElementById("alamatToko").value = toko.alamat || "";
+  document.getElementById("additionalToko").value = toko.additional || "";
+});
