@@ -196,3 +196,75 @@ function printKartuMember() {
 
     window.open("cetak-member.html?" + params.toString(), "_blank");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function backupDataMember() {
+  if (dataMember.length === 0) return alert("Tidak ada data member untuk dibackup");
+
+  const dataStr = JSON.stringify(dataMember, null, 2);
+  const dataBlob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(dataBlob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  const tgl = new Date().toISOString().split('T')[0];
+  link.download = `backup-member-${tgl}.json`;
+  link.click();
+  
+  URL.revokeObjectURL(url);
+}
+
+
+
+
+
+
+function importDataMember(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedData = JSON.parse(e.target.result);
+      
+      if (Array.isArray(importedData)) {
+        const konfirmasi = confirm(`Ditemukan ${importedData.length} data member. Gabungkan dengan data saat ini? (Batal akan menimpa data lama)`);
+        
+        if (konfirmasi) {
+          // Gabungkan data (menghindari duplikat berdasarkan nomor member)
+          const existingIds = new Set(dataMember.map(m => m.no));
+          const newItems = importedData.filter(m => !existingIds.has(m.no));
+          dataMember = [...dataMember, ...newItems];
+        } else {
+          // Menimpa total
+          dataMember = importedData;
+        }
+
+        localStorage.setItem("member", JSON.stringify(dataMember));
+        alert("Data member berhasil diimpor!");
+        location.reload(); // Refresh untuk memperbarui tampilan
+      } else {
+        alert("Format file tidak valid!");
+      }
+    } catch (err) {
+      alert("Gagal membaca file: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
