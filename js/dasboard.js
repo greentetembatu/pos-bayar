@@ -182,7 +182,7 @@ function loadPengaturanToko() {
   document.getElementById("namaToko").value = toko.nama || "";
   document.getElementById("alamatToko").value = toko.alamat || "";
   document.getElementById("additionalToko").value = toko.additional || "";
-});
+}
 
 
 document.addEventListener("DOMContentLoaded", loadPengaturanToko);
