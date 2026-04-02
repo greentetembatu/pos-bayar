@@ -1,204 +1,147 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Dashboard Admin - KASIR</title>
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-
-
-
-    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#0d6efd" />
-
-    <link rel="stylesheet" href="style.css" />
-    
-  </head>
-
-  <body>
-    <div class="app">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <h2>KASIR</h2>
-        <ul>
-          <li><a href="dashboard.html">Dashboard</a></li>
-          <li class="active">Kasir</li>
-          <li><a href="produk.html">Produk</a></li>
-          <li><a href="riwayat.html">Riwayat</a></li>
-        <li><a href="member.html">Member</a></li>
-        <button id="installBtn" style="display:none;">Install Aplikasi</button>
-        <button class="btn-logout" onclick="logoutKasir()">
-          🚪 Logout
-        </ul>
-      </aside>
-
-      <!-- Content -->
-      <main class="content">
-        <h1>Kasir</h1>
-
-        <!-- Form Kasir -->
-        <div class="card">
-          <label>Produk</label>
-          <div
-            style="
-              display: flex;
-              flex-wrap: wrap;
-              gap: 5px;
-              margin-bottom: 10px;
-            "
-          >
-            <div class="autocomplete" style="flex: 1">
-              <input
-                type="text"
-                id="produkInput"
-                placeholder="Ketik nama atau barcode..."
-                autocomplete="off"
-              />
-              <div id="produkList" class="autocomplete-list"></div>
-            </div>
-
-            <button
-              onclick="toggleScannerKasir()"
-              id="btnScanKasir"
-              style="padding: 10px 15px"
-            >
-              📷 Scan
-            </button>
-          </div>
-
-          <div
-            id="scannerContainerKasir"
-            style="display: none; margin-bottom: 15px; position: relative"
-          >
-            <div id="laserLine" class="scan-line"></div>
-
-            <div
-              id="readerKasir"
-              style="
-                width: 100%; /* Disarankan 100% untuk layar HP agar lebih mudah scan */
-                border-radius: 8px;
-                overflow: hidden;
-                background: #000;
-              "
-            ></div>
-          </div>
-          <input type="hidden" id="produkId" />
-
-          <label>Jumlah</label>
-          <input type="number" id="qty" value="1" min="1" />
-
-          <button
-            onclick="tambahKeKeranjang()"
-            style="
-              width: 100%;
-              margin-top: 10px;
-              background: #28a745;
-              color: white;
-            "
-          >
-            Tambah ke Keranjang
-          </button>
-        </div>
-
-        <!-- Keranjang -->
-        <div class="card">
-          <h3>Keranjang</h3>
-          <table width="100%" id="keranjangTable">
-            <thead>
-              <tr>
-                <th>Produk</th>
-                <th>Qty</th>
-                <th>Subtotal</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-
-            <tbody></tbody>
-          </table>
-        </div>
-
-        <!-- Total -->
-      <div class="card">
-        <h2>Cari Member/ Scan Kartu Member</h2>
-        <div class="search-box">
-          <input type="text" id="searchMember" style="flex:1; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / ID / No HP" />
-          <button onclick="cariDataMember()">Cari</button>
-        <div id="readerMember" style="width: 100%; max-width: 300px; margin: 0 auto 10px;"></div>
-        <button onclick="startScannerMember()">Buka Kamera</button>
-
-        </div>
-      </div>
-
-
-
-<div class="checkout-box">
-  <p>Subtotal: <strong id="totalBelanja">Rp 0</strong></p>
-
-  <div class="input-group">
-    <label for="diskonPersen">Diskon Member</label>
-    <input
-      type="number"
-      id="diskonPersen"
-      placeholder="Masukkan %"
-      oninput="updateTotalDiskon()"
-    />
-  </div>
-
-  <p>Potongan: <strong id="nilaiDiskon" class="text-danger">Rp 0</strong></p>
-
-  <div class="total-highlight">
-    <span>Total Bayar:</span>
-    <strong id="totalAkhir">Rp 0</strong>
-  </div>
-
-  <p class="profit-info">Estimasi Laba: <strong id="totalLaba">Rp 0</strong></p>
-
-  <button class="btn-pay" onclick="bayar()">Bayar Sekarang</button>
+<head>
+<meta charset="UTF-8"/>
+<title>Dashboard Admin - KASIR</title>
+<meta name="theme-color" content="#0f172a"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js">
+        </script>
+<link rel="shortcut icon" href="icon-512.ico" type="image/x-icon"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#0d6efd"/>
+<link rel="stylesheet" href="style.css"/>
+	</head>
+	<body>
+	<div class="app">
+		<!-- Sidebar -->
+		<aside class="sidebar">
+				<h2>KASIR</h2>
+				<ul>
+					<li>
+						<a href="dashboard.html">Dashboard</a>
+				</li>
+				<li class="active">Kasir</li>
+					<li>
+						<a href="produk.html">Produk</a>
+					</li>
+					<li>
+						<a href="riwayat.html">Riwayat</a>
+					</li>
+					<li>
+						<a href="member.html">Member</a>
+				</li>
+				<button id="installBtn" style="display:none;">Install Aplikasi</button>
+			<button class="btn-logout" onclick="logoutKasir()">🚪 Logout</ul>
+		</aside>
+		<!-- Content -->
+		<main class="content">
+		<h1>Kasir</h1>
+			<!-- Form Kasir -->
+			<div class="card">
+				<label>Produk</label>
+					<div style=" display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; ">
+							<div class="autocomplete" style="flex: 1">
+								<input type="text" id="produkInput" placeholder="Ketik nama atau barcode..." autocomplete="off"/>
+								<div id="produkList" class="autocomplete-list"></div>
+						</div>
+						<button onclick="toggleScannerKasir()" id="btnScanKasir" style="padding: 10px 15px">📷 Scan</button>
+				</div>
+					<div id="scannerContainerKasir" style="display: none; margin-bottom: 15px; position: relative">
+						<div id="laserLine" class="scan-line"></div>
+							<div id="readerKasir" style=" width: 100%; /* disarankan 100% untuk layar hp agar lebih mudah scan */ border-radius: 8px; overflow: hidden; background: #000; ">
+					</div>
+				</div>
+				<input type="hidden" id="produkId"/>
+				<label>Jumlah</label>
+				<input type="number" id="qty" value="1" min="1"/>
+				<button onclick="tambahKeKeranjang()" style=" width: 100%; margin-top: 10px; background: #28a745; color: white; ">Tambah ke Keranjang</button>
+		</div>
+			<!-- Keranjang -->
+			<div class="card">
+				<h3>Keranjang</h3>
+				<table width="100%" id="keranjangTable">
+						<thead>
+						<tr>
+							<th>Produk</th>
+							<th>Qty</th>
+							<th>Subtotal</th>
+							<th>Aksi</th>
+				</tr>
+				</thead>
+				<tbody></tbody>
+				</table>
+			</div>
+			<!-- Total -->
+			<div class="card">
+				<h2>Cari Member/ Scan Kartu Member</h2>
+					<div class="search-box">
+						<input type="text" id="searchMember" style="flex:1; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / ID / No HP"/>
+						<button onclick="cariDataMember()">Cari</button>
+							<div id="readerMember" style="width: 100%; max-width: 300px; margin: 0 auto 10px;"></div>
+						<button onclick="startScannerMember()">Buka Kamera</button>
+						<small style="display: block; margin-top: 10px; color: #718096;">Buka Kamera Scan Barcode Kartu Member</small>
+				</div>
+			</div>
+			<div class="checkout-box">
+					<p>
+						 Subtotal: <strong id="totalBelanja">Rp 0</strong>
+				</p>
+					<div class="input-group">
+						<label for="diskonPersen">Diskon Member</label>
+						<input type="number" id="diskonPersen" placeholder="Masukkan %" oninput="updateTotalDiskon()"/>
+					</div>
+					<p>
+						 Potongan: <strong id="nilaiDiskon" class="text-danger">Rp 0</strong>
+				</p>
+					<div class="total-highlight">
+						<span>Total Bayar:</span>
+						<strong id="totalAkhir">Rp 0</strong>
+					</div>
+					<p class="profit-info">
+						 Estimasi Laba: <strong id="totalLaba">Rp 0</strong>
+				</p>
+				<button class="btn-pay" onclick="bayar()">Bayar Sekarang</button>
+			</div>
+			<div class="card">
+				<h2>Preview Kartu Member</h2>
+					<div id="kartuMember" class="member-card" style=" display: none; border: 1px solid #ddd; padding: 15px; border-radius: 10px; background: #2d3748; color: white; ">
+						<h3 id="cardTokoMember" style="margin-top: 0"></h3>
+						<small id="cardAlamatMember" style="display: block"></small>
+						<small id="cardHpTokoMember" style="display: block"></small>
+								<hr/>
+								<div class="info-member">
+									<p id="cardNamaMember"></p>
+								<p id="cardHpMember"></p>
+								<p id="cardNoMember" style="font-weight: bold; color: #fbd38d"></p>
+						</div>
+						<svg id="barcodeMember" style="background: white; padding: 5px; border-radius: 5px"></svg>
+					</div>
+					<br/>
+					<div id="aksiMember" style=" margin-top: 15px; display: none; gap: 10px; justify-content: start; ">
+						<button onclick="printKartuMember()"id="btnPrintMember" style=" display: none; background: #4a5568; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; ">Cetak Kartu</button>
+						<button onclick="pemicuEditMember()" style=" background: #ed8936; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; ">Edit Data</button>
+						<button onclick="pemicuHapusMember()" style=" background: #e53e3e; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; ">Hapus Member</button>
+				</div>
+	</div>
+	</main>
 </div>
-
-
-
-
-              <div class="card-preview-member">
-        <h2>Preview Kartu Member</h2>
-        <div id="kartuMember" class="member-card" style="display: none; border: 1px solid #ddd; padding: 15px; border-radius: 10px; background: #2d3748; color: white;">
-          <h3 id="cardTokoMember" style="margin-top:0;"></h3>
-          <small id="cardAlamatMember" style="display:block;"></small>
-          <small id="cardHpTokoMember" style="display:block;"></small>
-          <hr />
-          <div class="info-member">
-            <p id="cardNamaMember"></p>
-            <p id="cardHpMember"></p>
-            <p id="cardNoMember" style="font-weight: bold; color: #fbd38d;"></p>
-          </div>
-          <svg id="barcodeMember" style="background: white; padding: 5px; border-radius: 5px;"></svg>
-        </div>
-        <br />
-        <button id="btnPrintMember" onclick="printKartuMember()" style="display: none; background: #4a5568">Cetak Kartu</button>
-      </div>
-      </main>
-      
-    </div>
-
-    <script src="js/data.js"></script>
-    <script src="js/dasboard.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="js/kasir.js"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    <script src="js/riwayat.js"></script>
-    <script src="js/produk.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/member.js"></script>
-
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("service-worker.js")
-          .then(() => console.log("Service Worker registered"))
-          .catch((err) => console.error("SW failed:", err));
-      }
-    </script>
-  </body>
+<script src="js/data.js"></script>
+<script src="js/dasboard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/kasir.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="js/riwayat.js"></script>
+<script src="js/produk.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/member.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+    .register("service-worker.js")
+    .then(() => console.log("Service Worker registered"))
+    .catch((err) => console.error("SW failed:", err));
+  }
+  </script>
+</body>
 </html>

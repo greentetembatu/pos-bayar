@@ -1,7 +1,7 @@
 
       body {
         font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #cdec03, #0215e6);
         color: #333;
       }
 
@@ -53,6 +53,7 @@
       }
 
       /* Desain Kartu Member */
+
       .member-card {
         width: 85.6mm;
         height: 53.98mm;
@@ -63,7 +64,6 @@
         position: relative;
         box-sizing: border-box;
         overflow: hidden;
-          margin: 0 auto; /* Tengah secara horizontal */
 
       }
 
@@ -108,3 +108,35 @@
         gap: 10px;
       }
     
+
+
+
+
+
+
+
+
+      /* Badge Counter di pojok kanan atas */
+.counter-wrapper {
+    display: flex;
+    align-items: center; /* Menyejajarkan teks & badge secara vertikal */
+    gap: 12px;           /* Jarak antara teks dan angka */
+    margin-bottom: 25px; /* Jarak ke input di bawahnya */
+    color: #4a5568;      /* Warna teks abu-abu gelap profesional */
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* Badge Angka (Counter) */
+.badge-counter {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px; /* Membuat bentuk kapsul */
+    font-weight: bold;
+    font-size: 14px;
+
+    
+    min-width: 30px;
+    text-align: center;
+}

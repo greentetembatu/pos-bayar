@@ -150,11 +150,12 @@ function savePengaturanToko(data) {
 
 
 function simpanPengaturanToko() {
+  
   const nama = document.getElementById("namaToko").value;
   const alamat = document.getElementById("alamatToko").value;
   const additional = document.getElementById("additionalToko").value;
 
-  if (!nama || !alamat) {
+  if (!nama || !alamat || !additional) {
     alert("Nama dan alamat harus diisi");
     return;
   }
@@ -163,7 +164,6 @@ function simpanPengaturanToko() {
 
   alert("Pengaturan toko berhasil disimpan");
 }
-
 
 
 

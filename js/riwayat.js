@@ -4,76 +4,113 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+
+
+
+
+
+
+
+
 /* =======================
    RENDER RIWAYAT
 ======================= */
+// --- VARIABEL NAVIGASI ---
+// Gunakan nama unik agar tidak bentrok dengan currentPage milik fitur lain
+let pageRiwayat = 1; 
+const limitPerHalaman = 10;
+
 function renderRiwayat() {
-  const tbody = document.getElementById("riwayatTable");
-  if (!tbody) return;
+    const tbody = document.getElementById("riwayatTable");
+    if (!tbody) return;
 
-  const transaksi = getTransaksi();
-  tbody.innerHTML = "";
+    // Ambil data asli
+    const semuaData = getTransaksi() || []; 
+    tbody.innerHTML = "";
 
-  if (!transaksi || transaksi.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="10" style="text-align:center">
-          Belum ada transaksi
-        </td>
-      </tr>
-    `;
-    return;
-  }
+    if (semuaData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center">Belum ada transaksi</td></tr>`;
+        if(document.getElementById("navigasiRiwayat")) {
+            document.getElementById("navigasiRiwayat").style.display = "none";
+        }
+        return;
+    }
 
-  transaksi.forEach(t => {
-    const tr = document.createElement("tr");
+    // Tampilkan navigasi jika ada data
+    const navRiwayat = document.getElementById("navigasiRiwayat");
+    if(navRiwayat) navRiwayat.style.display = "flex";
 
-    const items = (t.items || [])
-      .slice(0, 3)
-      .map(i => `${i.nama} (${i.qty})`)
-      .join("<br>");
+    // --- LOGIKA POTONG DATA (PAGINATION) ---
+    const mulaiDari = (pageRiwayat - 1) * limitPerHalaman;
+    const sampaiKe = mulaiDari + limitPerHalaman;
+    
+    // Potong data untuk ditampilkan
+    const dataHalamanIni = semuaData.slice(mulaiDari, sampaiKe);
 
-    const more = (t.items && t.items.length > 3) ? "<br>..." : "";
+    // Hitung total halaman
+    const totalHal = Math.ceil(semuaData.length / limitPerHalaman);
+    
+    // Update Teks Info Halaman
+    const infoHal = document.getElementById("infoHalamanRiwayat");
+    if(infoHal) infoHal.innerText = `Hal. ${pageRiwayat} / ${totalHal}`;
 
-tr.innerHTML = `
-  <td><b>#${t.id}</b></td>
+    // Update Status Tombol
+    const btnPrev = document.getElementById("btnPrevRiwayat");
+    const btnNext = document.getElementById("btnNextRiwayat");
+    
+    if(btnPrev && btnNext) {
+        btnPrev.disabled = (pageRiwayat === 1);
+        btnNext.disabled = (pageRiwayat === totalHal);
+        
+        // Style visual tombol
+        btnPrev.style.opacity = (pageRiwayat === 1) ? "0.5" : "1";
+        btnNext.style.opacity = (pageRiwayat === totalHal) ? "0.5" : "1";
+    }
 
-  <td>${t.tanggal || "-"}</td>
+    // --- RENDER BARIS TABEL ---
+    dataHalamanIni.forEach(t => {
+        const tr = document.createElement("tr");
+        
+        // Logika item produk (maksimal 3 baris)
+        const items = (t.items || [])
+            .slice(0, 3)
+            .map(i => `${i.nama} (${i.qty})`)
+            .join("<br>");
+        const more = (t.items && t.items.length > 3) ? "<br>..." : "";
 
-  <!-- 🔥 TAMBAHAN KASIR -->
-<td>${t.kasirNama || "-"}</td>
-<td>${t.kasirId || "-"}</td>
-
-<!-- 🔥 TAMBAHAN MEMBER -->
-<td>
-  ${t.namaMember || "-"}<br>
-  <small>${t.hpMember || "-"}</small>
-</td>
-<td>${t.idMember || "-"}</td>
-
-
-
-
-  <td>
-    ${items || "-"}
-    ${more}
-  </td>
-<td>
-  Rp ${(t.total || 0).toLocaleString("id-ID")}
-  <br><small>Diskon: ${t.diskon || 0}%</small>
-</td>
-  <td>Rp ${(t.totalLaba || 0).toLocaleString("id-ID")}</td>
-
-  <td>
-    <button onclick="lihatDetail('${t.id}')">Detail</button>
-    <button onclick="cetakStrukRiwayat('${t.id}')">🖨 Cetak</button>
-    <button onclick="hapusTransaksi('${t.id}')" style="color:white">🗑 Hapus</button>
-  </td>
-`;
-
-    tbody.appendChild(tr);
-  });
+        tr.innerHTML = `
+            <td><b>#${t.id}</b></td>
+            <td>${t.tanggal || "-"}</td>
+            <td>${t.kasirNama || "-"}</td>
+            <td>${t.kasirId || "-"}</td>
+            <td>${t.namaMember || "-"}<br><small>${t.hpMember || "-"}</small></td>
+            <td>${t.idMember || "-"}</td>
+            <td>${items}${more}</td>
+            <td>Rp ${(t.total || 0).toLocaleString("id-ID")}<br><small>Disc: ${t.diskon || 0}%</small></td>
+            <td>Rp ${(t.totalLaba || 0).toLocaleString("id-ID")}</td>
+            <td>
+                <button onclick="lihatDetail('${t.id}')">Detail</button>
+                <button onclick="cetakStrukRiwayat('${t.id}')">🖨</button>
+                <button onclick="hapusTransaksi('${t.id}')" style="background:#e53e3e; color:white">🗑</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
+
+// Fungsi navigasi khusus riwayat
+function gantiHalamanRiwayat(arah) {
+    pageRiwayat += arah;
+    renderRiwayat();
+    // Scroll ke judul riwayat agar posisi tetap nyaman
+    document.getElementById("listRiwayat").scrollIntoView({ behavior: 'smooth' });
+}
+
+
+
+
+
+
 /* =======================
    DETAIL TRANSAKSI
 ======================= */

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -7,17 +7,21 @@
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <link rel="stylesheet" href="member.css" />
-
-
   </head>
-<body>
+  <body>
     <div class="container">
       <div class="card">
-        <button type="button" onclick="location.href='dashboard.html'">Dashboard</button>
+        <button type="button" onclick="location.href = 'dashboard.html'">
+          Dashboard
+        </button>
         <h2>Data Toko</h2>
         <div class="input-group">
           <label>Nama Toko</label>
-          <input type="text" id="tokoNamaMember" placeholder="Contoh: Toko Berkah" />
+          <input
+            type="text"
+            id="tokoNamaMember"
+            placeholder="Contoh: Toko Berkah"
+          />
         </div>
         <div class="input-group">
           <label>Alamat Toko</label>
@@ -36,82 +40,177 @@
 
       <div class="card">
         <h2>Input Member Baru</h2>
+
+        <div class="counter-wrapper">
+          <span>Jumlah Member saat ini</span>
+          <div id="jumlahMember" class="badge-counter">0</div>
+        </div>
+
         <div class="input-group">
           <label>Nama Member</label>
-          <input type="text" id="namaMember" />
+          <input
+            type="text"
+            id="namaMember"
+            placeholder="Masukkan nama lengkap..."
+          />
         </div>
+
         <div class="input-group">
           <label>No HP Member</label>
-          <input type="text" id="hpMember" />
+          <input type="text" id="hpMember" placeholder="Contoh: 08123456789" />
         </div>
-        <button onclick="simpanDataMember()">Simpan & Buat Kartu</button>
-        <button onclick="downloadCSVMember()" style="background: #38a169">Download CSV</button>
+
+        <div class="button-container">
+          <button
+            id="btnSimpanMember"
+            onclick="simpanDataMember()"
+            class="btn-primary"
+          >
+            Simpan & Buat Kartu
+          </button>
+          <button id="btnBatalEdit" onclick="batalEdit()" class="btn-secondary">
+            Batal Edit
+          </button>
+        </div>
       </div>
 
       <div class="card">
         <h2>Cari Member</h2>
-        <div class="search-box">
-          <input type="text" id="searchMember" style="flex:1; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / ID / No HP" />
+        <div class="search-box" style="display: flex; gap: 10px">
+          <input
+            type="text"
+            id="searchMember"
+            style="
+              flex: 1;
+              padding: 10px;
+              border-radius: 10px;
+              border: 1px solid #ccc;
+            "
+            placeholder="Nama / ID / No HP"
+          />
           <button onclick="cariDataMember()">Cari</button>
         </div>
       </div>
 
       <div class="card">
         <h2>Scan Kartu</h2>
-        <div id="readerMember" style="width: 100%; max-width: 300px; margin: 0 auto 10px;"></div>
+        <div
+          id="readerMember"
+          style="width: 100%; max-width: 300px; margin: 0 auto 10px"
+        ></div>
         <button onclick="startScannerMember()">Buka Kamera</button>
       </div>
 
-
-
-
-<div class="card" style="margin-top: 20px; border-top: 4px solid #667eea;">
-  <h3>Cadangan Data Member</h3>
-  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-    <button onclick="backupDataMember()" style="background: #4a5568;">
-      💾 Backup Data (.json)
-    </button>
-
-    <button onclick="document.getElementById('fileInputMember').click()" style="background: #718096;">
-      📥 Impor Data (.json)
-    </button>
-    
-    <input type="file" id="fileInputMember" accept=".json" onchange="importDataMember(event)" style="display: none;">
-  </div>
-  <small style="display: block; margin-top: 10px; color: #718096;">
-    *Gunakan file .json hasil backup untuk memindahkan data ke laptop/HP lain.
-  </small>
-</div>
-
-
-
-
-
-
-
-
-
-
-      
       <div class="card">
         <h2>Preview Kartu Member</h2>
-        <div id="kartuMember" class="member-card" style="display: none; border: 1px solid #ddd; padding: 15px; border-radius: 10px; background: #2d3748; color: white;">
-          <h3 id="cardTokoMember" style="margin-top:0;"></h3>
-          <small id="cardAlamatMember" style="display:block;"></small>
-          <small id="cardHpTokoMember" style="display:block;"></small>
+        <div
+          id="kartuMember"
+          class="member-card"
+          style="
+            display: none;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            background: #2d3748;
+            color: white;
+          "
+        >
+          <h3 id="cardTokoMember" style="margin-top: 0"></h3>
+          <small id="cardAlamatMember" style="display: block"></small>
+          <small id="cardHpTokoMember" style="display: block"></small>
           <hr />
           <div class="info-member">
             <p id="cardNamaMember"></p>
             <p id="cardHpMember"></p>
-            <p id="cardNoMember" style="font-weight: bold; color: #fbd38d;"></p>
+            <p id="cardNoMember" style="font-weight: bold; color: #fbd38d"></p>
           </div>
-          <svg id="barcodeMember" style="background: white; padding: 5px; border-radius: 5px;"></svg>
+          <svg
+            id="barcodeMember"
+            style="background: white; padding: 5px; border-radius: 5px"
+          ></svg>
         </div>
         <br />
-        <button id="btnPrintMember" onclick="printKartuMember()" style="display: none; background: #4a5568">Cetak Kartu</button>
+        <div
+          id="aksiMember"
+          style="
+            margin-top: 15px;
+            display: none;
+            gap: 10px;
+            justify-content: start;
+          "
+        >
+          <button
+            id="btnPrintMember"
+            onclick="printKartuMember()"
+            style="display: none; background: #4a5568"
+          >
+            Cetak Kartu
+          </button>
+
+          <button
+            onclick="pemicuEditMember()"
+            style="
+              background: #ed8936;
+              color: white;
+              border: none;
+              padding: 8px;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            Edit Data
+          </button>
+          <button
+            onclick="pemicuHapusMember()"
+            style="
+              background: #e53e3e;
+              color: white;
+              border: none;
+              padding: 8px;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            Hapus Member
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 20px; border-top: 4px solid #667eea">
+        <h3>Cadangan Data Member</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button onclick="backupDataMember()" style="background: #4a5568">
+            💾 Backup Data (.json)
+          </button>
+          <button
+            onclick="document.getElementById('fileInputMember').click()"
+            style="background: #718096"
+          >
+            📥 Impor Data (.json)
+          </button>
+          <input
+            type="file"
+            id="fileInputMember"
+            accept=".json"
+            onchange="importDataMember(event)"
+            style="display: none"
+          />
+        </div>
+        <small style="display: block; margin-top: 10px; color: #718096"
+          >*Gunakan file .json untuk pindah perangkat.</small
+        >
+        <button
+          onclick="downloadCSVMember()"
+          style="background: #38a169; margin-top: 10px"
+        >
+          Download CSV
+        </button>
+        <small style="display: block; margin-top: 10px; color: #718096"
+          >Download Semua Data Member</small
+        >
       </div>
     </div>
 
     <script src="js/member.js"></script>
   </body>
-  </html>
+</html>

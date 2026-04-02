@@ -413,7 +413,6 @@ text-align: center;
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
-  margin: 0 auto; /* Tengah secara horizontal */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   text-align: left; /* Konten di dalam kartu rata kiri */
   
@@ -462,24 +461,6 @@ text-align: center;
 }
 
 /* Tombol Cetak (Samakan dengan style button Anda) */
-#btnPrintMember {
-  padding: 10px 25px;
-  border: none;
-  border-radius: 10px;
-  background: #667eea;
-  color: #fff;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: 0.3s;
-  font-weight: bold;
-  font-family: "Poppins", sans-serif;
-}
-
-#btnPrintMember:hover {
-  background: #5a67d8;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
 
 /* Sembunyikan elemen saat print kecuali kartunya */
 @media print {

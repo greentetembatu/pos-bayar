@@ -103,54 +103,131 @@ function resetForm() {
 /* =======================
    RENDER TABEL (Update: Tambah Barcode)
 ======================= */
+
+let pageProduk = 1;
+const limitProdukPerHal = 10;
+
+
+
+
+
 function renderProduk() {
-  const tbody = document.getElementById("produkTable");
-  if (!tbody) return;
+    const tbody = document.getElementById("produkTable");
+    if (!tbody) return;
 
-  const produk = getProduk();
-  const keyword = document.getElementById("searchProduk")?.value.toLowerCase() || "";
-  const filter = document.getElementById("filterStok")?.value || "all";
+    // Ambil data produk terbaru dari storage
+    const produk = getProduk() || [];
+    const keyword = document.getElementById("searchProduk")?.value.toLowerCase() || "";
+    const filter = document.getElementById("filterStok")?.value || "all";
 
-  tbody.innerHTML = "";
+    tbody.innerHTML = "";
 
-  const hasil = produk.filter(p => {
-    const cocokNama = p.nama.toLowerCase().includes(keyword);
-    const cocokBarcode = (p.barcode || "").toLowerCase().includes(keyword);
+    // --- STEP 1: FILTER DATA ---
+    const hasilFilter = produk.filter(p => {
+        const cocokNama = (p.nama || "").toLowerCase().includes(keyword);
+        const cocokBarcode = (p.barcode || "").toLowerCase().includes(keyword);
 
-    let cocokStok = true;
-    if (filter === "tersedia") cocokStok = p.stok > 0;
-    if (filter === "habis") cocokStok = p.stok === 0;
-    if (filter === "menipis") cocokStok = p.stok > 0 && p.stok <= 5;
+        let cocokStok = true;
+        if (filter === "tersedia") cocokStok = p.stok > 0;
+        if (filter === "habis") cocokStok = p.stok === 0;
+        if (filter === "menipis") cocokStok = p.stok > 0 && p.stok <= 5;
 
-    return (cocokNama || cocokBarcode) && cocokStok;
-  });
+        return (cocokNama || cocokBarcode) && cocokStok;
+    });
 
-  if (hasil.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center">Produk tidak ditemukan</td></tr>`;
-    return;
-  }
+    // --- STEP 2: LOGIKA PAGINATION ---
+    const totalHal = Math.ceil(hasilFilter.length / limitProdukPerHal) || 1;
+    
+    // Keamanan: Jika halaman saat ini lebih besar dari total halaman (misal setelah difilter), balik ke hal 1
+    if (pageProduk > totalHal) pageProduk = 1;
 
-  hasil.forEach(p => {
-    const tr = document.createElement("tr");
+    // Kontrol Tampilan Navigasi
+    const navProduk = document.getElementById("navigasiProduk");
+    if (navProduk) {
+        navProduk.style.display = hasilFilter.length > limitProdukPerHal ? "flex" : "none";
+    }
 
-    let badge = p.stok === 0 ? "❌ Habis" : (p.stok <= 5 ? "⚠️ Menipis" : "✅ Aman");
+    // Teks Halaman
+    const infoHal = document.getElementById("infoHalamanProduk");
+    if (infoHal) infoHal.innerText = `Halaman ${pageProduk} dari ${totalHal}`;
 
-    // Sekarang menggunakan 6 kolom (td)
-    tr.innerHTML = `
-      <td><img src="${p.foto || 'https://via.placeholder.com/50'}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;"></td>
-      <td><code style="background: #eee; padding: 2px 5px; border-radius: 4px;">${p.barcode || '-'}</code></td>
-      <td><strong>${p.nama}</strong></td>
-      <td>Rp ${p.modal.toLocaleString("id-ID")}</td>
-      <td>Rp ${p.harga_jual.toLocaleString("id-ID")}</td>
-      <td>${p.stok} <br><small>${badge}</small></td>
-      <td>
-        <button onclick="editProduk(${p.id})">Edit</button>
-        <button onclick="hapusProduk(${p.id})">Hapus</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+    // Status Tombol
+    const btnPrev = document.getElementById("btnPrevProduk");
+    const btnNext = document.getElementById("btnNextProduk");
+    if (btnPrev && btnNext) {
+        btnPrev.disabled = pageProduk === 1;
+        btnNext.disabled = pageProduk === totalHal;
+        btnPrev.style.opacity = pageProduk === 1 ? "0.5" : "1";
+        btnNext.style.opacity = pageProduk === totalHal ? "0.5" : "1";
+    }
+
+    // --- STEP 3: POTONG DATA (10 BARIS) ---
+    const mulai = (pageProduk - 1) * limitProdukPerHal;
+    const dataTampil = hasilFilter.slice(mulai, mulai + limitProdukPerHal);
+
+    // --- STEP 4: RENDER KE TABEL ---
+    if (dataTampil.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center">Produk tidak ditemukan</td></tr>`;
+        return;
+    }
+
+    dataTampil.forEach(p => {
+        const tr = document.createElement("tr");
+        let badge = p.stok === 0 ? "❌ Habis" : (p.stok <= 5 ? "⚠️ Menipis" : "✅ Aman");
+
+        tr.innerHTML = `
+            <td><img src="${p.foto || 'https://via.placeholder.com/50'}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;"></td>
+            <td><code style="background: #eee; padding: 2px 5px; border-radius: 4px;">${p.barcode || '-'}</code></td>
+            <td><strong>${p.nama}</strong></td>
+            <td>Rp ${(p.modal || 0).toLocaleString("id-ID")}</td>
+            <td>Rp ${(p.harga_jual || 0).toLocaleString("id-ID")}</td>
+            <td>${p.stok} <br><small>${badge}</small></td>
+            <td>
+                <button onclick="editProduk(${p.id})">Edit</button>
+                <button onclick="hapusProduk(${p.id})" style="background:#e53e3e; color:white; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;">Hapus</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
+
+
+
+
+
+
+
+
+function gantiHalamanProduk(arah) {
+    const produk = getProduk() || [];
+    const totalHal = Math.ceil(produk.length / limitProdukPerHal);
+
+    // Update halaman
+    pageProduk += arah;
+
+    // Jalankan render ulang
+    renderProduk();
+
+    // Scroll otomatis ke judul daftar produk agar user tahu data sudah berganti
+    const scrollTarget = document.querySelector('h3'); 
+    if(scrollTarget) scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* =======================
    FUNGSI BARCODE SCANNER
 ======================= */

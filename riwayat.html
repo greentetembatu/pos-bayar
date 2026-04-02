@@ -33,9 +33,9 @@
           <th>Kasir</th>
           <!-- 🔥 -->
           <th>ID Kasir</th>
-          <th>Nama Member</th>
+          <th>Nama/Hp Member</th>
           <th>ID Member</th>
-          <th>No HP</th>
+          
           <!-- 🔥 -->
           <th>Produk</th>
           <th>Total</th>
@@ -45,6 +45,21 @@
       </thead>
       <tbody id="riwayatTable"></tbody>
     </table>
+
+
+<div id="navigasiRiwayat" style="display: none; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding: 10px;">
+    <button id="btnPrevRiwayat" onclick="gantiHalamanRiwayat(-1)" style="padding: 8px 15px; background: #4a5568; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        ⬅ Prev
+    </button>
+    
+    <span id="infoHalamanRiwayat" style="font-weight: bold;">Halaman 1</span>
+    
+    <button id="btnNextRiwayat" onclick="gantiHalamanRiwayat(1)" style="padding: 8px 15px; background: #4a5568; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Next ➡
+    </button>
+</div>
+
+
 
 <h3>🏆 Ranking Member</h3>
 
