@@ -21,7 +21,7 @@ function saveTransaksi(data) {
 /* ==========================================
    FUNGSI EKSPOR DATA (DOWNLOAD JSON)
    ========================================== */
-function eksporData() {
+/*function eksporData() {
     try {
         const dataProduk = localStorage.getItem("produk") || "[]";
         const dataTransaksi = localStorage.getItem("transaksi") || "[]";
@@ -52,7 +52,7 @@ function eksporData() {
 /* ==========================================
    FUNGSI IMPOR DATA (REPLACE & MERGE)
    ========================================== */
-function imporData(event, mode) {
+/*function imporData(event, mode) {
     const file = event.target.files[0];
     if (!file) return;
 

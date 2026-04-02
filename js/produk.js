@@ -456,3 +456,85 @@ function simpanProduk() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =======================
+   EKSPOR DATA PRODUK (JSON)
+======================= */
+function eksporDataProduk() {
+    const data = getProduk() || [];
+    
+    if (data.length === 0) return alert("Tidak ada data produk untuk diekspor");
+
+    // Mengubah array objek menjadi string JSON
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
+    
+    // Membuat link download otomatis
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement("a");
+    
+    const tanggal = new Date().toISOString().slice(0, 10);
+    link.href = url;
+    link.download = `backup-produk-${tanggal}.json`;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert("Data berhasil diekspor ke file .json");
+}
+
+/* =======================
+   IMPOR DATA PRODUK (JSON)
+======================= */
+function imporDataProduk(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const konfirmasi = confirm("PENTING: Mengimpor data akan menimpa data produk yang ada saat ini. Lanjutkan?");
+    if (!konfirmasi) {
+        event.target.value = ""; // Reset input file
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const dataImpor = JSON.parse(e.target.result);
+
+            // Validasi sederhana: pastikan data berupa Array
+            if (Array.isArray(dataImpor)) {
+                // Simpan ke localStorage melalui fungsi saveProduk Anda
+                saveProduk(dataImpor);
+                
+                // Refresh tampilan
+                pageProduk = 1; // Reset ke halaman 1
+                renderProduk();
+                
+                alert("Berhasil mengimpor " + dataImpor.length + " produk!");
+            } else {
+                alert("Format file tidak valid. Pastikan file adalah hasil ekspor produk.");
+            }
+        } catch (err) {
+            console.error("Gagal membaca JSON:", err);
+            alert("Terjadi kesalahan saat membaca file. Pastikan file berformat .json");
+        }
+        event.target.value = ""; // Reset input file agar bisa pilih file yang sama lagi
+    };
+    
+    reader.readAsText(file);
+}

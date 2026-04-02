@@ -141,7 +141,14 @@
     </button>
 </div>
 
-
+<div class="card" style="display: flex; gap: 10px; background: #f8fafc;">
+    <button onclick="eksporDataProduk()" style="background: #2d3748; flex: 1;">📤 Ekspor Data (Backup)</button>
+    
+    <label for="inputImpor" style="background: #4a5568; color: white; flex: 1; padding: 10px; border-radius: 5px; text-align: center; cursor: pointer;">
+        📥 Impor Data
+    </label>
+    <input type="file" id="inputImpor" accept=".json" onchange="imporDataProduk(event)" style="display: none;" />
+</div>
 
         </div>
       </main>
