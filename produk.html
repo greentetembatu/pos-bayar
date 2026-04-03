@@ -1,22 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard Admin - KASIR</title>
-<meta name="theme-color" content="#0f172a">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pos Bayar Produk</title>
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0d6efd" />
+    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0d6efd" />
 
-
-
-
-
-  <link rel="stylesheet" href="style.css" />
-</head>
-
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
   <body>
     <div class="app">
@@ -34,8 +29,12 @@
           <li>
             <a href="riwayat.html">Riwayat</a>
           </li>
-          <button id="installBtn" style="display:none;">Install App</button>
+          <li>
+            <a href="member.html">Member</a>
+          </li>
 
+          <button id="installBtn" style="display: none">Install App</button>
+          <button class="btn-logout" onclick="logoutKasir()">🚪 Logout</button>
         </ul>
       </aside>
       <!-- Content -->
@@ -43,14 +42,17 @@
         <h1>Manajemen Produk</h1>
         <div class="card" style="display: flex; flex-direction: column">
           <label>Cari Produk</label>
-<input
-    type="text"
-    id="searchProduk"
-    placeholder="nama produk..."
-    oninput="pageProduk=1; renderProduk()" 
-/>
+          <input
+            type="text"
+            id="searchProduk"
+            placeholder="nama produk..."
+            oninput="
+              pageProduk = 1;
+              renderProduk();
+            "
+          />
 
-<span></span>
+          <span></span>
           <label>Filter Stok</label>
           <select id="filterStok" onchange="renderProduk()">
             <option value="all">Semua</option>
@@ -78,11 +80,7 @@
             style="background: #f0f0f0"
           />
           <label>Nama Produk</label>
-          <input
-            type="text"
-            id="namaProduk"
-            placeholder="Tulis Produk"
-          />
+          <input type="text" id="namaProduk" placeholder="Tulis Produk" />
           <label>Foto Produk</label>
           <input
             type="file"
@@ -128,28 +126,85 @@
             <tbody id="produkTable"></tbody>
           </table>
 
+          <div
+            id="navigasiProduk"
+            style="
+              display: none;
+              justify-content: center;
+              align-items: center;
+              gap: 15px;
+              margin-top: 20px;
+              padding: 10px;
+            "
+          >
+            <button
+              id="btnPrevProduk"
+              onclick="gantiHalamanProduk(-1)"
+              style="
+                padding: 8px 15px;
+                background: #4a5568;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+              "
+            >
+              ⬅ Prev
+            </button>
 
-<div id="navigasiProduk" style="display: none; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding: 10px;">
-    <button id="btnPrevProduk" onclick="gantiHalamanProduk(-1)" style="padding: 8px 15px; background: #4a5568; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        ⬅ Prev
-    </button>
-    
-    <span id="infoHalamanProduk" style="font-weight: bold;">Halaman 1</span>
-    
-    <button id="btnNextProduk" onclick="gantiHalamanProduk(1)" style="padding: 8px 15px; background: #4a5568; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        Next ➡
-    </button>
-</div>
+            <span id="infoHalamanProduk" style="font-weight: bold"
+              >Halaman 1</span
+            >
 
-<div class="card" style="display: flex; gap: 10px; background: #f8fafc;">
-    <button onclick="eksporDataProduk()" style="background: #2d3748; flex: 1;">📤 Ekspor Data (Backup)</button>
-    
-    <label for="inputImpor" style="background: #4a5568; color: white; flex: 1; padding: 10px; border-radius: 5px; text-align: center; cursor: pointer;">
-        📥 Impor Data
-    </label>
-    <input type="file" id="inputImpor" accept=".json" onchange="imporDataProduk(event)" style="display: none;" />
-</div>
+            <button
+              id="btnNextProduk"
+              onclick="gantiHalamanProduk(1)"
+              style="
+                padding: 8px 15px;
+                background: #4a5568;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+              "
+            >
+              Next ➡
+            </button>
+          </div>
 
+          <div
+            class="card"
+            style="display: flex; gap: 10px; background: #f8fafc"
+          >
+            <button
+              onclick="eksporDataProduk()"
+              style="background: #2d3748; flex: 1"
+            >
+              📤 Ekspor Data (Backup)
+            </button>
+
+            <label
+              for="inputImpor"
+              style="
+                background: #4a5568;
+                color: white;
+                flex: 1;
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+                cursor: pointer;
+              "
+            >
+              📥 Impor Data
+            </label>
+            <input
+              type="file"
+              id="inputImpor"
+              accept=".json"
+              onchange="imporDataProduk(event)"
+              style="display: none"
+            />
+          </div>
         </div>
       </main>
     </div>

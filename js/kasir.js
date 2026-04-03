@@ -7,7 +7,7 @@ let keranjang = [];
    AUTOCOMPLETE PRODUK
 ========================= */
 const produkInput = document.getElementById("produkInput");
-const produkList  = document.getElementById("produkList");
+const produkList = document.getElementById("produkList");
 const produkIdInp = document.getElementById("produkId");
 
 // --- TAMBAHAN: Variabel untuk melacak posisi fokus ---
@@ -16,7 +16,7 @@ let currentFocus = -1;
 produkInput.addEventListener("input", () => {
   const keyword = produkInput.value.toLowerCase().trim();
   produkList.innerHTML = "";
-  
+
   // --- TAMBAHAN: Reset fokus setiap kali input berubah ---
   currentFocus = -1;
 
@@ -25,9 +25,10 @@ produkInput.addEventListener("input", () => {
     return;
   }
 
-  const hasil = getProduk().filter(p =>
-    p.nama.toLowerCase().includes(keyword) ||
-    (p.barcode && p.barcode.includes(keyword))
+  const hasil = getProduk().filter(
+    (p) =>
+      p.nama.toLowerCase().includes(keyword) ||
+      (p.barcode && p.barcode.includes(keyword)),
   );
 
   if (hasil.length === 0) {
@@ -35,7 +36,7 @@ produkInput.addEventListener("input", () => {
     return;
   }
 
-  hasil.forEach(p => {
+  hasil.forEach((p) => {
     const div = document.createElement("div");
     div.className = "autocomplete-item";
     div.innerHTML = `<strong>${p.nama}</strong><br><small>Rp ${p.harga_jual}</small>`;
@@ -48,16 +49,19 @@ produkInput.addEventListener("input", () => {
 });
 
 // --- TAMBAHAN: Listener Keyboard ---
-produkInput.addEventListener("keydown", function(e) {
+produkInput.addEventListener("keydown", function (e) {
   let listItems = produkList.getElementsByTagName("div");
-  
-  if (e.keyCode == 40) { // Panah BAWAH
+
+  if (e.keyCode == 40) {
+    // Panah BAWAH
     currentFocus++;
     addActive(listItems);
-  } else if (e.keyCode == 38) { // Panah ATAS
+  } else if (e.keyCode == 38) {
+    // Panah ATAS
     currentFocus--;
     addActive(listItems);
-  } else if (e.keyCode == 13) { // ENTER
+  } else if (e.keyCode == 13) {
+    // ENTER
     e.preventDefault();
     if (currentFocus > -1) {
       if (listItems[currentFocus]) listItems[currentFocus].click();
@@ -69,10 +73,10 @@ function addActive(items) {
   if (!items) return false;
   removeActive(items);
   if (currentFocus >= items.length) currentFocus = 0;
-  if (currentFocus < 0) currentFocus = (items.length - 1);
-  
+  if (currentFocus < 0) currentFocus = items.length - 1;
+
   items[currentFocus].classList.add("autocomplete-active");
-  
+
   // Agar item yang dipilih otomatis scroll jika list panjang
   items[currentFocus].scrollIntoView({ block: "nearest" });
 }
@@ -88,19 +92,18 @@ function pilihProduk(p) {
   produkIdInp.value = p.id;
   produkList.style.display = "none";
   // Pindahkan fokus ke input Qty setelah pilih produk (opsional)
-  document.getElementById("qty").focus(); 
+  document.getElementById("qty").focus();
 }
 
-
 /* ENTER = TAMBAH */
-produkInput.addEventListener("keydown", e => {
+produkInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
     tambahKeKeranjang();
   }
 });
 
-document.addEventListener("click", e => {
+document.addEventListener("click", (e) => {
   if (!e.target.closest(".autocomplete")) {
     produkList.style.display = "none";
   }
@@ -119,7 +122,7 @@ function tambahKeKeranjang() {
   }
 
   const produk = getProduk();
-  const item = produk.find(p => p.id === produkId);
+  const item = produk.find((p) => p.id === produkId);
 
   if (!item) {
     alert("Produk tidak ditemukan");
@@ -134,9 +137,7 @@ function tambahKeKeranjang() {
   const subtotal = item.harga_jual * qty;
   const laba = (item.harga_jual - item.modal) * qty;
 
- 
-
-  const existing = keranjang.find(k => k.id === item.id);
+  const existing = keranjang.find((k) => k.id === item.id);
   if (existing) {
     existing.qty += qty;
     existing.subtotal += subtotal;
@@ -151,7 +152,7 @@ function tambahKeKeranjang() {
       harga: item.harga_jual,
       modal: item.modal, // 🔥 TAMBAHAN PENTING
       subtotal,
-      laba
+      laba,
     });
   }
 
@@ -170,16 +171,13 @@ function renderKeranjang() {
   tbody.innerHTML = "";
 
   let total = 0;
-  //let totalLaba = 0;
+  let totalLabaHalaman = 0; // Tambahkan variabel penampung
 
-keranjang.forEach((item, i) => {
-  total += item.subtotal;
-
-
-    
+  keranjang.forEach((item, i) => {
+    total += item.subtotal;
+    totalLabaHalaman += item.laba; // Tambahkan laba dari tiap item
 
     const tr = document.createElement("tr");
-    // Gunakan placeholder jika foto kosong
     const fotoUrl = item.foto || "https://via.placeholder.com/50";
 
     tr.innerHTML = `
@@ -200,18 +198,11 @@ keranjang.forEach((item, i) => {
     tbody.appendChild(tr);
   });
 
-  document.getElementById("totalBelanja").innerText =
-    "Rp " + total.toLocaleString("id-ID");
-
-  document.getElementById("totalLaba").innerText =
-    "Rp " + totalLaba.toLocaleString("id");
+  document.getElementById("totalBelanja").innerText = "Rp " + total.toLocaleString("id-ID");
+  
+  // Panggil fungsi update diskon agar laba bersih terhitung otomatis
+  updateTotalDiskon(); 
 }
-
-
-
-
-
-
 
 
 /*function hitungDiskon(total) {
@@ -228,13 +219,12 @@ keranjang.forEach((item, i) => {
   };
 }*/
 
-
 function updateTotalDiskon() {
   const subtotal = keranjang.reduce((s, i) => s + i.subtotal, 0);
 
   const totalModal = keranjang.reduce(
-    (s, i) => s + ((Number(i.modal) || 0) * (Number(i.qty) || 0)),
-    0
+    (s, i) => s + (Number(i.modal) || 0) * (Number(i.qty) || 0),
+    0,
   );
 
   const persen = Number(document.getElementById("diskonPersen").value) || 0;
@@ -256,8 +246,6 @@ function updateTotalDiskon() {
     "Rp " + labaBersih.toLocaleString("id-ID");
 }
 updateTotalDiskon(); // 🔥 supaya laba ikut update
-
-
 
 /* =======================
    UBAH QTY
@@ -283,24 +271,13 @@ function hapusItem(dashboard) {
   renderKeranjang();
 }
 
-
-
-
-
-
-
 function hitungLaba(totalAwal, totalModal, potonganDiskon) {
-  return (Number(totalAwal) || 0) 
-       - (Number(totalModal) || 0) 
-       - (Number(potonganDiskon) || 0);
+  return (
+    (Number(totalAwal) || 0) -
+    (Number(totalModal) || 0) -
+    (Number(potonganDiskon) || 0)
+  );
 }
-
-
-
-
-
-
-
 
 /* =======================
    SIMPAN TRANSAKSI
@@ -313,19 +290,16 @@ function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
 
   if (!keranjang || keranjang.length === 0) return null;
 
-const totalModal = keranjang.reduce(
-  (s, i) => s + ((Number(i.modal) || 0) * (Number(i.qty) || 0)),
-  0
-);
+  const totalModal = keranjang.reduce(
+    (s, i) => s + (Number(i.modal) || 0) * (Number(i.qty) || 0),
+    0,
+  );
 
-const totalAwal = diskonData?.totalAwal || 0;
-const potongan = diskonData?.potongan || 0;
+  const totalAwal = diskonData?.totalAwal || 0;
+  const potongan = diskonData?.potongan || 0;
 
-const labaKotor = totalAwal - totalModal;
-const totalLaba = labaKotor - potongan;
-
-
-
+  const labaKotor = totalAwal - totalModal;
+  const totalLaba = labaKotor - potongan;
 
   const kasir = JSON.parse(localStorage.getItem("kasirAktif")) || {};
 
@@ -356,7 +330,7 @@ const totalLaba = labaKotor - potongan;
     idMember: dataMember?.no || "-",
     hpMember: dataMember?.hp || "-",
     // TAMBAHAN
-    metode: "cash"
+    metode: "cash",
   };
 
   transaksi.push(detailTransaksi);
@@ -364,12 +338,6 @@ const totalLaba = labaKotor - potongan;
 
   return detailTransaksi;
 }
-
-
-
-
-
-
 
 /* =======================
    KURANGI STOK
@@ -379,8 +347,8 @@ function kurangiStok() {
 
   const produk = getProduk() || [];
 
-  keranjang.forEach(item => {
-    const p = produk.find(pr => pr.id === item.id);
+  keranjang.forEach((item) => {
+    const p = produk.find((pr) => pr.id === item.id);
     if (p) {
       p.stok = Math.max(0, p.stok - item.qty); // 🔥 anti minus
     }
@@ -388,11 +356,6 @@ function kurangiStok() {
 
   saveProduk(produk);
 }
-
-
-
-
-
 
 /* =======================
    GENERATE ID
@@ -410,10 +373,6 @@ function generateId() {
   return `ADI-${tanggal}-${random}`;
 }
 
-
-
-
-
 /* =======================
    HITUNG DISKON
 ======================= */
@@ -428,13 +387,9 @@ function hitungDiskon(total) {
     totalAwal: total,
     diskon: persen, // 🔥 ganti ini
     potongan: potongan,
-    totalAkhir: totalAkhir
+    totalAkhir: totalAkhir,
   };
 }
-
-
-
-
 
 /* =======================
    BAYAR
@@ -449,9 +404,11 @@ function bayar() {
   const total = keranjang.reduce((sum, item) => sum + item.subtotal, 0);
   const diskonData = hitungDiskon(total);
 
-  const uang = Number(prompt(
-    `Total belanja: Rp ${diskonData.totalAkhir.toLocaleString("id-ID")}\nMasukkan uang bayar:`
-  ));
+  const uang = Number(
+    prompt(
+      `Total belanja: Rp ${diskonData.totalAkhir.toLocaleString("id-ID")}\nMasukkan uang bayar:`,
+    ),
+  );
 
   if (isNaN(uang) || uang < diskonData.totalAkhir) {
     alert("Uang tidak cukup atau tidak valid");
@@ -469,7 +426,7 @@ function bayar() {
     kembalian,
     idTransaksi,
     diskonData,
-    dataMember
+    dataMember,
   );
 
   const kasir = JSON.parse(localStorage.getItem("kasirAktif")) || {};
@@ -477,20 +434,20 @@ function bayar() {
   // 🔥 TAMPILKAN LABA DI KONFIRMASI
   const konfirmasi = confirm(
     `Pembayaran berhasil!\n\n` +
-    `ID: ${idTransaksi}\n` +
-    `Member: ${dataMember?.nama || "-"}\n` +
-    `ID Member: ${dataMember?.no || "-"}\n` +
-    `HP: ${dataMember?.hp || "-"}\n` +    
-    `---------------------------\n` +
-    `Subtotal: Rp ${diskonData.totalAwal.toLocaleString("id-ID")}\n` +
-    `Diskon: ${diskonData.diskon}%\n` +
-    `Potongan: Rp ${diskonData.potongan.toLocaleString("id-ID")}\n` +
-    `Total: Rp ${diskonData.totalAkhir.toLocaleString("id-ID")}\n` +
-    `---------------------------\n` +
-    `Bayar: Rp ${uang.toLocaleString("id-ID")}\n` +
-    `Kembali: Rp ${kembalian.toLocaleString("id-ID")}\n` +
-    `Laba Transaksi: Rp ${transaksi.totalLaba.toLocaleString("id-ID")}\n\n` + // 🔥 Baris Laba
-    `Cetak struk?`
+      `ID: ${idTransaksi}\n` +
+      `Member: ${dataMember?.nama || "-"}\n` +
+      `ID Member: ${dataMember?.no || "-"}\n` +
+      `HP: ${dataMember?.hp || "-"}\n` +
+      `---------------------------\n` +
+      `Subtotal: Rp ${diskonData.totalAwal.toLocaleString("id-ID")}\n` +
+      `Diskon: ${diskonData.diskon}%\n` +
+      `Potongan: Rp ${diskonData.potongan.toLocaleString("id-ID")}\n` +
+      `Total: Rp ${diskonData.totalAkhir.toLocaleString("id-ID")}\n` +
+      `---------------------------\n` +
+      `Bayar: Rp ${uang.toLocaleString("id-ID")}\n` +
+      `Kembali: Rp ${kembalian.toLocaleString("id-ID")}\n` +
+      `Laba Transaksi: Rp ${transaksi.totalLaba.toLocaleString("id-ID")}\n\n` + // 🔥 Baris Laba
+      `Cetak struk?`,
   );
 
   if (konfirmasi && transaksi) {
@@ -506,7 +463,7 @@ function bayar() {
       kasirNama: kasir.nama,
       kasirId: kasir.id,
       member: dataMember,
-      laba: transaksi.totalLaba // Kirim laba ke struk jika perlu
+      laba: transaksi.totalLaba, // Kirim laba ke struk jika perlu
     });
   }
 
@@ -515,21 +472,19 @@ function bayar() {
   renderKeranjang();
 
   // Bersihkan data member dari storage agar tidak terbawa ke transaksi berikutnya
-  localStorage.removeItem("memberAktif"); 
+  localStorage.removeItem("memberAktif");
 
-  if(document.getElementById("diskonPersen")) document.getElementById("diskonPersen").value = "";
+  if (document.getElementById("diskonPersen"))
+    document.getElementById("diskonPersen").value = "";
   updateTotalDiskon();
 }
-
-
-
 
 function cetakStruk(data) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
-    format: [80, 200]
+    format: [80, 200],
   });
 
   let y = 10;
@@ -547,7 +502,9 @@ function cetakStruk(data) {
   doc.text(toko.additional || "-", 40, y, { align: "center" });
   y += 5;
 
-  doc.text("====================================================", 40, y, { align: "center" });
+  doc.text("====================================================", 40, y, {
+    align: "center",
+  });
   y += 5;
 
   // INFO
@@ -563,9 +520,11 @@ function cetakStruk(data) {
   doc.text(`ID Kasir: ${data.kasirId || "-"}`, 4, y);
   y += 3;
 
-   doc.text("====================================================", 40, y, { align: "center" });
+  doc.text("====================================================", 40, y, {
+    align: "center",
+  });
   y += 5;
- 
+
   // MEMBER (opsional)
   if (data.member) {
     doc.text(`Member: ${data.member.nama}`, 3, y);
@@ -578,11 +537,13 @@ function cetakStruk(data) {
     y += 3;
   }
 
-  doc.text("====================================================", 40, y, { align: "center" });
+  doc.text("====================================================", 40, y, {
+    align: "center",
+  });
   y += 5;
 
   // ITEM
-  data.items.forEach(item => {
+  data.items.forEach((item) => {
     doc.text(item.nama, 5, y);
     y += 4;
 
@@ -592,20 +553,28 @@ function cetakStruk(data) {
     y += 5;
   });
 
-  doc.text("====================================================", 40, y, { align: "center" });
+  doc.text("====================================================", 40, y, {
+    align: "center",
+  });
   y += 5;
 
   // TOTAL
   doc.text("SUBTOTAL", 5, y);
-  doc.text((data.totalAwal || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
+  doc.text((data.totalAwal || 0).toLocaleString("id-ID"), 75, y, {
+    align: "right",
+  });
   y += 4;
 
   doc.text(`DISKON (${data.diskon || 0}%)`, 5, y);
-  doc.text(`- ${(data.potongan || 0).toLocaleString("id-ID")}`, 75, y, { align: "right" });
+  doc.text(`- ${(data.potongan || 0).toLocaleString("id-ID")}`, 75, y, {
+    align: "right",
+  });
   y += 4;
 
   doc.text("TOTAL", 5, y);
-  doc.text((data.total || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
+  doc.text((data.total || 0).toLocaleString("id-ID"), 75, y, {
+    align: "right",
+  });
   y += 4;
 
   doc.text("BAYAR", 5, y);
@@ -613,9 +582,10 @@ function cetakStruk(data) {
   y += 4;
 
   doc.text("KEMBALI", 5, y);
-  doc.text((data.kembalian || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
+  doc.text((data.kembalian || 0).toLocaleString("id-ID"), 75, y, {
+    align: "right",
+  });
   y += 6;
-
 
   // ===== FOOTER =====
   doc.text("Terima kasih", 40, y, { align: "center" });
@@ -629,35 +599,14 @@ function cetakStruk(data) {
   y += 3;
   doc.text("Adi Mardani Dev", 40, y, { align: "center" });
   y += 3;
-  doc.text("0852-1405-6596 ||| greentetembatu@gmail.com", 40, y, { align: "center" });
+  doc.text("0852-1405-6596 ||| greentetembatu@gmail.com", 40, y, {
+    align: "center",
+  });
 
   // ===== SIMPAN =====
 
   doc.save(`struk-${data.id || Date.now()}.pdf`);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* =======================
    FUNGSI BUNYI BEEP (Scanner)
@@ -672,7 +621,10 @@ function playBeep() {
     oscillator.type = "sine";
     oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
     gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.00001,
+      audioCtx.currentTime + 0.1,
+    );
     oscillator.start();
     oscillator.stop(audioCtx.currentTime + 0.1);
   } catch (e) {
@@ -713,10 +665,8 @@ function startScanKasir() {
     ],
   };
 
-  html5QrCodeKasir.start(
-    { facingMode: "environment" },
-    config,
-    (barcodeText) => {
+  html5QrCodeKasir
+    .start({ facingMode: "environment" }, config, (barcodeText) => {
       playBeep();
       if (navigator.vibrate) navigator.vibrate(100);
 
@@ -738,11 +688,11 @@ function startScanKasir() {
       } else {
         console.log("Barcode tidak terdaftar: " + barcodeText);
       }
-    }
-  ).catch((err) => {
-    console.error("Kamera Error:", err);
-    alert("Gagal akses kamera. Pastikan menggunakan HTTPS.");
-  });
+    })
+    .catch((err) => {
+      console.error("Kamera Error:", err);
+      alert("Gagal akses kamera. Pastikan menggunakan HTTPS.");
+    });
 }
 
 function stopScanKasir() {
@@ -764,47 +714,8 @@ function resetInputKasir() {
   document.getElementById("qty").value = 1;
 }
 
-// Fungsi tambahKeKeranjang Anda tetap sama, namun pastikan 
+// Fungsi tambahKeKeranjang Anda tetap sama, namun pastikan
 // pemanggilan resetInputKasir() dilakukan DI AKHIR proses.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function generateIdTransaksi() {
   const now = new Date();
@@ -832,3 +743,70 @@ function generateIdTransaksi() {
 
 
 
+
+
+
+
+
+
+
+function hitungLoyalitasMember(idMember) {
+  // 1. Ambil semua riwayat transaksi
+  const semuaTransaksi = JSON.parse(localStorage.getItem("transaksi")) || [];
+
+  // 2. Filter transaksi yang ID Member-nya cocok
+  const riwayatMember = semuaTransaksi.filter(t => t.idMember === idMember);
+
+  // 3. Kembalikan jumlah (count)
+  return riwayatMember.length;
+}
+
+
+
+
+
+
+
+
+
+function cariDataMember() {
+  let key = document.getElementById("searchMember").value.toLowerCase().trim();
+  if (!key) return alert("Masukkan nama/ID/HP");
+
+  let found = dataMember.find(
+    (d) =>
+      (d.nama && d.nama.toLowerCase().includes(key)) ||
+      (d.no && d.no.toLowerCase().includes(key)) ||
+      (d.hp && d.hp.includes(key)),
+  );
+
+  if (found) {
+    memberDitemukan = found;
+    
+    // 🔥 HITUNG JUMLAH BELANJA
+    const jumlahBelanja = hitungLoyalitasMember(found.no);
+    
+    // Tampilkan kartu member
+    tampilKartuMember(found);
+
+    // 🔥 BERI NOTIFIKASI KHUSUS JIKA SUDAH 10 KALI
+    if (jumlahBelanja >= 10) {
+       alert(`🔥 PELANGGAN SETIA!\n${found.nama} sudah berbelanja sebanyak ${jumlahBelanja} kali.`);
+    } else {
+       console.log(`${found.nama} baru belanja ${jumlahBelanja} kali.`);
+    }
+
+    // Simpan sebagai member aktif transaksi ini
+    localStorage.setItem("memberAktif", JSON.stringify(found));
+
+    // Update tampilan teks di kartu (Opsional: Tambahkan elemen ID ini di HTML kartu)
+    const elStatus = document.getElementById("statusLoyalitas");
+    if(elStatus) {
+       elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
+       elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
+    }
+
+  } else {
+    alert("Member tidak ditemukan!");
+  }
+}
