@@ -241,29 +241,34 @@ function mulaiScan() {
     const config = { 
         fps: 20, 
         qrbox: { width: 280, height: 180 },
-        aspectRatio: 1.0
+        aspectRatio: 1.0,
+        // Tambahkan dukungan format barcode agar lebih sensitif di laptop
+        formatsToSupport: [ 
+            Html5QrcodeSupportedFormats.EAN_13, 
+            Html5QrcodeSupportedFormats.CODE_128, 
+            Html5QrcodeSupportedFormats.QR_CODE 
+        ]
     };
 
+    // PERBAIKAN DI SINI:
+    // Gunakan objek konfigurasi yang lebih luwes
     html5QrCode.start(
-        { facingMode: "environment" }, 
+        { facingMode: { ideal: "environment" } }, // "ideal" berarti: "Coba kamera belakang, kalau gak ada gak apa-apa"
         config, 
         (barcodeText) => {
-          playBeep(); 
-            if (navigator.vibrate) navigator.vibrate(100); // Getar HP
+            playBeep(); 
             if (navigator.vibrate) navigator.vibrate(100);
             stopScan();
 
             document.getElementById("barcodeProduk").value = barcodeText;
-
             const produk = getProduk();
             const pTerdaftar = produk.find(p => p.barcode === barcodeText);
 
             if (pTerdaftar) {
-                alert("Produk ditemukan: " + pTerdaftar.nama + ". Mengalihkan ke mode Edit.");
+                alert("Produk ditemukan: " + pTerdaftar.nama);
                 isiFormProduk(pTerdaftar);
             } else {
-                alert("Barang Baru terdeteksi!");
-                // Simpan barcode, bersihkan field lain
+                alert("Barang Baru!");
                 const currentBarcode = barcodeText;
                 resetForm();
                 document.getElementById("barcodeProduk").value = currentBarcode;
@@ -271,10 +276,11 @@ function mulaiScan() {
             }
         }
     ).catch(err => {
-        alert("Gagal akses kamera: " + err);
+        // Jika masih gagal, coba paksa tanpa facingMode sama sekali
+        console.warn("Gagal dengan facingMode, mencoba fallback...", err);
+        html5QrCode.start({ deviceId: undefined }, config, /* callback yang sama */);
     });
 }
-
 function stopScan() {
     if (html5QrCode) {
         html5QrCode.stop().catch(err => console.error("Error stopping scanner", err));
