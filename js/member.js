@@ -79,8 +79,9 @@ function generateNoMember() {
 function simpanDataMember() {
   const nama = document.getElementById("namaMember").value;
   const hp = document.getElementById("hpMember").value;
+  const email = document.getElementById("emailMember").value;
 
-  if (!nama || !hp) return alert("Nama dan HP wajib diisi");
+  if (!nama || !hp || !email) return alert("Nama dan HP wajib diisi");
 
   // 1. Ambil data paling fresh dari localStorage sebelum memanipulasi
   let dataTerbaru = JSON.parse(localStorage.getItem("member")) || [];
@@ -91,6 +92,7 @@ function simpanDataMember() {
     if (index !== -1) {
       dataTerbaru[index].nama = nama;
       dataTerbaru[index].hp = hp;
+      dataTerbaru[index].email = email;
       alert("Data member berhasil diperbarui!");
     }
   } else {
@@ -105,6 +107,7 @@ function simpanDataMember() {
       kasir: configToko.kasirMember || "-",
       nama: nama,
       hp: hp,
+      email: email,
       no: nomorBaru,
     };
 
@@ -143,8 +146,9 @@ function tampilKartuMember(d) {
   document.getElementById("cardHpTokoMember").innerText =
     "Telp: " + (configToko.tokoHpMember || "-");
   document.getElementById("cardNamaMember").innerText = "Nama: " + d.nama;
-  document.getElementById("cardHpMember").innerText = "WhatsApp: " + d.hp;
-  document.getElementById("cardNoMember").innerText = "ID Member: " + d.no;
+  document.getElementById("cardEmailMember").innerText = "Email: " + d.email;
+  document.getElementById("cardHpMember").innerText = "WA: " + d.hp;
+  document.getElementById("cardNoMember").innerText = "ID: " + d.no;
 
   JsBarcode("#barcodeMember", d.no, {
     format: "CODE128",
@@ -164,6 +168,7 @@ function cariDataMember() {
   let found = dataMember.find(
     (d) =>
       (d.nama && d.nama.toLowerCase().includes(key)) ||
+      (d.email && d.email.toLowerCase().includes(key)) ||
       (d.no && d.no.toLowerCase().includes(key)) ||
       (d.hp && d.hp.includes(key)),
   );
@@ -269,6 +274,7 @@ function pemicuEditMember() {
   if (!memberDitemukan) return;
   document.getElementById("namaMember").value = memberDitemukan.nama;
   document.getElementById("hpMember").value = memberDitemukan.hp;
+  document.getElementById("emailMember").value = memberDitemukan.email;
   //getElementById("judulFormMember").innerText = "Edit Data Member";
   document.getElementById("btnSimpanMember").innerText = "Update & Simpan";
   document.getElementById("btnSimpanMember").style.background = "#ed8936";
@@ -300,6 +306,7 @@ function batalEdit() {
   memberDitemukan = null;
   document.getElementById("namaMember").value = "";
   document.getElementById("hpMember").value = "";
+  document.getElementById("emailMember").value = "";
   //document.getElementById("judulFormMember").innerText = "Input Member Baru";
 
   const btnSimpan = document.getElementById("btnSimpanMember");
@@ -387,17 +394,18 @@ function downloadCSVMember() {
     return alert("Tidak ada data member untuk didownload");
   }
 
-  let csv = "Tanggal;Kasir;Nama Member;No HP;No Member\n";
+  let csv = "Tanggal;Kasir;Nama Member;Email;No HP;No Member\n";
 
   dataUntukDownload.forEach((d) => {
     // Gunakan fallback "" jika data undefined agar CSV tidak rusak
     let tgl = d.tanggal || "-";
     let ksr = d.kasir || "-";
     let nm = d.nama || "-";
+    let email = d.email || "-";
     let telp = d.hp || "-";
     let idm = d.no || "-";
 
-    csv += `${tgl};${ksr};${nm};'${telp};'${idm}\n`;
+    csv += `${tgl};${ksr};${nm};${email};'${telp};'${idm}\n`;
   });
  
   // Proses download
@@ -426,12 +434,16 @@ function printKartuMember() {
     tokoMember: document.getElementById("cardTokoMember").innerText,
     alamatMember: document.getElementById("cardAlamatMember").innerText,
     hpTokoMember: document.getElementById("cardHpTokoMember").innerText,
+    emailMember: document.getElementById("cardEmailMember").innerText,
     namaMember: document
       .getElementById("cardNamaMember")
       .innerText.replace("Nama: ", ""),
     hpMember: document
       .getElementById("cardHpMember")
       .innerText.replace("WhatsApp: ", ""),
+    emailMember: document
+      .getElementById("cardEmailMember")
+      .innerText.replace("Email: ", ""),
   });
   window.open("cetak-member.html?" + params.toString(), "_blank");
 }

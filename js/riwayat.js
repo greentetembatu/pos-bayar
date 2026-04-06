@@ -74,8 +74,7 @@ function renderRiwayat() {
             <td>${t.tanggal || "-"}</td>
             <td>${t.kasirNama || "-"}</td>
             <td>${t.kasirId || "-"}</td>
-            <td>${t.namaMember || "-"}<br><small>${t.hpMember || "-"}</small></td>
-            <td>${t.idMember || "-"}</td>
+            <td>${t.namaMember || "-"}<br><small>${t.hpMember || "-"}</small><br><small>${t.emailMember || "-"}</small><br><small>${t.idMember || "-"}</small></td>
             <td>${items}${more}</td>
             <td>Rp ${(t.total || 0).toLocaleString("id-ID")}<br><small>Disc: ${t.diskon || 0}%</small></td>
             <td>Rp ${(t.totalLaba || 0).toLocaleString("id-ID")}</td>
@@ -114,8 +113,9 @@ function lihatDetail(id) {
   info += `ID: #${t.id}\n`; // 🔥 TAMBAHAN
   info += `Tanggal: ${t.tanggal || "-"}\n\n`;
   info += `Member: ${t.namaMember || "-"}\n`;
-  info += `ID Member: ${t.idMember || "-"}\n`;
-  info += `HP: ${t.hpMember || "-"}\n\n`;
+  info += `ID: ${t.idMember || "-"}\n`;
+  info += `HP: ${t.hpMember || "-"}\n`;
+  info += `Email: ${t.emailMember || "-"}\n\n`;
 
   if (Array.isArray(t.items) && t.items.length > 0) {
     t.items.forEach((i) => {
@@ -154,28 +154,34 @@ function cetakStrukRiwayat(id) {
     return;
   }
 
-  cetakStruk({
+  // Bungkus kembali data agar sesuai dengan struktur yang diminta fungsi cetakStruk
+  const dataUntukCetak = {
     id: t.id,
-    items: t.items,
-    total: t.total,
-    uang: t.uang,
-    kembalian: t.kembalian,
+    kasirNama: t.kasirNama,
+    kasirId: t.kasirId,
+    
+    // 🔥 BAGIAN PENTING: Bungkus dalam objek 'member'
+    // Cek dulu apakah di riwayat ada namaMember, jika tidak ada jangan buat objek member
+    member: t.namaMember && t.namaMember !== "Umum/Non-Member" ? {
+        nama: t.namaMember,
+        no: t.idMember,
+        hp: t.hpMember,
+        email: t.emailMember // Gunakan emailMember (sudah diperbaiki dari typo emaiMember)
+    } : null,
 
-    // 🔥 DISKON (WAJIB)
+    items: t.items,
     totalAwal: t.totalAwal || t.total,
     diskon: t.diskon || 0,
     potongan: t.potongan || 0,
+    total: t.total,
+    uang: t.uang,
+    kembalian: t.kembalian
+  };
 
-    // kasir
-    kasirNama: t.kasirNama,
-    kasirId: t.kasirId,
-
-    // MEMBER
-    namaMember: t.namaMember,
-    idMember: t.idMember,
-    hpMember: t.hpMember,
-  });
+  // Panggil fungsi cetakStruk yang sudah ada di bagian kasir
+  cetakStruk(dataUntukCetak);
 }
+
 
 function hapusTransaksi(id) {
   if (
@@ -249,7 +255,7 @@ function downloadCSV() {
   }
 
   let csv =
-    "Tanggal;ID Transaksi;Kasir;ID Kasir;Nama Member;ID Member;HP;Nama Produk;Qty;Harga;Subtotal Item;Subtotal Transaksi;Diskon (%);Potongan;Total Akhir;Laba\n";
+    "Tanggal;ID Transaksi;Kasir;ID Kasir;Nama Member;ID Member;HP;Email;Nama Produk;Qty;Harga;Subtotal Item;Subtotal Transaksi;Diskon (%);Potongan;Total Akhir;Laba\n";
 
   transaksi.forEach((t) => {
     const tanggal = t.tanggal || "-";
@@ -266,6 +272,7 @@ function downloadCSV() {
     const namaMember = t.namaMember || "-";
     const idMember = t.idMember || "-";
     const hpMember = t.hpMember || "-";
+    const emailMember = t.emailMember || "-";
 
     if (Array.isArray(t.items) && t.items.length > 0) {
       t.items.forEach((i) => {
@@ -274,7 +281,7 @@ function downloadCSV() {
         const harga = i.harga || 0;
         const subtotal = i.subtotal || 0;
 
-        csv += `${tanggal};${t.id};${kasirNama};${kasirId};${namaMember};'${idMember};'${hpMember};${nama};${qty};${harga};${subtotal};${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
+        csv += `${tanggal};${t.id};${kasirNama};${kasirId};${namaMember};'${idMember};'${hpMember};${emailMember};${nama};${qty};${harga};${subtotal};${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
       });
     } else {
       csv += `${tanggal};${t.id};${kasirNama};${kasirId};-;0;0;0;${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
@@ -364,8 +371,9 @@ function renderRiwayatCustom(data) {
       <td>
         ${t.namaMember || "-"}<br>
         <small>${t.hpMember || "-"}</small>
+        <small>${t.emilMember || "-"}</small>
+        <small>${t.idMember || "-"}</small>
       </td>
-      <td>${t.idMember || "-"}</td>
 
       <td>${items || "-"} ${more}</td>
 
@@ -403,6 +411,7 @@ function hitungRankingMember() {
         idMember: id,
         nama: t.namaMember || "-",
         hp: t.hpMember || "-",
+        emal: t.emailMember || "-",
         jumlahTransaksi: 0,
         totalBelanja: 0,
         totalLaba: 0,

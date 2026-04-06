@@ -68,7 +68,7 @@
     
     .info { 
         font-size: 12px; 
-        line-height: 1.4; 
+        line-height: 1; 
         text-transform: uppercase; 
 
     }
@@ -83,9 +83,9 @@
         background: white;
         padding: 4px;
         position: absolute;
-        bottom: 25px; /* Sesuaikan posisi naik/turun */
+        bottom: 15px; /* Sesuaikan posisi naik/turun */
         right: 15px; /* Sesuaikan posisi kanan/kiri */
-        width: 100px;
+        width: 130px;
         height: 40px;
         border-radius: 4px;
     }
@@ -153,56 +153,59 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
 
-    <script>
-        // 1. Ambil data dari URL (Parameter yang dikirim dari printKartuMember)
-        const params = new URLSearchParams(window.location.search);
-        
-        const dataMember = {
-            toko: params.get('tokoMember') || "NAMA TOKO",
-            alamat: params.get('alamatMember') || "-",
-            hpToko: params.get('hpTokoMember') || "-",
-            nama: params.get('namaMember') || "-",
-            hp: params.get('hpMember') || "-",
-            no: params.get('noMember') || ""
-        };
+const dataMember = {
+  toko: params.get("tokoMember") || "NAMA TOKO",
+  alamat: params.get("alamatMember") || "-",
+  hpToko: params.get("hpTokoMember") || "-",
+  nama: params.get("namaMember") || "-",
+  email: params.get("emailMember") || "-",
+  hp: params.get("hpMember") || "-",
+  no: params.get("noMember") || "",
+};
 
-        // 2. Masukkan data ke elemen HTML
-        document.getElementById("printToko").innerText = dataMember.toko;
-        document.getElementById("printAlamat").innerText = dataMember.alamat;
-        document.getElementById("printHpToko").innerText = dataMember.hpToko;
-        
-        document.getElementById("printInfoMember").innerHTML = `
+// 2. Masukkan data ke elemen HTML
+document.getElementById("printToko").innerText = dataMember.toko;
+document.getElementById("printAlamat").innerText = dataMember.alamat;
+document.getElementById("printHpToko").innerText = dataMember.hpToko;
+
+document.getElementById("printInfoMember").innerHTML = `
             <p>Nama: ${dataMember.nama}</p>
-            <p>WhatsApp: ${dataMember.hp}</p>
-            <p>ID Member: <b>${dataMember.no}</b></p>
+            <p>Email: ${dataMember.email}</p>
+            <p>${dataMember.hp}</p>
+            <p><b>${dataMember.no}</b></p>
         `;
 
-        // 3. Generate Barcode (Hanya jika nomor member ada)
-        if (dataMember.no) {
-            JsBarcode("#barcodeMember", dataMember.no, {
-                format: "CODE128",
-                width: 1.5,
-                height: 35,
-                displayValue: false,
-                margin: 0,
-                background: "#ffffff"
-            });
-        }
+// 3. Generate Barcode (Hanya jika nomor member ada)
+if (dataMember.no) {
+  JsBarcode("#barcodeMember", dataMember.no, {
+    format: "CODE128",
+    width: 1.5,
+    height: 35,
+    displayValue: false,
+    margin: 0,
+    background: "#ffffff",
+  });
+}
 
-        // 4. Print otomatis setelah data terisi
-        window.onload = function() {
-            if (dataMember.no !== "") {
-                setTimeout(() => {
-                    window.print();
-                    // Opsional: Tutup tab setelah print selesai
-                    // window.close(); 
-                }, 800);
-            } else {
-                alert("Data tidak ditemukan. Silakan kembali ke dashboard.");
-            }
-        };
-    </script>
+// 4. Print otomatis setelah data terisi
+window.onload = function () {
+  if (dataMember.no !== "") {
+    setTimeout(() => {
+      window.print();
+      // Opsional: Tutup tab setelah print selesai
+      // window.close();
+    }, 800);
+  } else {
+    alert("Data tidak ditemukan. Silakan kembali ke dashboard.");
+  }
+};
+
+
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <script src="js/cetak-member.js"></script>
 </body>
 </html>

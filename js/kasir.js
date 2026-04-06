@@ -329,6 +329,7 @@ function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
     namaMember: dataMember?.nama || "-",
     idMember: dataMember?.no || "-",
     hpMember: dataMember?.hp || "-",
+    emailMember: dataMember?.email || "-",
     // TAMBAHAN
     metode: "cash",
   };
@@ -438,6 +439,7 @@ function bayar() {
       `Member: ${dataMember?.nama || "-"}\n` +
       `ID Member: ${dataMember?.no || "-"}\n` +
       `HP: ${dataMember?.hp || "-"}\n` +
+      `Email: ${dataMember?.email || "-"}\n` +
       `---------------------------\n` +
       `Subtotal: Rp ${diskonData.totalAwal.toLocaleString("id-ID")}\n` +
       `Diskon: ${diskonData.diskon}%\n` +
@@ -481,13 +483,25 @@ function bayar() {
 
 function cetakStruk(data) {
   const { jsPDF } = window.jspdf;
+
+  // Hitung tinggi dinamis berdasarkan jumlah item
+  // Dasar (header/footer) +- 100mm + (jumlah item * 10mm)
+  const itemHeight = (data.items || []).length * 10;
+  const dynamicHeight = Math.max(150, 100 + itemHeight); 
+
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
-    format: [80, 200],
+    format: [80, dynamicHeight], // Lebar tetap 80mm, tinggi mengikuti isi
+    putOnlyUsedFonts: true
   });
 
-  let y = 10;
+  // Pengaturan Font Standar Struk
+  doc.setFont("courier", "normal"); // Font monospaced agar angka sejajar rapi
+
+
+
+  let y =5;
   const toko = getPengaturanToko() || {};
 
   // HEADER
@@ -535,12 +549,15 @@ function cetakStruk(data) {
 
     doc.text(`Hp: ${data.member.hp}`, 3, y);
     y += 3;
+
+    doc.text(`Email: ${data.member.email}`, 3, y);
+    y += 3;
   }
 
   doc.text("====================================================", 40, y, {
     align: "center",
   });
-  y += 5;
+  y += 6;
 
   // ITEM
   data.items.forEach((item) => {
@@ -599,13 +616,48 @@ function cetakStruk(data) {
   y += 3;
   doc.text("Adi Mardani Dev", 40, y, { align: "center" });
   y += 3;
-  doc.text("0852-1405-6596 ||| greentetembatu@gmail.com", 40, y, {
+  doc.text("0852-1405-6596 ||greentetembatu@gmail.com", 40, y, {
     align: "center",
   });
 
   // ===== SIMPAN =====
+const blob = doc.output("blob");
+  const url = URL.createObjectURL(blob);
 
-  doc.save(`struk-${data.id || Date.now()}.pdf`);
+  // 2. Cari atau buat iframe tersembunyi (agar tidak menumpuk di memori)
+  let iframe = document.getElementById("printFrame");
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.id = "printFrame";
+    iframe.style.position = 'fixed';
+    iframe.style.width = '0px';
+    iframe.style.height = '0px';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+  }
+
+  // 3. Masukkan URL ke iframe
+  iframe.src = url;
+
+  // 4. Eksekusi Print setelah loading selesai
+  iframe.onload = function() {
+    setTimeout(() => {
+      try {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        
+        // JANGAN hapus iframe atau revoke URL terlalu cepat
+        // Biarkan browser yang mengurus dialognya
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 30000); // Beri waktu 30 detik sebelum membersihkan memori
+      } catch (e) {
+        console.error("Gagal memicu print:", e);
+        // Fallback: Jika iframe gagal, tawarkan download sebagai cadangan
+        doc.save(`struk-${data.id}.pdf`);
+      }
+    }, 500); // Jeda 0.5 detik agar PDF ter-render sempurna di iframe
+  };
 }
 
 /* =======================

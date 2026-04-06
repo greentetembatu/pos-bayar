@@ -76,19 +76,21 @@
         </table>
       </div>
       <!-- Total -->
+       
 <div class="card">
   <h2>Cari Member / Scan Kartu</h2>
   <div class="search-box">
-    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-      <input type="text" id="searchMember" style="flex:1; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / ID / No HP" />
-      <button onclick="cariDataMember()">Cari</button>
+    <div style="display: flex;flex-direction: column; gap: 5px; margin-bottom: 5px;">
+      <input type="text" id="searchMember" style="flex:1; flex-wrap: wrap; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / ID / No HP" />
+      <button onclick="cariDataMember()" style="width: 100%;max-width: 200px;">Cari</button>
+      <button onclick="mulaiScanMemberKasir()" style="width: 100%;max-width: 200px; margin-top: 5px; background-color: #4a5568;">📸 Buka Kamera Scanner</button>
+
     </div>
 
-    <div id="readerMember" style="width: 100%; max-width: 300px; margin: 0 auto; background: #f7fafc; border-radius: 8px;"></div>
+    <div id="readerMember" style="width: 100%; margin: 0 auto; background: #f7fafc; border-radius: 8px;"></div>
     
-    <button onclick="mulaiScanMemberKasir()" style="width: 100%; margin-top: 10px; background-color: #4a5568;">📸 Buka Kamera Scanner</button>
     
-    <small style="display: block; margin-top: 10px; color: #718096; text-align: center;">
+    <small style="display: block; margin-top: 10px; color: #718096; text-align: left;">
       Gunakan kamera untuk scan barcode pada kartu member
     </small>
   </div>
@@ -125,6 +127,7 @@
           <hr />
           <div class="info-member">
             <p id="cardNamaMember"></p>
+            <p id="cardEmailMember"></p>
             <p id="cardHpMember"></p>
             <p id="cardNoMember" style="font-weight: bold; color: #fbd38d"></p>
           </div>
@@ -152,15 +155,16 @@
   <script src="js/riwayat.js"></script>
   <script src="js/kasir.js"></script>
   <script src="js/produk.js"></script>
+  <script src="js/cetak-member.js"></script>
 
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-      .register("service-worker.js")
-      .then(() => console.log("Service Worker registered"))
-      .catch((err) => console.error("SW failed:", err));
+        .register("service-worker.js")
+        .then(() => console.log("Service Worker registered"))
+        .catch((err) => console.error("SW failed:", err));
     }
-  </script>
+      </script>
 </body>
 
 </html>
