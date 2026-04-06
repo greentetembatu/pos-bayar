@@ -188,51 +188,84 @@ if (found) {
 }
 //===================================//
 //===================================//
+let html5QrCodeMember; // Variabel terpisah agar tidak tabrakan dengan scanner produk
 
-let scannerMember; // Gunakan nama yang spesifik agar tidak tabrakan dengan scanner produk
-
-function startScannerMember() {
-  if (scannerMember) return; // Mencegah buka kamera ganda
-  
-  scannerMember = new Html5Qrcode("readerMember");
-  
-  // Gunakan "environment" sebagai string untuk fleksibilitas HP/Laptop
-  scannerMember.start(
-    "environment", 
-    { fps: 10, qrbox: 250 }, 
-    (txt) => {
-      // Cari data member berdasarkan hasil scan barcode kartu
-      let found = dataMember.find((d) => d.no === txt);
-
-      if (found) {
-        // 1. Tampilkan kartu secara visual
-        tampilKartuMember(found);
-        
-        // 2. Simpan ke sistem kasir (Sama seperti fungsi cariDataMember)
-        memberDitemukan = found;
-        localStorage.setItem("memberAktif", JSON.stringify(found));
-        
-        // 3. Update diskon otomatis jika ada
-        if (typeof updateTotalDiskon === "function") updateTotalDiskon();
-        
-        alert("Member Terdeteksi: " + found.nama);
-      } else {
-        alert("Kartu tidak terdaftar: " + txt);
-      }
-
-      // Hentikan kamera setelah berhasil scan
-      scannerMember.stop().then(() => {
-        scannerMember = null;
-      });
+function mulaiScanMember() {
+    // Gunakan ID container yang sesuai di HTML (readerMember)
+    if (!html5QrCodeMember) {
+        html5QrCodeMember = new Html5Qrcode("readerMember");
     }
-  )
-  .catch((err) => {
-    console.error(err);
-    alert("Kamera Error: Pastikan izin diberikan dan HTTPS aktif.");
-    scannerMember = null;
-  });
+    
+    const config = { 
+        fps: 20, 
+        qrbox: { width: 250, height: 250 }, // Kotak lebih simetris untuk QR/Barcode kartu
+        aspectRatio: 1.0,
+        // Mendukung berbagai format kartu member
+        formatsToSupport: [ 
+            Html5QrcodeSupportedFormats.QR_CODE, 
+            Html5QrcodeSupportedFormats.EAN_13, 
+            Html5QrcodeSupportedFormats.CODE_128 
+        ]
+    };
+
+    html5QrCodeMember.start(
+        "environment", // String "environment" lebih aman untuk fallback Laptop/HP
+        config, 
+        (barcodeText) => {
+            // 1. Feedback (Suara & Getar)
+            if (typeof playBeep === "function") playBeep(); 
+            if (navigator.vibrate) navigator.vibrate(100);
+
+            // 2. Berhenti Scan setelah dapet data
+            stopScanMember();
+
+            // 3. Cari data member di database lokal
+            const dataMember = getMember(); // Pastikan fungsi getMember() Anda tersedia
+            const mTerdaftar = dataMember.find(m => m.no === barcodeText);
+
+            if (mTerdaftar) {
+                // LOGIKA JIKA MEMBER DITEMUKAN
+                memberDitemukan = mTerdaftar;
+                
+                // Simpan ke sesi aktif kasir
+                localStorage.setItem("memberAktif", JSON.stringify(mTerdaftar));
+                
+                // Hitung loyalitas & Tampilkan kartu (Fungsi yang kita bahas sebelumnya)
+                const jumlahBelanja = hitungLoyalitasMember(mTerdaftar.no);
+                tampilKartuMember(mTerdaftar);
+
+                alert(`Member Ditemukan: ${mTerdaftar.nama}\nTotal Kunjungan: ${jumlahBelanja}x`);
+
+                // Update diskon jika ada
+                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+                
+            } else {
+                // LOGIKA JIKA MEMBER TIDAK DIKENAL
+                alert("Kartu Member tidak terdaftar atau baru!");
+                
+                // Masukkan nomor kartu ke input agar mudah didaftarkan
+                const inputSearch = document.getElementById("searchMember");
+                if (inputSearch) {
+                    inputSearch.value = barcodeText;
+                    inputSearch.focus();
+                }
+            }
+        }
+    ).catch(err => {
+        console.error("Gagal akses kamera member:", err);
+        alert("Gagal akses kamera: " + err);
+    });
 }
 
+function stopScanMember() {
+    if (html5QrCodeMember) {
+        html5QrCodeMember.stop()
+            .then(() => {
+                console.log("Scanner Member Berhenti.");
+            })
+            .catch(err => console.error("Error stopping member scanner", err));
+    }
+}
 //===================================//
 //===================================//
 

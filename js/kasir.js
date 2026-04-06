@@ -824,62 +824,96 @@ function cariDataMember() {
 
 
 
-let scannerMember; // Pastikan variabel ini ada di luar fungsi
+let html5QrCodeMemberKasir;
 
-function startScannerMember() {
-  if (scannerMember) return;
-  
-  scannerMember = new Html5Qrcode("readerMember");
-  
-  // Gunakan "environment" agar support HP & Laptop
-  scannerMember.start(
-    "environment", 
-    { fps: 10, qrbox: 250 }, 
-    (txt) => {
-      // 1. Cari data member berdasarkan No Kartu (Hasil Scan)
-      let found = dataMember.find((d) => d.no === txt);
-
-      if (found) {
-        memberDitemukan = found;
-        
-        // 2. HITUNG LOYALITAS (Sama dengan fungsi cari manual)
-        const jumlahBelanja = hitungLoyalitasMember(found.no);
-        
-        // 3. Tampilkan kartu visual
-        tampilKartuMember(found);
-
-        // 4. NOTIFIKASI LOYALITAS
-        if (jumlahBelanja >= 10) {
-           alert(`🔥 PELANGGAN SETIA!\n${found.nama} sudah berbelanja ${jumlahBelanja} kali.`);
-        }
-
-        // 5. SIMPAN KE SYSTEM KASIR
-        localStorage.setItem("memberAktif", JSON.stringify(found));
-
-        // 6. UPDATE STATUS DI KARTU
-        const elStatus = document.getElementById("statusLoyalitas");
-        if(elStatus) {
-           elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
-           elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
-        }
-
-        // 7. JALANKAN DISKON OTOMATIS (Jika ada fungsi ini)
-        if (typeof updateTotalDiskon === "function") updateTotalDiskon();
-
-        // Berhasil, hentikan kamera
-        scannerMember.stop().then(() => {
-          scannerMember = null;
-        });
-
-      } else {
-        alert("Kartu Member Tidak Dikenal: " + txt);
-        // Jangan matikan kamera jika tidak ketemu, biarkan user scan ulang
-      }
+function mulaiScanMemberKasir() {
+    // 1. Inisialisasi Scanner pada elemen 'readerMember'
+    if (!html5QrCodeMemberKasir) {
+        html5QrCodeMemberKasir = new Html5Qrcode("readerMember");
     }
-  )
-  .catch((err) => {
-    console.error(err);
-    alert("Kamera Gagal Dibuka. Pastikan menggunakan HTTPS atau Localhost.");
-    scannerMember = null;
-  });
+    
+    const config = { 
+        fps: 20, 
+        qrbox: { width: 250, height: 250 }, 
+        aspectRatio: 1.0,
+        formatsToSupport: [ 
+            Html5QrcodeSupportedFormats.QR_CODE, 
+            Html5QrcodeSupportedFormats.EAN_13, 
+            Html5QrcodeSupportedFormats.CODE_128 
+        ]
+    };
+
+    html5QrCodeMemberKasir.start(
+        "environment", 
+        config, 
+        (barcodeText) => {
+            // FEEDBACK: Suara & Getar
+            if (typeof playBeep === "function") playBeep(); 
+            if (navigator.vibrate) navigator.vibrate(100);
+
+            // STOP SCANNER setelah dapet data
+            stopScanMemberKasir();
+
+            // 2. CARI DATA MEMBER
+            // Asumsi: dataMember adalah array global berisi daftar member Anda
+            const found = dataMember.find(m => m.no === barcodeText);
+
+            if (found) {
+                // LOGIKA: MEMBER TERDAFTAR
+                memberDitemukan = found;
+                localStorage.setItem("memberAktif", JSON.stringify(found));
+                
+                // HITUNG LOYALITAS (Fitur 10x belanja)
+                const jumlahBelanja = hitungLoyalitasMember(found.no);
+                
+                // TAMPILKAN KARTU DI UI KASIR
+                tampilKartuMember(found);
+
+                // NOTIFIKASI KHUSUS
+                if (jumlahBelanja >= 10) {
+                    alert(`🔥 PELANGGAN SETIA!\n${found.nama} sudah belanja ${jumlahBelanja} kali.`);
+                } else {
+                    alert(`Member Terpilih: ${found.nama} (${jumlahBelanja}x kunjungan)`);
+                }
+
+                // UPDATE DISKON & LABA DI HALAMAN KASIR
+                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+                
+                // Update status loyalitas di kartu jika elemennya ada
+                const elStatus = document.getElementById("statusLoyalitas");
+                if(elStatus) {
+                   elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
+                   elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
+                }
+
+            } else {
+                // LOGIKA: MEMBER TIDAK DIKENAL
+                alert("Kartu Member Tidak Terdaftar!");
+                
+                // Masukkan kode ke input pencarian agar kasir bisa mendaftarkan
+                const inputSearch = document.getElementById("searchMember");
+                if (inputSearch) {
+                    inputSearch.value = barcodeText;
+                    inputSearch.focus();
+                }
+                
+                // Bersihkan data member aktif sebelumnya jika ada
+                localStorage.removeItem("memberAktif");
+                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+            }
+        }
+    ).catch(err => {
+        console.error("Gagal kamera member kasir:", err);
+        alert("Gagal akses kamera: " + err);
+    });
+}
+
+function stopScanMemberKasir() {
+    if (html5QrCodeMemberKasir) {
+        html5QrCodeMemberKasir.stop()
+            .then(() => {
+                html5QrCodeMemberKasir = null; // Reset agar bisa dibuka lagi
+            })
+            .catch(err => console.error("Error stop scanner member kasir", err));
+    }
 }
