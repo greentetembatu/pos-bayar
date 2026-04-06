@@ -76,17 +76,27 @@
         </table>
       </div>
       <!-- Total -->
-      <div class="card">
-        <h2>Cari Member/ Scan Kartu Member</h2>
-        <div class="search-box">
-          <input type="text" id="searchMember" style="flex:1; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / ID / No HP" />
-          <button onclick="cariDataMember()">Cari</button>
-          <div id="readerMember" style="width: 100%; max-width: 300px; margin: 0 auto 10px;"></div>
-          <button onclick="startScannerMember()">Buka Kamera</button>
-          <small style="display: block; margin-top: 10px; color: #718096;">Buka Kamera Scan Barcode Kartu Member</small>
-        </div>
-      </div>
-      <div class="checkout-box">
+<div class="card">
+  <h2>Cari Member / Scan Kartu</h2>
+  <div class="search-box">
+    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+      <input type="text" id="searchMember" style="flex:1; padding: 10px; border-radius:10px; border:1px solid #ccc;" placeholder="Nama / ID / No HP" />
+      <button onclick="cariDataMember()">Cari</button>
+    </div>
+
+    <div id="readerMember" style="width: 100%; max-width: 300px; margin: 0 auto; background: #f7fafc; border-radius: 8px;"></div>
+    
+    <button onclick="startScannerMember()" style="width: 100%; margin-top: 10px; background-color: #4a5568;">📸 Buka Kamera Scanner</button>
+    
+    <small style="display: block; margin-top: 10px; color: #718096; text-align: center;">
+      Gunakan kamera untuk scan barcode pada kartu member
+    </small>
+  </div>
+</div>
+
+
+
+<div class="checkout-box">
         <p>
           Subtotal: <strong id="totalBelanja">Rp 0</strong>
         </p>
