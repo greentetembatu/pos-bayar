@@ -233,7 +233,6 @@ function gantiHalamanProduk(arah) {
 ======================= */
 let html5QrCode;
 
-
 function mulaiScan() {
     if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
@@ -275,7 +274,6 @@ function mulaiScan() {
         alert("Gagal akses kamera: " + err);
     });
 }
-
 
 function stopScan() {
     if (html5QrCode) {

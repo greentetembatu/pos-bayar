@@ -188,19 +188,22 @@ if (found) {
 }
 //===================================//
 //===================================//
-let html5QrCodeMember; // Variabel terpisah agar tidak tabrakan dengan scanner produk
+let html5QrCodeMember; 
 
 function mulaiScanMember() {
-    // Gunakan ID container yang sesuai di HTML (readerMember)
+    // 1. Pastikan container ada
+    const container = document.getElementById("readerMember");
+    if (!container) return alert("Elemen readerMember tidak ditemukan di HTML!");
+
+    // 2. Inisialisasi jika belum ada
     if (!html5QrCodeMember) {
         html5QrCodeMember = new Html5Qrcode("readerMember");
     }
     
     const config = { 
         fps: 20, 
-        qrbox: { width: 250, height: 250 }, // Kotak lebih simetris untuk QR/Barcode kartu
+        qrbox: { width: 250, height: 250 }, 
         aspectRatio: 1.0,
-        // Mendukung berbagai format kartu member
         formatsToSupport: [ 
             Html5QrcodeSupportedFormats.QR_CODE, 
             Html5QrcodeSupportedFormats.EAN_13, 
@@ -208,42 +211,33 @@ function mulaiScanMember() {
         ]
     };
 
+    // 3. Gunakan FORMAT OBJEK { facingMode: "environment" } agar sama dengan Kasir
     html5QrCodeMember.start(
-        "environment", // String "environment" lebih aman untuk fallback Laptop/HP
+        { facingMode: "environment" }, 
         config, 
         (barcodeText) => {
-            // 1. Feedback (Suara & Getar)
             if (typeof playBeep === "function") playBeep(); 
             if (navigator.vibrate) navigator.vibrate(100);
 
-            // 2. Berhenti Scan setelah dapet data
+            // Berhenti setelah dapet
             stopScanMember();
 
-            // 3. Cari data member di database lokal
-            const dataMember = getMember(); // Pastikan fungsi getMember() Anda tersedia
+            // SINKRONISASI DATA
+            // Gunakan variabel dataMember yang sudah ada di aplikasi Anda
             const mTerdaftar = dataMember.find(m => m.no === barcodeText);
 
             if (mTerdaftar) {
-                // LOGIKA JIKA MEMBER DITEMUKAN
                 memberDitemukan = mTerdaftar;
-                
-                // Simpan ke sesi aktif kasir
                 localStorage.setItem("memberAktif", JSON.stringify(mTerdaftar));
                 
-                // Hitung loyalitas & Tampilkan kartu (Fungsi yang kita bahas sebelumnya)
                 const jumlahBelanja = hitungLoyalitasMember(mTerdaftar.no);
                 tampilKartuMember(mTerdaftar);
 
                 alert(`Member Ditemukan: ${mTerdaftar.nama}\nTotal Kunjungan: ${jumlahBelanja}x`);
 
-                // Update diskon jika ada
                 if (typeof updateTotalDiskon === "function") updateTotalDiskon();
-                
             } else {
-                // LOGIKA JIKA MEMBER TIDAK DIKENAL
-                alert("Kartu Member tidak terdaftar atau baru!");
-                
-                // Masukkan nomor kartu ke input agar mudah didaftarkan
+                alert("Kartu Member tidak terdaftar!");
                 const inputSearch = document.getElementById("searchMember");
                 if (inputSearch) {
                     inputSearch.value = barcodeText;
@@ -253,19 +247,20 @@ function mulaiScanMember() {
         }
     ).catch(err => {
         console.error("Gagal akses kamera member:", err);
-        alert("Gagal akses kamera: " + err);
+        alert("Gagal akses kamera member. Pastikan ID 'readerMember' tersedia dan izin kamera diberikan.");
     });
 }
 
 function stopScanMember() {
     if (html5QrCodeMember) {
-        html5QrCodeMember.stop()
-            .then(() => {
-                console.log("Scanner Member Berhenti.");
-            })
-            .catch(err => console.error("Error stopping member scanner", err));
+        html5QrCodeMember.stop().then(() => {
+            // Bersihkan instance agar bisa dibuat ulang dengan bersih
+            html5QrCodeMember = null; 
+            console.log("Scanner Member Berhenti.");
+        }).catch(err => console.error("Error stop scanner", err));
     }
 }
+
 //===================================//
 //===================================//
 

@@ -616,19 +616,33 @@ function playBeep() {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
+
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+
+    // Jenis suara 'square' atau 'sawtooth' jauh lebih nyaring dibanding 'sine'
+    oscillator.type = "square"; 
+    
+    // Frekuensi 880Hz (Nada A5) lebih tinggi dan tajam di telinga dibanding 660Hz
+    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+
+    // Volume dinaikkan ke 0.5 (Nyaring tapi tidak merusak speaker)
+    gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+    // Durasi bunyi diperpanjang menjadi 0.3 detik (agar terdengar jelas)
+    const durasi = 0.3; 
+
+    // Efek suara yang memudar di akhir agar tidak terdengar "klik" kasar
     gainNode.gain.exponentialRampToValueAtTime(
       0.00001,
-      audioCtx.currentTime + 0.1,
+      audioCtx.currentTime + durasi
     );
+
     oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.1);
+    oscillator.stop(audioCtx.currentTime + durasi);
+    
   } catch (e) {
-    console.log("Audio beep gagal");
+    console.log("Audio beep gagal: ", e);
   }
 }
 
@@ -823,11 +837,10 @@ function cariDataMember() {
 
 
 
-
 let html5QrCodeMemberKasir;
 
 function mulaiScanMemberKasir() {
-    // 1. Inisialisasi Scanner pada elemen 'readerMember'
+    // 1. Inisialisasi Scanner (Gunakan ID container 'readerMember')
     if (!html5QrCodeMemberKasir) {
         html5QrCodeMemberKasir = new Html5Qrcode("readerMember");
     }
@@ -843,19 +856,21 @@ function mulaiScanMemberKasir() {
         ]
     };
 
+    // 2. Gunakan FORMAT OBJEK { facingMode: "environment" } 
+    // agar kompatibel dengan Laptop dan HP (seperti script kasir produk)
     html5QrCodeMemberKasir.start(
-        "environment", 
+        { facingMode: "environment" }, 
         config, 
         (barcodeText) => {
             // FEEDBACK: Suara & Getar
             if (typeof playBeep === "function") playBeep(); 
             if (navigator.vibrate) navigator.vibrate(100);
 
-            // STOP SCANNER setelah dapet data
+            // STOP SCANNER segera setelah data didapat
             stopScanMemberKasir();
 
-            // 2. CARI DATA MEMBER
-            // Asumsi: dataMember adalah array global berisi daftar member Anda
+            // 3. CARI DATA MEMBER
+            // Pastikan dataMember adalah array global yang berisi database member Anda
             const found = dataMember.find(m => m.no === barcodeText);
 
             if (found) {
@@ -863,41 +878,41 @@ function mulaiScanMemberKasir() {
                 memberDitemukan = found;
                 localStorage.setItem("memberAktif", JSON.stringify(found));
                 
-                // HITUNG LOYALITAS (Fitur 10x belanja)
+                // HITUNG LOYALITAS (Cek berapa kali belanja)
                 const jumlahBelanja = hitungLoyalitasMember(found.no);
                 
-                // TAMPILKAN KARTU DI UI KASIR
+                // TAMPILKAN KARTU SECARA VISUAL
                 tampilKartuMember(found);
 
-                // NOTIFIKASI KHUSUS
+                // NOTIFIKASI KHUSUS LOYALITAS
                 if (jumlahBelanja >= 10) {
                     alert(`🔥 PELANGGAN SETIA!\n${found.nama} sudah belanja ${jumlahBelanja} kali.`);
                 } else {
-                    alert(`Member Terpilih: ${found.nama} (${jumlahBelanja}x kunjungan)`);
+                    alert(`Member Terdeteksi: ${found.nama}\nTotal Kunjungan: ${jumlahBelanja}x`);
                 }
 
-                // UPDATE DISKON & LABA DI HALAMAN KASIR
-                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
-                
-                // Update status loyalitas di kartu jika elemennya ada
+                // UPDATE STATUS TEKS DI KARTU
                 const elStatus = document.getElementById("statusLoyalitas");
                 if(elStatus) {
                    elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
                    elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
                 }
 
+                // JALANKAN DISKON OTOMATIS
+                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+
             } else {
                 // LOGIKA: MEMBER TIDAK DIKENAL
                 alert("Kartu Member Tidak Terdaftar!");
                 
-                // Masukkan kode ke input pencarian agar kasir bisa mendaftarkan
+                // Masukkan kode ke input pencarian agar kasir bisa langsung mendaftarkan
                 const inputSearch = document.getElementById("searchMember");
                 if (inputSearch) {
                     inputSearch.value = barcodeText;
                     inputSearch.focus();
                 }
                 
-                // Bersihkan data member aktif sebelumnya jika ada
+                // Reset data member aktif jika sebelumnya ada
                 localStorage.removeItem("memberAktif");
                 if (typeof updateTotalDiskon === "function") updateTotalDiskon();
             }
@@ -912,7 +927,9 @@ function stopScanMemberKasir() {
     if (html5QrCodeMemberKasir) {
         html5QrCodeMemberKasir.stop()
             .then(() => {
-                html5QrCodeMemberKasir = null; // Reset agar bisa dibuka lagi
+                // Sangat penting: Reset variabel ke null agar bisa dibuka kembali dengan lancar
+                html5QrCodeMemberKasir = null; 
+                console.log("Scanner Member Berhenti.");
             })
             .catch(err => console.error("Error stop scanner member kasir", err));
     }
