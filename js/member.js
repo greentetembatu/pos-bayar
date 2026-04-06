@@ -189,6 +189,54 @@ if (found) {
 //===================================//
 //===================================//
 
+let scannerMember; // Gunakan nama yang spesifik agar tidak tabrakan dengan scanner produk
+
+function startScannerMember() {
+  if (scannerMember) return; // Mencegah buka kamera ganda
+  
+  scannerMember = new Html5Qrcode("readerMember");
+  
+  // Gunakan "environment" sebagai string untuk fleksibilitas HP/Laptop
+  scannerMember.start(
+    "environment", 
+    { fps: 10, qrbox: 250 }, 
+    (txt) => {
+      // Cari data member berdasarkan hasil scan barcode kartu
+      let found = dataMember.find((d) => d.no === txt);
+
+      if (found) {
+        // 1. Tampilkan kartu secara visual
+        tampilKartuMember(found);
+        
+        // 2. Simpan ke sistem kasir (Sama seperti fungsi cariDataMember)
+        memberDitemukan = found;
+        localStorage.setItem("memberAktif", JSON.stringify(found));
+        
+        // 3. Update diskon otomatis jika ada
+        if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+        
+        alert("Member Terdeteksi: " + found.nama);
+      } else {
+        alert("Kartu tidak terdaftar: " + txt);
+      }
+
+      // Hentikan kamera setelah berhasil scan
+      scannerMember.stop().then(() => {
+        scannerMember = null;
+      });
+    }
+  )
+  .catch((err) => {
+    console.error(err);
+    alert("Kamera Error: Pastikan izin diberikan dan HTTPS aktif.");
+    scannerMember = null;
+  });
+}
+
+//===================================//
+//===================================//
+
+
 function pemicuEditMember() {
   if (!memberDitemukan) return;
   document.getElementById("namaMember").value = memberDitemukan.nama;
@@ -323,7 +371,7 @@ function downloadCSVMember() {
 
     csv += `${tgl};${ksr};${nm};'${telp};'${idm}\n`;
   });
-
+ 
   // Proses download
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -338,27 +386,6 @@ function downloadCSVMember() {
 
   // Hapus URL object dari memori setelah digunakan
   URL.revokeObjectURL(url);
-}
-//===================================//
-//===================================//
-
-function startScannerMember() {
-  if (scanner) return;
-  scanner = new Html5Qrcode("readerMember");
-  scanner
-    .start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
-      let found = dataMember.find((d) => d.no === txt);
-      if (found) {
-        tampilKartuMember(found);
-        memberDitemukan = found;
-      } else {
-        alert("Tidak ditemukan: " + txt);
-      }
-      scanner.stop().then(() => {
-        scanner = null;
-      });
-    })
-    .catch((err) => alert("Kamera Error"));
 }
 //===================================//
 //===================================//
