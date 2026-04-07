@@ -640,23 +640,22 @@ const blob = doc.output("blob");
   iframe.src = url;
 
   // 4. Eksekusi Print setelah loading selesai
+// Bagian akhir fungsi cetakStruk untuk HP & Desktop
   iframe.onload = function() {
     setTimeout(() => {
       try {
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
+        // Khusus iOS/Safari kadang butuh eksekusi langsung tanpa focus
+        const frameWindow = iframe.contentWindow;
+        frameWindow.focus();
+        frameWindow.print();
         
-        // JANGAN hapus iframe atau revoke URL terlalu cepat
-        // Biarkan browser yang mengurus dialognya
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 30000); // Beri waktu 30 detik sebelum membersihkan memori
+        // Bersihkan memori
+        setTimeout(() => URL.revokeObjectURL(url), 60000); 
       } catch (e) {
-        console.error("Gagal memicu print:", e);
-        // Fallback: Jika iframe gagal, tawarkan download sebagai cadangan
-        doc.save(`struk-${data.id}.pdf`);
+        // Fallback jika HP memblokir iframe (Buka di tab baru)
+        window.open(url, '_blank');
       }
-    }, 500); // Jeda 0.5 detik agar PDF ter-render sempurna di iframe
+    }, 800); // Jeda sedikit lebih lama (800ms) untuk HP yang speknya rendah
   };
 }
 
@@ -666,38 +665,34 @@ const blob = doc.output("blob");
 function playBeep() {
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
-    // Jenis suara 'square' atau 'sawtooth' jauh lebih nyaring dibanding 'sine'
-    oscillator.type = "square"; 
     
-    // Frekuensi 880Hz (Nada A5) lebih tinggi dan tajam di telinga dibanding 660Hz
-    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+    // Kita buat dua oscillator sekaligus agar suaranya "tebal" seperti klakson
+    [880, 440].forEach((freq) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-    // Volume dinaikkan ke 0.5 (Nyaring tapi tidak merusak speaker)
-    gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-    // Durasi bunyi diperpanjang menjadi 0.3 detik (agar terdengar jelas)
-    const durasi = 0.3; 
+      // 'sawtooth' memberikan tekstur kasar/nyaring seperti klakson
+      osc.type = "sawtooth"; 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-    // Efek suara yang memudar di akhir agar tidak terdengar "klik" kasar
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.00001,
-      audioCtx.currentTime + durasi
-    );
+      gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+      
+      // Durasi diperpanjang menjadi 0.6 detik agar mantap
+      const durasi = 0.9; 
 
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + durasi);
-    
+      // Efek memudar perlahan
+      gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + durasi);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + durasi);
+    });
   } catch (e) {
-    console.log("Audio beep gagal: ", e);
+    console.log("Audio gagal: ", e);
   }
 }
-
 /* =======================
    SCANNER KASIR
 ======================= */

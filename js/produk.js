@@ -307,29 +307,36 @@ function isiFormProduk(p) {
    FUNGSI BUNYI BEEP
 ======================= */
 function playBeep() {
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Kita buat dua oscillator sekaligus agar suaranya "tebal" seperti klakson
+    [880, 440].forEach((freq) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-        // Frekuensi 660Hz (suara beep scanner standar)
-        oscillator.type = "sine";
-        oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
-        
-        // Atur volume dan durasi
-        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime); // Volume 20%
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1); // Menghilang dalam 0.1 detik
+      // 'sawtooth' memberikan tekstur kasar/nyaring seperti klakson
+      osc.type = "sawtooth"; 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.1);
-    } catch (e) {
-        console.log("Audio API tidak didukung atau diblokir browser");
-    }
+      gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
+      
+      // Durasi diperpanjang menjadi 0.6 detik agar mantap
+      const durasi = 0.8; 
+
+      // Efek memudar perlahan
+      gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + durasi);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + durasi);
+    });
+  } catch (e) {
+    console.log("Audio gagal: ", e);
+  }
 }
-
 
 
 
