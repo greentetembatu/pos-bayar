@@ -4,6 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pos Bayar Login</title>
+
+  <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d6efd" />
+
+
+<meta name="description" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."/>
+<meta property="og:locale" content="id_ID" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Pos Bayar" />
+<meta property="og:description" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"/>
+<meta property="og:url" content="https://greentetembatu.github.io/pos-bayar/"/>
+<meta property="og:site_name" content="Pos Bayar" />
+<meta property="og:image" content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"/>
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."/>
+
+
 </head>
 <body>
 
@@ -93,17 +113,33 @@ body {
 
   <button onclick="loginKasir()">Masuk</button>
   <button onclick="tambahKasir()">Daftar</button>
+  <button id="installBtn" style="display:none;">Install Aplikasi</button>
 </div>
 
 
-
-
-
-
-
-
-
 <script>
+
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById("installBtn").style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", () => {
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then((choice) => {
+    if (choice.outcome === "accepted") {
+      console.log("App installed");
+    }
+  });
+});
+
+
+
+
+
 
 
 const kasirList = [
@@ -119,6 +155,15 @@ const kasirAktif = {
   id: "KSR001",
   nama: "Adi"
 };
+
+
+
+
+
+
+
+
+
 
 localStorage.setItem("kasirAktif", JSON.stringify(kasirAktif));
 
@@ -140,7 +185,6 @@ localStorage.setItem("kasirAktif", JSON.stringify(kasirAktif));
 
   window.location.href = "dashboard.html";
 }
-
 
 
 
