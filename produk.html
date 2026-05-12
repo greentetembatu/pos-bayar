@@ -67,28 +67,33 @@
       <!-- Content -->
       <main class="content">
         <h1>Manajemen Produk</h1>
-        <div class="card" style="display: flex; flex-direction: column">
-          <label>Cari Produk</label>
-          <input
-            type="text"
-            id="searchProduk"
-            placeholder="nama produk..."
-            oninput="
-              pageProduk = 1;
-              renderProduk();
-            "
-          />
+<div
+  class="card"
+  style="display:flex; flex-direction:column; position:relative;"
+>
+  <label>Cari Produk</label>
 
-          <span></span>
-          <label>Filter Stok</label>
-          <select id="filterStok" onchange="renderProduk()">
-            <option value="all">Semua</option>
-            <option value="tersedia">Stok Tersedia</option>
-            <option value="habis">Stok Habis</option>
-            <option value="menipis">Stok Menipis (≤ 5)</option>
-          </select>
-        </div>
+  <input
+    type="text"
+    id="searchProduk"
+    placeholder="nama produk..."
+    autocomplete="off"
+  />
 
+  <!-- HASIL PENCARIAN -->
+  <div id="hasilPencarianProduk"></div>
+
+  <span></span>
+
+  <label>Filter Stok</label>
+
+  <select id="filterStok" onchange="renderProduk()">
+    <option value="all">Semua</option>
+    <option value="tersedia">Stok Tersedia</option>
+    <option value="habis">Stok Habis</option>
+    <option value="menipis">Stok Menipis (≤ 5)</option>
+  </select>
+</div>
         <div
           id="reader"
           style="width: 100%; max-width: 400px; margin: auto"

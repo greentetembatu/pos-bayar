@@ -123,17 +123,29 @@ function renderProduk() {
     tbody.innerHTML = "";
 
     // --- STEP 1: FILTER DATA ---
-    const hasilFilter = produk.filter(p => {
-        const cocokNama = (p.nama || "").toLowerCase().includes(keyword);
-        const cocokBarcode = (p.barcode || "").toLowerCase().includes(keyword);
+const hasilFilter = produk.filter((p) => {
+    const nama = (p.nama || "").toString().toLowerCase().trim();
+    const barcode = (p.barcode || "").toString().toLowerCase().trim();
 
-        let cocokStok = true;
-        if (filter === "tersedia") cocokStok = p.stok > 0;
-        if (filter === "habis") cocokStok = p.stok === 0;
-        if (filter === "menipis") cocokStok = p.stok > 0 && p.stok <= 5;
+    const cari = keyword.toLowerCase().trim();
 
-        return (cocokNama || cocokBarcode) && cocokStok;
-    });
+    // 🔥 Pencarian sebagian kata
+    const cocokNama = nama.includes(cari);
+
+    // 🔥 Pencarian barcode
+    const cocokBarcode = barcode.includes(cari);
+
+    let cocokStok = true;
+
+    if (filter === "tersedia") cocokStok = p.stok > 0;
+
+    if (filter === "habis") cocokStok = p.stok === 0;
+
+    if (filter === "menipis")
+        cocokStok = p.stok > 0 && p.stok <= 5;
+
+    return (cocokNama || cocokBarcode) && cocokStok;
+});
 
     // --- STEP 2: LOGIKA PAGINATION ---
     const totalHal = Math.ceil(hasilFilter.length / limitProdukPerHal) || 1;
@@ -545,3 +557,106 @@ function imporDataProduk(event) {
     
     reader.readAsText(file);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const searchInput = document.getElementById("searchProduk");
+const hasilBox = document.getElementById("hasilPencarianProduk");
+
+searchInput.addEventListener("input", function () {
+
+    const keyword = this.value
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .trim();
+
+    hasilBox.innerHTML = "";
+
+    if (!keyword) {
+        hasilBox.style.display = "none";
+        renderProduk();
+        return;
+    }
+
+    const produk = getProduk() || [];
+
+    const hasil = produk
+        .filter((p) => {
+
+            const nama = (p.nama || "")
+                .toLowerCase()
+                .replace(/\s+/g, "");
+
+            const barcode = (p.barcode || "")
+                .toString()
+                .toLowerCase();
+
+            return (
+                nama.includes(keyword) ||
+                barcode.includes(keyword)
+            );
+        })
+        .slice(0, 5); // 🔥 MAKSIMAL 5 PRODUK
+
+    if (hasil.length === 0) {
+        hasilBox.style.display = "none";
+        return;
+    }
+
+    hasil.forEach((p) => {
+
+        const div = document.createElement("div");
+
+        div.className = "hasil-item";
+
+        div.innerHTML = `
+            <img src="${p.foto || 'https://placehold.co/50x50'}">
+
+            <div class="hasil-info">
+                <h4>${p.nama}</h4>
+                <small>
+                    Rp ${(p.harga_jual || 0).toLocaleString("id-ID")}
+                    •
+                    Stok: ${p.stok}
+                </small>
+            </div>
+        `;
+
+        // klik hasil
+        div.onclick = () => {
+
+            searchInput.value = p.nama;
+
+            hasilBox.style.display = "none";
+
+            // langsung filter tabel
+            pageProduk = 1;
+            renderProduk();
+        };
+
+        hasilBox.appendChild(div);
+    });
+
+    hasilBox.style.display = "block";
+});
+document.addEventListener("click", (e) => {
+
+    if (!e.target.closest(".card")) {
+        hasilBox.style.display = "none";
+    }
+
+});
