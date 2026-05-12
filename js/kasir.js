@@ -178,7 +178,7 @@ function renderKeranjang() {
     totalLabaHalaman += item.laba; // Tambahkan laba dari tiap item
 
     const tr = document.createElement("tr");
-    const fotoUrl = item.foto || "https://via.placeholder.com/50";
+    const fotoUrl = item.foto || "https://placehold.co/50x50";
 
     tr.innerHTML = `
       <td style="display: flex; align-items: center; gap: 10px;">
@@ -191,19 +191,19 @@ function renderKeranjang() {
           style="width:50px; padding: 4px;">
       </td>
       <td>Rp ${item.subtotal.toLocaleString("id-ID")}</td>
-      <td style="text-align: center;">
+      <td style="text-align: left;">
         <button onclick="hapusItem(${i})" style="background:none; border:none; cursor:pointer; font-size: 1.2rem;">❌</button>
       </td>
     `;
     tbody.appendChild(tr);
   });
 
-  document.getElementById("totalBelanja").innerText = "Rp " + total.toLocaleString("id-ID");
-  
-  // Panggil fungsi update diskon agar laba bersih terhitung otomatis
-  updateTotalDiskon(); 
-}
+  document.getElementById("totalBelanja").innerText =
+    "Rp " + total.toLocaleString("id-ID");
 
+  // Panggil fungsi update diskon agar laba bersih terhitung otomatis
+  updateTotalDiskon();
+}
 
 /*function hitungDiskon(total) {
   const persen = Number(document.getElementById("diskonPersen").value) || 0;
@@ -481,183 +481,6 @@ function bayar() {
   updateTotalDiskon();
 }
 
-function cetakStruk(data) {
-  const { jsPDF } = window.jspdf;
-
-  // Hitung tinggi dinamis berdasarkan jumlah item
-  // Dasar (header/footer) +- 100mm + (jumlah item * 10mm)
-  const itemHeight = (data.items || []).length * 10;
-  const dynamicHeight = Math.max(150, 100 + itemHeight); 
-
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: [80, dynamicHeight], // Lebar tetap 80mm, tinggi mengikuti isi
-    putOnlyUsedFonts: true
-  });
-
-  // Pengaturan Font Standar Struk
-  doc.setFont("courier", "normal"); // Font monospaced agar angka sejajar rapi
-
-
-
-  let y =5;
-  const toko = getPengaturanToko() || {};
-
-  // HEADER
-  doc.setFontSize(12);
-  doc.text(toko.nama || "TOKO", 40, y, { align: "center" });
-  y += 6;
-
-  doc.setFontSize(9);
-  doc.text(toko.alamat || "-", 40, y, { align: "center" });
-  y += 5;
-
-  doc.text(toko.additional || "-", 40, y, { align: "center" });
-  y += 5;
-
-  doc.text("====================================================", 40, y, {
-    align: "center",
-  });
-  y += 5;
-
-  // INFO
-  doc.text(`Tanggal: ${new Date().toLocaleString("id-ID")}`, 4, y);
-  y += 3;
-
-  doc.text(`ID: ${data.id || "-"}`, 4, y);
-  y += 3;
-
-  doc.text(`Kasir: ${data.kasirNama || "-"}`, 4, y);
-  y += 3;
-
-  doc.text(`ID Kasir: ${data.kasirId || "-"}`, 4, y);
-  y += 3;
-
-  doc.text("====================================================", 40, y, {
-    align: "center",
-  });
-  y += 5;
-
-  // MEMBER (opsional)
-  if (data.member) {
-    doc.text(`Member: ${data.member.nama}`, 3, y);
-    y += 3;
-
-    doc.text(`ID: ${data.member.no}`, 3, y);
-    y += 3;
-
-    doc.text(`Hp: ${data.member.hp}`, 3, y);
-    y += 3;
-
-    doc.text(`Email: ${data.member.email}`, 3, y);
-    y += 3;
-  }
-
-  doc.text("====================================================", 40, y, {
-    align: "center",
-  });
-  y += 6;
-
-  // ITEM
-  data.items.forEach((item) => {
-    doc.text(item.nama, 5, y);
-    y += 4;
-
-    doc.text(`${item.qty} x Rp ${item.harga.toLocaleString("id-ID")}`, 5, y);
-
-    doc.text(item.subtotal.toLocaleString("id-ID"), 75, y, { align: "right" });
-    y += 5;
-  });
-
-  doc.text("====================================================", 40, y, {
-    align: "center",
-  });
-  y += 5;
-
-  // TOTAL
-  doc.text("SUBTOTAL", 5, y);
-  doc.text((data.totalAwal || 0).toLocaleString("id-ID"), 75, y, {
-    align: "right",
-  });
-  y += 4;
-
-  doc.text(`DISKON (${data.diskon || 0}%)`, 5, y);
-  doc.text(`- ${(data.potongan || 0).toLocaleString("id-ID")}`, 75, y, {
-    align: "right",
-  });
-  y += 4;
-
-  doc.text("TOTAL", 5, y);
-  doc.text((data.total || 0).toLocaleString("id-ID"), 75, y, {
-    align: "right",
-  });
-  y += 4;
-
-  doc.text("BAYAR", 5, y);
-  doc.text((data.uang || 0).toLocaleString("id-ID"), 75, y, { align: "right" });
-  y += 4;
-
-  doc.text("KEMBALI", 5, y);
-  doc.text((data.kembalian || 0).toLocaleString("id-ID"), 75, y, {
-    align: "right",
-  });
-  y += 6;
-
-  // ===== FOOTER =====
-  doc.text("Terima kasih", 40, y, { align: "center" });
-  y += 3;
-  doc.text("Barang yang sudah dibeli", 40, y, { align: "center" });
-  y += 3;
-  doc.text("tidak dapat dikembalikan", 40, y, { align: "center" });
-  y += 7;
-
-  doc.text("Aplikasi ini dibuat oleh", 40, y, { align: "center" });
-  y += 3;
-  doc.text("Adi Mardani Dev", 40, y, { align: "center" });
-  y += 3;
-  doc.text("0852-1405-6596 ||greentetembatu@gmail.com", 40, y, {
-    align: "center",
-  });
-
-  // ===== SIMPAN =====
-const blob = doc.output("blob");
-  const url = URL.createObjectURL(blob);
-
-  // 2. Cari atau buat iframe tersembunyi (agar tidak menumpuk di memori)
-  let iframe = document.getElementById("printFrame");
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.id = "printFrame";
-    iframe.style.position = 'fixed';
-    iframe.style.width = '0px';
-    iframe.style.height = '0px';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
-  }
-
-  // 3. Masukkan URL ke iframe
-  iframe.src = url;
-
-  // 4. Eksekusi Print setelah loading selesai
-// Bagian akhir fungsi cetakStruk untuk HP & Desktop
-  iframe.onload = function() {
-    setTimeout(() => {
-      try {
-        // Khusus iOS/Safari kadang butuh eksekusi langsung tanpa focus
-        const frameWindow = iframe.contentWindow;
-        frameWindow.focus();
-        frameWindow.print();
-        
-        // Bersihkan memori
-        setTimeout(() => URL.revokeObjectURL(url), 60000); 
-      } catch (e) {
-        // Fallback jika HP memblokir iframe (Buka di tab baru)
-        window.open(url, '_blank');
-      }
-    }, 800); // Jeda sedikit lebih lama (800ms) untuk HP yang speknya rendah
-  };
-}
 
 /* =======================
    FUNGSI BUNYI BEEP (Scanner)
@@ -665,7 +488,7 @@ const blob = doc.output("blob");
 function playBeep() {
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
+
     // Kita buat dua oscillator sekaligus agar suaranya "tebal" seperti klakson
     [880, 440].forEach((freq) => {
       const osc = audioCtx.createOscillator();
@@ -675,16 +498,19 @@ function playBeep() {
       gain.connect(audioCtx.destination);
 
       // 'sawtooth' memberikan tekstur kasar/nyaring seperti klakson
-      osc.type = "sawtooth"; 
+      osc.type = "sawtooth";
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
       gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
-      
+
       // Durasi diperpanjang menjadi 0.6 detik agar mantap
-      const durasi = 0.9; 
+      const durasi = 0.9;
 
       // Efek memudar perlahan
-      gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + durasi);
+      gain.gain.exponentialRampToValueAtTime(
+        0.05,
+        audioCtx.currentTime + durasi,
+      );
 
       osc.start();
       osc.stop(audioCtx.currentTime + durasi);
@@ -795,40 +621,16 @@ function generateIdTransaksi() {
   return `${tahun}${bulan}${tanggal}-${jam}${menit}${detik}-${random}`;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function hitungLoyalitasMember(idMember) {
   // 1. Ambil semua riwayat transaksi
   const semuaTransaksi = JSON.parse(localStorage.getItem("transaksi")) || [];
 
   // 2. Filter transaksi yang ID Member-nya cocok
-  const riwayatMember = semuaTransaksi.filter(t => t.idMember === idMember);
+  const riwayatMember = semuaTransaksi.filter((t) => t.idMember === idMember);
 
   // 3. Kembalikan jumlah (count)
   return riwayatMember.length;
 }
-
-
-
-
-
-
-
-
 
 function cariDataMember() {
   let key = document.getElementById("searchMember").value.toLowerCase().trim();
@@ -843,18 +645,20 @@ function cariDataMember() {
 
   if (found) {
     memberDitemukan = found;
-    
+
     // 🔥 HITUNG JUMLAH BELANJA
     const jumlahBelanja = hitungLoyalitasMember(found.no);
-    
+
     // Tampilkan kartu member
     tampilKartuMember(found);
 
     // 🔥 BERI NOTIFIKASI KHUSUS JIKA SUDAH 10 KALI
     if (jumlahBelanja >= 10) {
-       alert(`🔥 PELANGGAN SETIA!\n${found.nama} sudah berbelanja sebanyak ${jumlahBelanja} kali.`);
+      alert(
+        `🔥 PELANGGAN SETIA!\n${found.nama} sudah berbelanja sebanyak ${jumlahBelanja} kali.`,
+      );
     } else {
-       console.log(`${found.nama} baru belanja ${jumlahBelanja} kali.`);
+      console.log(`${found.nama} baru belanja ${jumlahBelanja} kali.`);
     }
 
     // Simpan sebagai member aktif transaksi ini
@@ -862,122 +666,111 @@ function cariDataMember() {
 
     // Update tampilan teks di kartu (Opsional: Tambahkan elemen ID ini di HTML kartu)
     const elStatus = document.getElementById("statusLoyalitas");
-    if(elStatus) {
-       elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
-       elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
+    if (elStatus) {
+      elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
+      elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
     }
-
   } else {
     alert("Member tidak ditemukan!");
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 let html5QrCodeMemberKasir;
 
 function mulaiScanMemberKasir() {
-    // 1. Inisialisasi Scanner (Gunakan ID container 'readerMember')
-    if (!html5QrCodeMemberKasir) {
-        html5QrCodeMemberKasir = new Html5Qrcode("readerMember");
-    }
-    
-    const config = { 
-        fps: 20, 
-        qrbox: { width: 250, height: 250 }, 
-        aspectRatio: 1.0,
-        formatsToSupport: [ 
-            Html5QrcodeSupportedFormats.QR_CODE, 
-            Html5QrcodeSupportedFormats.EAN_13, 
-            Html5QrcodeSupportedFormats.CODE_128 
-        ]
-    };
+  // 1. Inisialisasi Scanner (Gunakan ID container 'readerMember')
+  if (!html5QrCodeMemberKasir) {
+    html5QrCodeMemberKasir = new Html5Qrcode("readerMember");
+  }
 
-    // 2. Gunakan FORMAT OBJEK { facingMode: "environment" } 
-    // agar kompatibel dengan Laptop dan HP (seperti script kasir produk)
-    html5QrCodeMemberKasir.start(
-        { facingMode: "environment" }, 
-        config, 
-        (barcodeText) => {
-            // FEEDBACK: Suara & Getar
-            if (typeof playBeep === "function") playBeep(); 
-            if (navigator.vibrate) navigator.vibrate(100);
+  const config = {
+    fps: 20,
+    qrbox: { width: 250, height: 250 },
+    aspectRatio: 1.0,
+    formatsToSupport: [
+      Html5QrcodeSupportedFormats.QR_CODE,
+      Html5QrcodeSupportedFormats.EAN_13,
+      Html5QrcodeSupportedFormats.CODE_128,
+    ],
+  };
 
-            // STOP SCANNER segera setelah data didapat
-            stopScanMemberKasir();
+  // 2. Gunakan FORMAT OBJEK { facingMode: "environment" }
+  // agar kompatibel dengan Laptop dan HP (seperti script kasir produk)
+  html5QrCodeMemberKasir
+    .start({ facingMode: "environment" }, config, (barcodeText) => {
+      // FEEDBACK: Suara & Getar
+      if (typeof playBeep === "function") playBeep();
+      if (navigator.vibrate) navigator.vibrate(100);
 
-            // 3. CARI DATA MEMBER
-            // Pastikan dataMember adalah array global yang berisi database member Anda
-            const found = dataMember.find(m => m.no === barcodeText);
+      // STOP SCANNER segera setelah data didapat
+      stopScanMemberKasir();
 
-            if (found) {
-                // LOGIKA: MEMBER TERDAFTAR
-                memberDitemukan = found;
-                localStorage.setItem("memberAktif", JSON.stringify(found));
-                
-                // HITUNG LOYALITAS (Cek berapa kali belanja)
-                const jumlahBelanja = hitungLoyalitasMember(found.no);
-                
-                // TAMPILKAN KARTU SECARA VISUAL
-                tampilKartuMember(found);
+      // 3. CARI DATA MEMBER
+      // Pastikan dataMember adalah array global yang berisi database member Anda
+      const found = dataMember.find((m) => m.no === barcodeText);
 
-                // NOTIFIKASI KHUSUS LOYALITAS
-                if (jumlahBelanja >= 10) {
-                    alert(`🔥 PELANGGAN SETIA!\n${found.nama} sudah belanja ${jumlahBelanja} kali.`);
-                } else {
-                    alert(`Member Terdeteksi: ${found.nama}\nTotal Kunjungan: ${jumlahBelanja}x`);
-                }
+      if (found) {
+        // LOGIKA: MEMBER TERDAFTAR
+        memberDitemukan = found;
+        localStorage.setItem("memberAktif", JSON.stringify(found));
 
-                // UPDATE STATUS TEKS DI KARTU
-                const elStatus = document.getElementById("statusLoyalitas");
-                if(elStatus) {
-                   elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
-                   elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
-                }
+        // HITUNG LOYALITAS (Cek berapa kali belanja)
+        const jumlahBelanja = hitungLoyalitasMember(found.no);
 
-                // JALANKAN DISKON OTOMATIS
-                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+        // TAMPILKAN KARTU SECARA VISUAL
+        tampilKartuMember(found);
 
-            } else {
-                // LOGIKA: MEMBER TIDAK DIKENAL
-                alert("Kartu Member Tidak Terdaftar!");
-                
-                // Masukkan kode ke input pencarian agar kasir bisa langsung mendaftarkan
-                const inputSearch = document.getElementById("searchMember");
-                if (inputSearch) {
-                    inputSearch.value = barcodeText;
-                    inputSearch.focus();
-                }
-                
-                // Reset data member aktif jika sebelumnya ada
-                localStorage.removeItem("memberAktif");
-                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
-            }
+        // NOTIFIKASI KHUSUS LOYALITAS
+        if (jumlahBelanja >= 10) {
+          alert(
+            `🔥 PELANGGAN SETIA!\n${found.nama} sudah belanja ${jumlahBelanja} kali.`,
+          );
+        } else {
+          alert(
+            `Member Terdeteksi: ${found.nama}\nTotal Kunjungan: ${jumlahBelanja}x`,
+          );
         }
-    ).catch(err => {
-        console.error("Gagal kamera member kasir:", err);
-        alert("Gagal akses kamera: " + err);
+
+        // UPDATE STATUS TEKS DI KARTU
+        const elStatus = document.getElementById("statusLoyalitas");
+        if (elStatus) {
+          elStatus.innerText = `Total Kunjungan: ${jumlahBelanja}x`;
+          elStatus.style.color = jumlahBelanja >= 10 ? "#48bb78" : "#fac812";
+        }
+
+        // JALANKAN DISKON OTOMATIS
+        if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+      } else {
+        // LOGIKA: MEMBER TIDAK DIKENAL
+        alert("Kartu Member Tidak Terdaftar!");
+
+        // Masukkan kode ke input pencarian agar kasir bisa langsung mendaftarkan
+        const inputSearch = document.getElementById("searchMember");
+        if (inputSearch) {
+          inputSearch.value = barcodeText;
+          inputSearch.focus();
+        }
+
+        // Reset data member aktif jika sebelumnya ada
+        localStorage.removeItem("memberAktif");
+        if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+      }
+    })
+    .catch((err) => {
+      console.error("Gagal kamera member kasir:", err);
+      alert("Gagal akses kamera: " + err);
     });
 }
 
 function stopScanMemberKasir() {
-    if (html5QrCodeMemberKasir) {
-        html5QrCodeMemberKasir.stop()
-            .then(() => {
-                // Sangat penting: Reset variabel ke null agar bisa dibuka kembali dengan lancar
-                html5QrCodeMemberKasir = null; 
-                console.log("Scanner Member Berhenti.");
-            })
-            .catch(err => console.error("Error stop scanner member kasir", err));
-    }
+  if (html5QrCodeMemberKasir) {
+    html5QrCodeMemberKasir
+      .stop()
+      .then(() => {
+        // Sangat penting: Reset variabel ke null agar bisa dibuka kembali dengan lancar
+        html5QrCodeMemberKasir = null;
+        console.log("Scanner Member Berhenti.");
+      })
+      .catch((err) => console.error("Error stop scanner member kasir", err));
+  }
 }

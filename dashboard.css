@@ -1,0 +1,413 @@
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+:root {
+  --biru-terang: #2563eb;
+  --biru-gelap: #061746;
+  --hijau-terang: #21f8b0;
+  --hijau-gelap: #065f41;
+  --kuning:#fffb00;
+  --ungu:#ea00ff;
+  --orange: #f37d0e;
+  --merah: #f30e0e;
+  --hitam: #000000;
+  --putih: #ffffff;
+  
+  --transition: 0.3s ease;
+  --sidebar-width: 260px;
+
+  --h1: clamp(2.5rem, 5vw, 5rem);
+  --h2: clamp(2rem, 4vw, 4rem);
+  --h3: clamp(1.75rem, 3.5vw, 3rem);
+  --h4: clamp(1.5rem, 3vw, 2.5rem);
+  --h5: clamp(1.25rem, 2.5vw, 2rem);
+  --h6: clamp(1rem, 2vw, 1.5rem);
+
+  --p: clamp(0.95rem, 1.2vw, 1.125rem);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--hitam);
+  color: var(--putih);
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================================================
+   APP LAYOUT
+========================================================= */
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--biru-gelap);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* =========================================================
+   SIDEBAR HEADER
+========================================================= */
+.sidebar-header{
+  display: flex;
+}
+.sidebar-header h2 {
+  font-size: var(--h6);
+  font-weight: 700;
+  color: var(--putih);
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   SIDEBAR MENU
+========================================================= */
+.sidebar-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 0;
+  margin: 0;
+
+}
+
+/* =========================================================
+   MENU ITEM
+========================================================= */
+.sidebar-menu li a {
+  display: block;
+  padding: 12px 18px;
+  color: var(--hitam);
+  text-decoration: none;
+  font-size: var(--p);
+  font-weight: 600;
+  border-radius: 12px;
+  transition: var(--transition);
+  background: var(--kuning);
+}
+
+/* HOVER */
+.sidebar-menu li a:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+.sidebar-menu li a.active {
+  background: var(--orange);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Pastikan hover tidak merusak active */
+.sidebar-menu li a.active:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+
+/* ACTIVE */
+/*.sidebar-menu li a.active {
+  background-color: var(--hijau-terang);
+  color: var(--hitam);
+  display: block;
+
+}
+
+/* LINK */
+/*.sidebar-menu li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================================================
+   BUTTON ASIDE
+========================================================= */
+.button-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================================================
+   BUTTON INSTALL
+========================================================= */
+.btn-instal {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-instal:hover {
+  background: var(--success-hover);
+}
+
+/* =========================================================
+   BUTTON LOGOUT
+========================================================= */
+.btn-logout {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--merah);
+  color: var(--putih);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-logout:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+}
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   CONTENT HEADER
+========================================================= */
+.content-header {
+  background: var(--ungu);
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+/* TITLE */
+.content-header h1 {
+  font-size: var(--h5);
+  font-weight: 700;
+  color: var(--hitam);
+}
+
+/* SUBTITLE */
+.content-header h3 {
+  font-size: var(--h6);
+  font-weight: 600;
+  color: var(--hitam);
+}
+
+/* =========================================================
+   INPUT
+========================================================= */
+.content-header input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fafafa;
+  outline: none;
+  font-size: var(--p);
+  transition: var(--transition);
+}
+
+.content-header input:focus {
+  border-color: var(--hijau-gelap);
+  background: var(--putih);
+}
+
+/* =========================================================
+   BUTTON SIMPAN WRAPPER
+========================================================= */
+.button-simpan-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* =========================================================
+   BUTTON SIMPAN
+========================================================= */
+.button-simpan-header button {
+  border: none;
+  outline: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  background: var(--hijau-gelap);
+  color: var(--white);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.button-simpan-header button:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+  transform: translateY(-2px);
+}
+
+/* =========================================================
+   BUTTON PRIMARY
+========================================================= */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  font-weight: 600;
+  margin-bottom: 30px;
+  transition: var(--transition);
+}
+
+.btn-primary:hover {
+  background: var(--orange);
+  color: var(--putih);
+}
+
+/* =========================================================
+   STATS GRID
+========================================================= */
+.stats {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+.card {
+  background: var(--merah);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--putih);
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* =========================================================
+   STAT CARD
+========================================================= */
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-card h3 {
+  font-size: var(--p);
+  font-weight: 600;
+  color: var(--putih);
+}
+
+.stat-card p {
+  font-size: var(--h5);
+  font-weight: 700;
+  color: var(--putih);
+}
+
+/* =========================================================
+   RESPONSIVE TABLET
+========================================================= */
+@media (max-width: 992px) {
+
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    padding: 24px 20px;
+
+  }
+.sidebar-header{
+  display: none;
+
+}
+.sidebar-menu{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sidebar-menu li a{
+  border-radius: 4px;
+  padding: 12px 6px;
+}
+  .btn-instal,
+  .btn-logout {
+    border-radius: 4px;
+    padding: 12px 6px;
+
+  }
+
+  .content {
+    padding: 20px;
+  }
+}
+
+
+
+
+
+
+
+
+
+

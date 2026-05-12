@@ -10,51 +10,60 @@
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#0d6efd" />
 
-<meta name="description" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."/>
-<meta property="og:locale" content="id_ID" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Pos Bayar" />
-<meta property="og:description" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"/>
-<meta property="og:url" content="https://greentetembatu.github.io/pos-bayar/"/>
-<meta property="og:site_name" content="Pos Bayar" />
-<meta property="og:image" content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"/>
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:type" content="image/png" />
-<meta property="og:image:alt" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."/>
+    <meta
+      name="description"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Pos Bayar" />
+    <meta
+      property="og:description"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"
+    />
+    <meta
+      property="og:url"
+      content="https://greentetembatu.github.io/pos-bayar/"
+    />
+    <meta property="og:site_name" content="Pos Bayar" />
+    <meta
+      property="og:image"
+      content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    />
 
-
-
-
-
-
-    <link rel="stylesheet" href="style.css" />
+    <!--<link rel="stylesheet" href="style.css" />-->
+    <link rel="stylesheet" href="produk.css" />
   </head>
 
   <body>
-    <div class="app">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <h2>PRODUK</h2>
-        <ul>
-          <li>
-            <a href="dashboard.html">Dashboard</a>
-          </li>
-          <li>
-            <a href="kasir.html">Kasir</a>
-          </li>
-          <li class="active">Produk</li>
-          <li>
-            <a href="riwayat.html">Riwayat</a>
-          </li>
-          <li>
-            <a href="member.html">Member</a>
-          </li>
-
-          <button id="installBtn" style="display: none">Install App</button>
-          <button class="btn-logout" onclick="logoutKasir()">🚪 Logout</button>
+    <section class="app">
+      <!-- SIDEBAR -->
+      <section class="sidebar">
+        <div class="sidebar-header">
+          <h2>DASHBOARD</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="kasir.html">Kasir</a></li>
+          <li><a href="produk.html" class="active">Produk</a></li>
+          <li><a href="riwayat.html">Riwayat</a></li>
+          <li><a href="member.html">Member</a></li>
         </ul>
-      </aside>
+
+        <div class="button-aside">
+          <button class="btn-instal" id="installBtn" style="display: none">
+            Install Aplikasi
+          </button>
+          <button class="btn-logout" onclick="logoutKasir()">Logout</button>
+        </div>
+      </section>
       <!-- Content -->
       <main class="content">
         <h1>Manajemen Produk</h1>
@@ -190,21 +199,21 @@
             </button>
           </div>
 
-          <div
+        </div>
+                  <div
             class="card"
-            style="display: flex; gap: 10px; background: #f8fafc"
+            style="
+            display: inline-flex; 
+            flex-direction: column; 
+            justify-content: center;
+            padding: 20px;
+            width: 100%;"
+            
           >
             <button
               onclick="eksporDataProduk()"
-              style="background: #2d3748; flex: 1"
-            >
-              📤 Ekspor Data (Backup)
-            </button>
-
-            <label
-              for="inputImpor"
               style="
-                background: #4a5568;
+                background: var(--biru-gelap);
                 color: white;
                 flex: 1;
                 padding: 10px;
@@ -213,7 +222,23 @@
                 cursor: pointer;
               "
             >
-              📥 Impor Data
+              Ekspor Data (Backup)
+            </button>
+
+            <label
+              for="inputImpor"
+              style="
+                background: var(--biru-terang);
+                color: black;
+                flex: 2;
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+                cursor: pointer;
+
+              "
+            >
+              Impor Data
             </label>
             <input
               type="file"
@@ -223,9 +248,9 @@
               style="display: none"
             />
           </div>
-        </div>
+
       </main>
-    </div>
+    </section>
     <script src="js/data.js"></script>
     <script src="js/produk.js"></script>
     <script src="js/riwayat.js"></script>

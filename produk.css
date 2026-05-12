@@ -1,0 +1,634 @@
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+:root {
+  --biru-terang: #2563eb;
+  --biru-gelap: #061746;
+  --hijau-terang: #21f8b0;
+  --hijau-gelap: #065f41;
+  --kuning:#fffb00;
+  --ungu:#ea00ff;
+  --orange: #f37d0e;
+  --merah: #f30e0e;
+  --hitam: #000000;
+  --putih: #ffffff;
+  
+  --transition: 0.3s ease;
+  --sidebar-width: 260px;
+
+  --h1: clamp(2.5rem, 5vw, 5rem);
+  --h2: clamp(2rem, 4vw, 4rem);
+  --h3: clamp(1.75rem, 3.5vw, 3rem);
+  --h4: clamp(1.5rem, 3vw, 2.5rem);
+  --h5: clamp(1.25rem, 2.5vw, 2rem);
+  --h6: clamp(1rem, 2vw, 1.5rem);
+
+  --p: clamp(0.95rem, 1.2vw, 1.125rem);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--hitam);
+  color: var(--putih);
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================================================
+   APP LAYOUT
+========================================================= */
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--biru-gelap);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* =========================================================
+   SIDEBAR HEADER
+========================================================= */
+.sidebar-header{
+  display: flex;
+}
+.sidebar-header h2 {
+  font-size: var(--h6);
+  font-weight: 700;
+  color: var(--putih);
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   SIDEBAR MENU
+========================================================= */
+.sidebar-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 0;
+  margin: 0;
+
+}
+
+/* =========================================================
+   MENU ITEM
+========================================================= */
+.sidebar-menu li a {
+  display: block;
+  padding: 12px 18px;
+  color: var(--hitam);
+  text-decoration: none;
+  font-size: var(--p);
+  font-weight: 600;
+  border-radius: 12px;
+  transition: var(--transition);
+  background: var(--kuning);
+}
+
+/* HOVER */
+.sidebar-menu li a:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+.sidebar-menu li a.active {
+  background: var(--orange);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Pastikan hover tidak merusak active */
+.sidebar-menu li a.active:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+
+/* ACTIVE */
+/*.sidebar-menu li a.active {
+  background-color: var(--hijau-terang);
+  color: var(--hitam);
+  display: block;
+
+}
+
+/* LINK */
+/*.sidebar-menu li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================================================
+   BUTTON ASIDE
+========================================================= */
+.button-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================================================
+   BUTTON INSTALL
+========================================================= */
+.btn-instal {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-instal:hover {
+  background: var(--success-hover);
+}
+
+/* =========================================================
+   BUTTON LOGOUT
+========================================================= */
+.btn-logout {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--merah);
+  color: var(--putih);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-logout:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+}
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   RESPONSIVE TABLET
+========================================================= */
+@media (max-width: 992px) {
+
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    padding: 24px 20px;
+    z-index: 10;
+
+  }
+.sidebar-header{
+  display: none;
+
+}
+.sidebar-menu{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sidebar-menu li a{
+  border-radius: 4px;
+  padding: 12px 6px;
+}
+  .btn-instal,
+  .btn-logout {
+    border-radius: 4px;
+    padding: 12px 6px;
+
+  }
+
+  .content {
+    padding: 20px 10px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PRODUCT PAGE
+========================================================= */
+
+.content h1 {
+  font-size: var(--h4);
+  color: var(--putih);
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+  background: var(--ungu);
+  border: 1px solid var(--orange);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  transition: var(--transition);
+  
+}
+
+/*.card:hover {
+  transform: translateY(-2px);
+}*/
+
+.card h3 {
+  font-size: var(--h5);
+  color: var(--hitam);
+}
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.card label {
+  font-size: var(--p);
+  font-weight: 600;
+  color: var(--hitam);
+}
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.card input,
+.card select {
+  width: 100%;
+  border: none;
+  outline: none;
+
+  padding: 14px 16px;
+
+  border-radius: 14px;
+
+  background: var(--putih);
+  color: var(--hitam);
+  font-size: var(--p);
+  transition: var(--transition);
+  font-weight: bold;
+}
+
+.card input:focus,
+.card select:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  background: var(--kuning);
+}
+
+/* =========================================================
+   FILE INPUT
+========================================================= */
+
+input[type="file"] {
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+#imgPreview {
+  display: none;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  margin-top: 10px;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.08);
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: var(--p);
+  font-weight: 600;
+  transition: var(--transition);
+
+    background: orange;
+  color: var(--hitam);
+  margin-bottom: 20px;
+}
+
+/* =========================================================
+   DEFAULT BUTTON
+========================================================= */
+
+button {
+
+}
+
+button:hover {
+  transform: translateY(-2px);
+  opacity: 0.92;
+  background: var(--hijau-terang);
+}
+
+/* =========================================================
+   PRODUCT SAVE BUTTON
+========================================================= */
+
+.card button[onclick="simpanProduk()"] {
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  width: 40%;
+}
+
+.card button[onclick="simpanProduk()"]:hover {
+  background: var(--biru-gelap);
+  color: var(--putih);
+}
+
+/* =========================================================
+   SCANNER
+========================================================= */
+
+#reader {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+
+  overflow: hidden;
+  border-radius: 18px;
+
+  /*border: 2px solid rgba(255,255,255,0.08);*/
+
+  background: #111;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 16px;
+  
+}
+
+table thead {
+  background: var(--biru-terang);
+  
+}
+
+table th {
+  padding: 16px 14px;
+  text-align: left;
+  color: var(--putih);
+  font-size: var(--p);
+}
+
+table td {
+  padding: 14px;
+  color: var(--putih);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: var(--p);
+}
+
+table tbody tr {
+  background: var(--biru-gelap);
+  transition: var(--transition);
+}
+
+table tbody tr:hover {
+  background: var(--hijau-gelap);
+}
+
+/* =========================================================
+   TABLE IMAGE
+========================================================= */
+
+table img {
+  width: 55px;
+  height: 55px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+#navigasiProduk {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+
+  margin-top: 20px;
+  padding: 10px;
+}
+
+#btnPrevProduk,
+#btnNextProduk {
+  padding: 10px 18px;
+  background: var(--biru-gelap);
+  color: var(--putih);
+  border-radius: 10px;
+}
+
+#btnPrevProduk:hover,
+#btnNextProduk:hover {
+  background: var(--biru-terang);
+}
+
+#infoHalamanProduk {
+  color: var(--putih);
+  font-weight: bold;
+  font-size: var(--p);
+}
+/* =========================================================
+   FILTER SECTION
+========================================================= */
+
+#filterStok {
+  cursor: pointer;
+}
+
+/* =========================================================
+   SEARCH INPUT
+========================================================= */
+
+#searchProduk {
+  margin-bottom: 5px;
+}
+
+/* =========================================================
+   RESPONSIVE LARGE TABLET
+========================================================= */
+
+@media (max-width: 992px) {
+
+
+  .card {
+    padding: 20px;
+
+  }
+
+  table {
+    overflow-x: auto;
+    white-space: nowrap;
+    
+    
+    
+  }
+
+}
+
+/* =========================================================
+   RESPONSIVE TABLET
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .content {
+    padding: 18px 12px;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .card .card {
+    flex-direction: column !important;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    
+  }
+
+  #reader {
+    max-width: 100%;
+  }
+
+  button {
+    width: 100%;
+  }
+
+}
+
+/* =========================================================
+   RESPONSIVE MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+  .content h1 {
+    font-size: var(--h5);
+  }
+
+  .card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .card input,
+  .card select,
+  button {
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+
+  table th,
+  table td {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  #imgPreview {
+    width: 100px;
+    height: 100px;
+  }
+
+  #btnPrevProduk,
+  #btnNextProduk {
+    padding: 10px 12px;
+  }
+
+}
+

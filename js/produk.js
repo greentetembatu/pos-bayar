@@ -176,14 +176,14 @@ function renderProduk() {
         let badge = p.stok === 0 ? "❌ Habis" : (p.stok <= 5 ? "⚠️ Menipis" : "✅ Aman");
 
         tr.innerHTML = `
-            <td><img src="${p.foto || 'https://via.placeholder.com/50'}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;"></td>
+            <td><img src="${p.foto || 'https://placehold.co/50x50'}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;"></td>
             <td><code style="background: #eee; padding: 2px 5px; border-radius: 4px;">${p.barcode || '-'}</code></td>
             <td><strong>${p.nama}</strong></td>
             <td>Rp ${(p.modal || 0).toLocaleString("id-ID")}</td>
             <td>Rp ${(p.harga_jual || 0).toLocaleString("id-ID")}</td>
             <td>${p.stok} <br><small>${badge}</small></td>
-            <td>
-                <button onclick="editProduk(${p.id})">Edit</button>
+            <td style= "display:flex; flex-direction:column;" >
+                <button onclick="editProduk(${p.id})" style="background:#f37d0e; color:white; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;">Edit</button>
                 <button onclick="hapusProduk(${p.id})" style="background:#e53e3e; color:white; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;">Hapus</button>
             </td>
         `;

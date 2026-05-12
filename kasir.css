@@ -1,0 +1,828 @@
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+:root {
+  --biru-terang: #2563eb;
+  --biru-gelap: #061746;
+  --hijau-terang: #21f8b0;
+  --hijau-gelap: #065f41;
+  --kuning:#fffb00;
+  --ungu:#ea00ff;
+  --orange: #f37d0e;
+  --merah: #f30e0e;
+  --hitam: #000000;
+  --putih: #ffffff;
+  
+  --transition: 0.3s ease;
+  --sidebar-width: 260px;
+
+  --h1: clamp(2.5rem, 5vw, 5rem);
+  --h2: clamp(2rem, 4vw, 4rem);
+  --h3: clamp(1.75rem, 3.5vw, 3rem);
+  --h4: clamp(1.5rem, 3vw, 2.5rem);
+  --h5: clamp(1.25rem, 2.5vw, 2rem);
+  --h6: clamp(1rem, 2vw, 1.5rem);
+
+  --p: clamp(0.95rem, 1.2vw, 1.125rem);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--hitam);
+  color: var(--putih);
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================================================
+   APP LAYOUT
+========================================================= */
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--biru-gelap);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* =========================================================
+   SIDEBAR HEADER
+========================================================= */
+.sidebar-header{
+  display: flex;
+}
+.sidebar-header h2 {
+  font-size: var(--h6);
+  font-weight: 700;
+  color: var(--putih);
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   SIDEBAR MENU
+========================================================= */
+.sidebar-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 0;
+  margin: 0;
+
+}
+
+/* =========================================================
+   MENU ITEM
+========================================================= */
+.sidebar-menu li a {
+  display: block;
+  padding: 12px 18px;
+  color: var(--hitam);
+  text-decoration: none;
+  font-size: var(--p);
+  font-weight: 600;
+  border-radius: 12px;
+  transition: var(--transition);
+  background: var(--kuning);
+}
+
+/* HOVER */
+.sidebar-menu li a:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+.sidebar-menu li a.active {
+  background: var(--orange);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Pastikan hover tidak merusak active */
+.sidebar-menu li a.active:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+
+/* ACTIVE */
+/*.sidebar-menu li a.active {
+  background-color: var(--hijau-terang);
+  color: var(--hitam);
+  display: block;
+
+}
+
+/* LINK */
+/*.sidebar-menu li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================================================
+   BUTTON ASIDE
+========================================================= */
+.button-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================================================
+   BUTTON INSTALL
+========================================================= */
+.btn-instal {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-instal:hover {
+  background: var(--success-hover);
+}
+
+/* =========================================================
+   BUTTON LOGOUT
+========================================================= */
+.btn-logout {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--merah);
+  color: var(--putih);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-logout:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+}
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   RESPONSIVE TABLET
+========================================================= */
+@media (max-width: 992px) {
+
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    padding: 24px 20px;
+    z-index: 10;
+
+  }
+.sidebar-header{
+  display: none;
+
+}
+.sidebar-menu{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sidebar-menu li a{
+  border-radius: 4px;
+  padding: 12px 6px;
+}
+  .btn-instal,
+  .btn-logout {
+    border-radius: 4px;
+    padding: 12px 6px;
+
+  }
+
+  .content {
+    padding: 20px 10px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==================== 1. CSS untuk Content Utama ==================== */
+.content h1 {
+    color: var(--putih);
+    margin-bottom: 25px;
+    font-size: var(--h4);
+    /*border-left: 4px solid #3498db;*/
+    /*padding-left: 15px;*/
+}
+
+/* ==================== 2. CSS untuk Card (Umum) ==================== */
+.card {
+    background: var(--ungu);
+    border-radius: 6px;
+    padding: 20px 10px;
+    margin-bottom: 25px;
+    color: var(--hitam);
+    /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;*/
+}
+
+/*.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}*/
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--hitam);
+    font-size: var(--h6);
+}
+
+.card label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--hitam);
+}
+
+/* ==================== 3. CSS untuk Form Kasir ==================== */
+.produk-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-direction: column;
+}
+
+.autocomplete {
+    position: relative;
+    flex: 1;
+    
+}
+
+#produkInput {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--orange);
+    border-radius: 8px;
+    font-size: var(--p);
+    transition: all 0.3s;
+    box-sizing: border-box;
+    
+}
+
+#produkInput:focus {
+    outline: none;
+    border-color: var(--biru-terang);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--hijau-terang);
+    border: 1px solid var(--biru-gelap);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    color: var(--hitam);
+}
+
+.autocomplete-list div {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.autocomplete-list div:hover {
+    background-color: var(--biru-terang);
+    color: var(--hitam);
+}
+
+#btnScanKasir {
+    padding: 12px 20px;
+    background: var(--hijau-terang);
+    color: var(--hitam);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: var(--p);
+    transition: background 0.3s;
+    width: 30%;
+    font-weight: bold;
+}
+
+#btnScanKasir:hover {
+    background: var(--kuning);
+    color: var(--hitam);
+}
+
+.scanner-container-kasir {
+    margin: 15px 0;
+    position: relative;
+    display: none;
+}
+
+.scanner-container-kasir.active {
+    display: block;
+}
+
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ff00, transparent);
+    animation: scan 2s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes scan {
+    0% {
+        top: 0;
+    }
+    100% {
+        top: 100%;
+    }
+}
+
+.reader-kasir {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    
+}
+
+#qty {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--orange);
+    border-radius: 8px;
+    font-size: var(--p);
+    box-sizing: border-box;
+}
+
+.btn-tambah-keranjang {
+    width: 30%;
+    padding: 12px;
+    background: var(--hijau-terang);
+    color: var(--hitam);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: var(--p);
+    /*font-weight: bold;*/
+    transition: background 0.3s;
+    font-weight: bold;
+}
+
+.btn-tambah-keranjang:hover {
+    background: var(--kuning);
+    color: var(--hitam);
+}
+
+
+
+
+
+/* ==================== 4. CSS untuk Tabel Keranjang ==================== */
+#keranjangTable {
+    width: 100%;
+    border-collapse: collapse;
+
+}
+
+#keranjangTable thead {
+    background-color: var(--kuning);
+    color: var(--hitam);
+    overflow: scroll;
+
+}
+
+#keranjangTable th,
+#keranjangTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--putih);
+
+}
+
+#keranjangTable tbody tr:hover {
+    background-color: var(--hijau-terang);
+    color: var(--hitam);
+}
+
+#keranjangTable td:last-child {
+    text-align: center;
+}
+
+/* ==================== 5. CSS untuk Cari Member ==================== */
+.search-box {
+    margin-top: 10px;
+}
+
+.search-box > div:first-child {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+#searchMember {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--orange);
+    border-radius: 8px;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.search-box button {
+    padding: 12px 20px;
+    background: var(--kuning);
+    color: var(--hitam);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-box button:hover {
+    background: var(--hijau-terang);
+    color: var(--hitam);
+}
+
+#readerMember {
+    margin: 15px 0;
+    width: 100%;
+    max-width: 400px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==================== 6. CSS untuk Checkout Box ==================== */
+.checkout-box {
+    background: var(--ungu);
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    color: var(--hitam);
+}
+
+.checkout-box p {
+    margin: 12px 0;
+    font-size: var(--p);
+    font-weight: bold;
+    color: var(--biru-gelap);
+}
+
+.checkout-box strong {
+    color: var(--hitam);
+    font-size: var(--h5);
+    font-weight: bold;
+}
+
+.input-group {
+    margin: 15px 0;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: var(--h5);
+}
+
+#diskonPersen {
+    width: 150px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: var(--p);
+}
+
+.total-highlight {
+    background: var(--kuning);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--h6);
+    color: var(--hitam);
+}
+
+.profit-info {
+    font-size: var(--p);
+    opacity: 0.9;
+    color: var(--merah);
+}
+
+.btn-pay {
+    width: 100%;
+    padding: 15px;
+    background: var(--merah);
+    color: var(--putih);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-pay:hover {
+    background: var(--kuning);
+    color: var(--hitam);
+    transform: scale(1.02);
+}
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   SCANNER MEMBER
+========================================= */
+
+.scanner-info {
+  display: block;
+  margin-top: 10px;
+  color: var(--hitam);
+  text-align: left;
+}
+
+/* =========================================
+   MEMBER CARD
+========================================= */
+
+.member-card {
+  display: none;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  background: #2d3748;
+  color: white;
+}
+
+.member-title {
+  margin-top: 0;
+}
+
+.member-small {
+  display: block;
+}
+
+.member-number {
+  font-weight: bold;
+  color: #fbd38d;
+}
+
+.barcode-member {
+  background: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* =========================================
+   STATUS LOYALITAS
+========================================= */
+
+.status-loyalitas {
+  font-size: var(--p);
+  font-weight: bold;
+  margin-top: 5px;
+
+}
+
+/* =========================================
+   AKSI MEMBER
+========================================= */
+
+.aksi-member {
+  margin-top: 15px;
+  display: none;
+  gap: 10px;
+  justify-content: start;
+}
+
+.btn-print-member {
+  display: none;
+  background: var(--kuning);
+  color: var(--hitam);
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==================== 7. CSS untuk Preview Kartu Member ==================== */
+
+/* Container Utama Preview */
+.card-preview-member {
+margin-top: 20px;
+text-align: center;
+}
+
+.card-preview-member h2 {
+  font-family: "Poppins", sans-serif;
+  color: black; /* Agar kontras dengan background body */
+  margin-bottom: 15px;
+
+}
+
+/* Desain Kartu Member (Sesuai dengan spesifikasi Anda) */
+.member-card {
+  width: 85.6mm;
+  height: 53.98mm;
+  border-radius: 12px;
+  padding: 20px;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #e69f08; /* Warna teks emas/kuning agar elegan */
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  text-align: left; /* Konten di dalam kartu rata kiri */
+  
+}
+
+.member-card h3 {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 18px;
+}
+
+.member-card small {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  opacity: 1;
+}
+
+.member-card hr {
+  border-top: 0.5px solid rgba(255, 255, 255, 0.3);
+  margin: 10px 0;
+}
+
+/* Bagian Detail Member */
+
+
+/* Barcode */
+#barcodeMember {
+  background: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 120px; /* Ukuran barcode disesuaikan */
+  height: 40px;
+}
+
+/* Tombol Cetak (Samakan dengan style button Anda) */
+
+/* Sembunyikan elemen saat print kecuali kartunya */
+@media print {
+  body {
+    background: none;
+    padding: 0;
+  }
+  .card-preview-member h2, 
+  #btnPrintMember,
+  .container {
+    display: none !important;
+  }
+  .member-card {
+    margin: 0;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    display: block !important; /* Pastikan muncul saat print */
+  }
+}
+
+
+
+
+
+
+
+@media (max-width: 400px) {
+    table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+.btn-tambah-keranjang {
+    width: 100%;
+}
+#btnScanKasir {
+    width: 100%;
+}
+
+}
+
+
