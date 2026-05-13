@@ -326,118 +326,97 @@ document.getElementById("installBtn").addEventListener("click", () => {
 
 
 
-const kasirList = [
-  { id: "KSR001", nama: "Adi" },
-  { id: "KSR002", nama: "Budi" }
-];
+function loginKasir() {
+  const id = document.getElementById("kasirId").value.trim();
+  const nama = document.getElementById("kasirNama").value.trim();
 
-localStorage.setItem("kasirList", JSON.stringify(kasirList));
+  const kasirList =
+    JSON.parse(localStorage.getItem("kasirList")) || [];
 
-
-
-const kasirAktif = {
-  id: "KSR001",
-  nama: "Adi"
-};
-
-
-
-
-
-
-
-
-
-
-localStorage.setItem("kasirAktif", JSON.stringify(kasirAktif));
-
-
-  function loginKasir() {
-  const id = document.getElementById("kasirId").value;
-  const nama = document.getElementById("kasirNama").value;
-
-  const kasirList = JSON.parse(localStorage.getItem("kasirList")) || [];
-
-  const valid = kasirList.find(k => k.id === id && k.nama === nama);
+  const valid = kasirList.find(
+    (k) =>
+      k.id.toLowerCase() === id.toLowerCase() &&
+      k.nama.toLowerCase() === nama.toLowerCase()
+  );
 
   if (!valid) {
-    alert("Id Kasir tidak ditemukan!");
+    alert("ID atau Nama Kasir salah!");
     return;
   }
 
-  localStorage.setItem("kasirAktif", JSON.stringify(valid));
+  localStorage.setItem(
+    "kasirAktif",
+    JSON.stringify(valid)
+  );
+
+  alert("Login berhasil!");
 
   window.location.href = "dashboard.html";
 }
-
-
-
-
-
-
-
 
 function tambahKasir() {
   const id = prompt("Masukkan ID Kasir:");
   const nama = prompt("Masukkan Nama Kasir:");
 
-  let kasirList = JSON.parse(localStorage.getItem("kasirList")) || [];
+  if (!id || !nama) {
+    alert("ID dan Nama wajib diisi");
+    return;
+  }
 
-  kasirList.push({ id, nama });
+  let kasirList =
+    JSON.parse(localStorage.getItem("kasirList")) || [];
 
-  localStorage.setItem("kasirList", JSON.stringify(kasirList));
+  // cek duplikat
+  const sudahAda = kasirList.find(
+    (k) => k.id.toLowerCase() === id.toLowerCase()
+  );
+
+  if (sudahAda) {
+    alert("ID Kasir sudah digunakan!");
+    return;
+  }
+
+  kasirList.push({
+    id: id.trim(),
+    nama: nama.trim(),
+  });
+
+  localStorage.setItem(
+    "kasirList",
+    JSON.stringify(kasirList)
+  );
 
   alert("Kasir berhasil ditambahkan!");
 }
 
 
 
-function logoutKasir() {
-  if (!confirm("Yakin ingin logout?")) return;
-
-  localStorage.removeItem("kasirAktif");
-  localStorage.removeItem("keranjang");
-
-  // pakai replace, bukan href
-  window.location.replace("login.html");
-}
 
 
-window.addEventListener("pageshow", function (event) {
-  const kasir = JSON.parse(localStorage.getItem("kasirAktif"));
+
+
+
+
+
+/*(function cekLogin() {
+  const kasir =
+    JSON.parse(localStorage.getItem("kasirAktif"));
 
   if (!kasir) {
     window.location.replace("login.html");
   }
-});
-
-
-window.history.pushState(null, null, window.location.href);
-window.onpopstate = function () {
-  window.history.go(1);
-};
+})();*/
 
 
 
 
 
-window.addEventListener("pageshow", function (event) {
-  const kasir = JSON.parse(localStorage.getItem("kasirAktif"));
-
-  if (!kasir) {
-    window.location.replace("login.html");
-  }
-});
 
 
 
-(function cekLogin() {
-  const kasir = JSON.parse(localStorage.getItem("kasirAktif"));
 
-  if (!kasir) {
-    window.location.replace("login.html");
-  }
-})();
+
+
 
 
 

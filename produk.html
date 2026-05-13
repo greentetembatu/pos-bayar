@@ -67,33 +67,33 @@
       <!-- Content -->
       <main class="content">
         <h1>Manajemen Produk</h1>
-<div
-  class="card"
-  style="display:flex; flex-direction:column; position:relative;"
->
-  <label>Cari Produk</label>
+        <div
+          class="card"
+          style="display: flex; flex-direction: column; position: relative"
+        >
+          <label>Cari Produk</label>
 
-  <input
-    type="text"
-    id="searchProduk"
-    placeholder="nama produk..."
-    autocomplete="off"
-  />
+          <input
+            type="text"
+            id="searchProduk"
+            placeholder="nama produk..."
+            autocomplete="off"
+          />
 
-  <!-- HASIL PENCARIAN -->
-  <div id="hasilPencarianProduk"></div>
+          <!-- HASIL PENCARIAN -->
+          <div id="hasilPencarianProduk"></div>
 
-  <span></span>
+          <span></span>
 
-  <label>Filter Stok</label>
+          <label>Filter Stok</label>
 
-  <select id="filterStok" onchange="renderProduk()">
-    <option value="all">Semua</option>
-    <option value="tersedia">Stok Tersedia</option>
-    <option value="habis">Stok Habis</option>
-    <option value="menipis">Stok Menipis (≤ 5)</option>
-  </select>
-</div>
+          <select id="filterStok" onchange="renderProduk()">
+            <option value="all">Semua</option>
+            <option value="tersedia">Stok Tersedia</option>
+            <option value="habis">Stok Habis</option>
+            <option value="menipis">Stok Menipis (≤ 5)</option>
+          </select>
+        </div>
         <div
           id="reader"
           style="width: 100%; max-width: 400px; margin: auto"
@@ -203,57 +203,95 @@
               Next ➡
             </button>
           </div>
-
         </div>
-                  <div
-            class="card"
-            style="
-            display: inline-flex; 
-            flex-direction: column; 
-            justify-content: center;
-            padding: 20px;
-            width: 100%;"
-            
-          >
-            <button
-              onclick="eksporDataProduk()"
-              style="
-                background: var(--biru-gelap);
-                color: white;
-                flex: 1;
-                padding: 10px;
-                border-radius: 5px;
-                text-align: center;
-                cursor: pointer;
-              "
-            >
-              Ekspor Data (Backup)
-            </button>
+<div
+  class="card"
+  style="
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    width: 100%;
+    gap:10px;
+  "
+>
 
-            <label
-              for="inputImpor"
-              style="
-                background: var(--biru-terang);
-                color: black;
-                flex: 2;
-                padding: 10px;
-                border-radius: 5px;
-                text-align: center;
-                cursor: pointer;
+  <!-- EXPORT JSON -->
+  <button
+    onclick="eksporDataProduk()"
+    style="
+      background: var(--biru-gelap);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    "
+  >
+    Ekspor JSON
+  </button>
 
-              "
-            >
-              Impor Data
-            </label>
-            <input
-              type="file"
-              id="inputImpor"
-              accept=".json"
-              onchange="imporDataProduk(event)"
-              style="display: none"
-            />
-          </div>
 
+  <!-- IMPORT JSON -->
+  <label
+    for="inputImpor"
+    style="
+      background: var(--biru-terang);
+      color: black;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+    "
+  >
+    Impor JSON
+  </label>
+
+  <input
+    type="file"
+    id="inputImpor"
+    accept=".json"
+    onchange="imporDataProduk(event)"
+    style="display:none"
+  />
+
+  <!-- IMPORT CSV -->
+     <!-- EXPORT CSV -->
+  <button
+    onclick="eksporCSVProduk()"
+    style="
+      background: #16a34a;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    "
+  >
+    Ekspor CSV
+  </button>
+
+  <label
+    for="inputImporCSV"
+    style="
+      background: #f59e0b;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+    "
+  >
+    Impor CSV
+  </label>
+
+  <input
+    type="file"
+    id="inputImporCSV"
+    accept=".csv"
+    onchange="imporCSVProduk(event)"
+    style="display:none"
+  />
+
+</div>
       </main>
     </section>
     <script src="js/data.js"></script>

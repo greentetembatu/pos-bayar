@@ -568,6 +568,173 @@ function imporDataProduk(event) {
 
 
 
+/* =======================
+   EKSPOR DATA PRODUK (CSV)
+======================= */
+function eksporCSVProduk() {
+
+    const data = getProduk() || [];
+
+    if (data.length === 0) {
+        alert("Tidak ada data produk");
+        return;
+    }
+
+    // Header CSV
+    let csv = "id;barcode;nama;modal;harga_jual;stok;foto\n";
+
+    // Isi data
+    data.forEach((p) => {
+
+        csv += [
+            p.id || "",
+            p.barcode || "",
+            p.nama || "",
+            p.modal || 0,
+            p.harga_jual || 0,
+            p.stok || 0,
+            p.foto || ""
+        ].join(";") + "\n";
+
+    });
+
+    // Tambahkan UTF-8 BOM agar Excel tidak rusak
+    const blob = new Blob(
+        ["\uFEFF" + csv],
+        { type: "text/csv;charset=utf-8;" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    const tanggal = new Date()
+        .toISOString()
+        .slice(0, 10);
+
+    link.href = url;
+    link.download = `backup-produk-${tanggal}.csv`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+    alert("Data CSV berhasil diekspor");
+}
+
+
+
+
+
+
+
+
+
+
+
+/* =======================
+   IMPOR DATA PRODUK (CSV)
+======================= */
+function imporCSVProduk(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const konfirmasi = confirm(
+        "Mengimpor CSV akan menimpa data produk lama. Lanjutkan?"
+    );
+
+    if (!konfirmasi) {
+        event.target.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        try {
+
+            const text = e.target.result;
+
+            // Pecah per baris
+            const rows = text.split("\n");
+
+            // Ambil header
+            const headers = rows[0]
+                .trim()
+                .split(";");
+
+            const hasil = [];
+
+            // Mulai dari baris ke-2
+            for (let i = 1; i < rows.length; i++) {
+
+                const row = rows[i].trim();
+
+                if (!row) continue;
+
+                const cols = row.split(";");
+
+                let obj = {};
+
+                headers.forEach((h, index) => {
+
+                    obj[h] = cols[index];
+
+                });
+
+                // konversi number
+                obj.id = Number(obj.id) || Date.now() + i;
+                obj.modal = Number(obj.modal) || 0;
+                obj.harga_jual = Number(obj.harga_jual) || 0;
+                obj.stok = Number(obj.stok) || 0;
+
+                hasil.push(obj);
+            }
+
+            // simpan
+            saveProduk(hasil);
+
+            // refresh
+            pageProduk = 1;
+
+            renderProduk();
+
+            alert(
+                `Berhasil impor ${hasil.length} produk dari CSV`
+            );
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert("Gagal membaca file CSV");
+
+        }
+
+        event.target.value = "";
+    };
+
+    reader.readAsText(file);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -577,86 +744,90 @@ function imporDataProduk(event) {
 const searchInput = document.getElementById("searchProduk");
 const hasilBox = document.getElementById("hasilPencarianProduk");
 
-searchInput.addEventListener("input", function () {
+if (searchInput && hasilBox) {
 
-    const keyword = this.value
-        .toLowerCase()
-        .replace(/\s+/g, "")
-        .trim();
+    searchInput.addEventListener("input", function () {
 
-    hasilBox.innerHTML = "";
+        const keyword = this.value
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .trim();
 
-    if (!keyword) {
-        hasilBox.style.display = "none";
-        renderProduk();
-        return;
-    }
+        hasilBox.innerHTML = "";
 
-    const produk = getProduk() || [];
-
-    const hasil = produk
-        .filter((p) => {
-
-            const nama = (p.nama || "")
-                .toLowerCase()
-                .replace(/\s+/g, "");
-
-            const barcode = (p.barcode || "")
-                .toString()
-                .toLowerCase();
-
-            return (
-                nama.includes(keyword) ||
-                barcode.includes(keyword)
-            );
-        })
-        .slice(0, 5); // 🔥 MAKSIMAL 5 PRODUK
-
-    if (hasil.length === 0) {
-        hasilBox.style.display = "none";
-        return;
-    }
-
-    hasil.forEach((p) => {
-
-        const div = document.createElement("div");
-
-        div.className = "hasil-item";
-
-        div.innerHTML = `
-            <img src="${p.foto || 'https://placehold.co/50x50'}">
-
-            <div class="hasil-info">
-                <h4>${p.nama}</h4>
-                <small>
-                    Rp ${(p.harga_jual || 0).toLocaleString("id-ID")}
-                    •
-                    Stok: ${p.stok}
-                </small>
-            </div>
-        `;
-
-        // klik hasil
-        div.onclick = () => {
-
-            searchInput.value = p.nama;
-
+        if (!keyword) {
             hasilBox.style.display = "none";
-
-            // langsung filter tabel
-            pageProduk = 1;
             renderProduk();
-        };
+            return;
+        }
 
-        hasilBox.appendChild(div);
+        const produk = getProduk() || [];
+
+        const hasil = produk
+            .filter((p) => {
+
+                const nama = (p.nama || "")
+                    .toLowerCase()
+                    .replace(/\s+/g, "");
+
+                const barcode = (p.barcode || "")
+                    .toString()
+                    .toLowerCase();
+
+                return (
+                    nama.includes(keyword) ||
+                    barcode.includes(keyword)
+                );
+            })
+            .slice(0, 5);
+
+        if (hasil.length === 0) {
+            hasilBox.style.display = "none";
+            return;
+        }
+
+        hasil.forEach((p) => {
+
+            const div = document.createElement("div");
+
+            div.className = "hasil-item";
+
+            div.innerHTML = `
+                <img src="${p.foto || 'https://placehold.co/50x50'}">
+
+                <div class="hasil-info">
+                    <h4>${p.nama}</h4>
+
+                    <small>
+                        Rp ${(p.harga_jual || 0).toLocaleString("id-ID")}
+                        •
+                        Stok: ${p.stok}
+                    </small>
+                </div>
+            `;
+
+            div.onclick = () => {
+
+                searchInput.value = p.nama;
+
+                hasilBox.style.display = "none";
+
+                pageProduk = 1;
+
+                renderProduk();
+            };
+
+            hasilBox.appendChild(div);
+        });
+
+        hasilBox.style.display = "block";
     });
 
-    hasilBox.style.display = "block";
-});
-document.addEventListener("click", (e) => {
+    document.addEventListener("click", (e) => {
 
-    if (!e.target.closest(".card")) {
-        hasilBox.style.display = "none";
-    }
+        if (!e.target.closest(".card")) {
+            hasilBox.style.display = "none";
+        }
 
-});
+    });
+}

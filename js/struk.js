@@ -19,16 +19,6 @@ function cetakStruk(data) {
   let y = 5;
   const toko = getPengaturanToko() || {};
 
-
-
-
-
-
-
-
-
-
-  
   // HEADER
   doc.setFontSize(12);
   doc.text(toko.nama || "TOKO", 40, y, { align: "center" });
@@ -65,19 +55,20 @@ function cetakStruk(data) {
   y += 5;
 
   // MEMBER (opsional)
-  if (data.member) {
-    doc.text(`Member: ${data.member.nama}`, 3, y);
-    y += 3;
+// MEMBER
+const member = data.member || {};
 
-    doc.text(`ID: ${data.member.no}`, 3, y);
-    y += 3;
+doc.text(`Member: ${member.nama || "-"}`, 3, y);
+y += 3;
 
-    doc.text(`Hp: ${data.member.hp}`, 3, y);
-    y += 3;
+doc.text(`ID: ${member.no || "-"}`, 3, y);
+y += 3;
 
-    doc.text(`Email: ${data.member.email}`, 3, y);
-    y += 3;
-  }
+doc.text(`Hp: ${member.hp || "-"}`, 3, y);
+y += 3;
+
+doc.text(`Email: ${member.email || "-"}`, 3, y);
+y += 3;
 
   doc.text("====================================================", 40, y, {
     align: "center",

@@ -10,64 +10,90 @@ const produkInput = document.getElementById("produkInput");
 const produkList = document.getElementById("produkList");
 const produkIdInp = document.getElementById("produkId");
 
-// --- TAMBAHAN: Variabel untuk melacak posisi fokus ---
-let currentFocus = -1;
+// pastikan element ada
+if (produkInput && produkList && produkIdInp) {
 
-produkInput.addEventListener("input", () => {
-  const keyword = produkInput.value.toLowerCase().trim();
-  produkList.innerHTML = "";
+  // --- TAMBAHAN: Variabel untuk melacak posisi fokus ---
+  let currentFocus = -1;
 
-  // --- TAMBAHAN: Reset fokus setiap kali input berubah ---
-  currentFocus = -1;
+  produkInput.addEventListener("input", () => {
 
-  if (!keyword) {
-    produkList.style.display = "none";
-    return;
-  }
+    const keyword = produkInput.value.toLowerCase().trim();
+    produkList.innerHTML = "";
 
-  const hasil = getProduk().filter(
-    (p) =>
-      p.nama.toLowerCase().includes(keyword) ||
-      (p.barcode && p.barcode.includes(keyword)),
-  );
+    currentFocus = -1;
 
-  if (hasil.length === 0) {
-    produkList.style.display = "none";
-    return;
-  }
+    if (!keyword) {
+      produkList.style.display = "none";
+      return;
+    }
 
-  hasil.forEach((p) => {
-    const div = document.createElement("div");
-    div.className = "autocomplete-item";
-    div.innerHTML = `<strong>${p.nama}</strong><br><small>Rp ${p.harga_jual}</small>`;
+    const hasil = getProduk().filter(
+      (p) =>
+        p.nama.toLowerCase().includes(keyword) ||
+        (p.barcode && p.barcode.includes(keyword))
+    );
 
-    div.onclick = () => pilihProduk(p);
-    produkList.appendChild(div);
+    if (hasil.length === 0) {
+      produkList.style.display = "none";
+      return;
+    }
+
+    hasil.forEach((p) => {
+
+      const div = document.createElement("div");
+
+      div.className = "autocomplete-item";
+
+      div.innerHTML = `
+        <strong>${p.nama}</strong>
+        <br>
+        <small>Rp ${p.harga_jual}</small>
+      `;
+
+      div.onclick = () => pilihProduk(p);
+
+      produkList.appendChild(div);
+    });
+
+    produkList.style.display = "block";
   });
 
-  produkList.style.display = "block";
-});
+  // keyboard
+  produkInput.addEventListener("keydown", function (e) {
 
-// --- TAMBAHAN: Listener Keyboard ---
-produkInput.addEventListener("keydown", function (e) {
-  let listItems = produkList.getElementsByTagName("div");
+    let listItems = produkList.getElementsByTagName("div");
 
-  if (e.keyCode == 40) {
-    // Panah BAWAH
-    currentFocus++;
-    addActive(listItems);
-  } else if (e.keyCode == 38) {
-    // Panah ATAS
-    currentFocus--;
-    addActive(listItems);
-  } else if (e.keyCode == 13) {
-    // ENTER
-    e.preventDefault();
-    if (currentFocus > -1) {
-      if (listItems[currentFocus]) listItems[currentFocus].click();
+    if (e.keyCode == 40) {
+
+      currentFocus++;
+      addActive(listItems);
+
+    } else if (e.keyCode == 38) {
+
+      currentFocus--;
+      addActive(listItems);
+
+    } else if (e.keyCode == 13) {
+
+      e.preventDefault();
+
+      if (currentFocus > -1) {
+        if (listItems[currentFocus]) {
+          listItems[currentFocus].click();
+        }
+      }
     }
-  }
-});
+  });
+
+}
+
+
+
+
+
+
+
 
 function addActive(items) {
   if (!items) return false;
@@ -96,19 +122,34 @@ function pilihProduk(p) {
 }
 
 /* ENTER = TAMBAH */
-produkInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    tambahKeKeranjang();
-  }
-});
+/* ENTER = TAMBAH */
+if (produkInput) {
+
+  produkInput.addEventListener("keydown", (e) => {
+
+    if (e.key === "Enter") {
+
+      e.preventDefault();
+
+      tambahKeKeranjang();
+    }
+  });
+
+}
 
 document.addEventListener("click", (e) => {
-  if (!e.target.closest(".autocomplete")) {
-    produkList.style.display = "none";
-  }
-});
 
+  // pastikan produkList ada
+  if (!produkList) return;
+
+  // jika klik di luar autocomplete
+  if (!e.target.closest(".autocomplete")) {
+
+    produkList.style.display = "none";
+
+  }
+
+});
 /* =========================
    TAMBAH KE KERANJANG
 ========================= */
@@ -220,33 +261,51 @@ function renderKeranjang() {
 }*/
 
 function updateTotalDiskon() {
-  const subtotal = keranjang.reduce((s, i) => s + i.subtotal, 0);
 
-  const totalModal = keranjang.reduce(
-    (s, i) => s + (Number(i.modal) || 0) * (Number(i.qty) || 0),
-    0,
+  const subtotal = keranjang.reduce(
+    (s, i) => s + (Number(i.subtotal) || 0),
+    0
   );
 
-  const persen = Number(document.getElementById("diskonPersen").value) || 0;
+  const totalModal = keranjang.reduce(
+    (s, i) =>
+      s + (Number(i.modal) || 0) * (Number(i.qty) || 0),
+    0
+  );
+
+  // ambil element dulu
+  const diskonInput = document.getElementById("diskonPersen");
+  const nilaiDiskonEl = document.getElementById("nilaiDiskon");
+  const totalAkhirEl = document.getElementById("totalAkhir");
+  const totalLabaEl = document.getElementById("totalLaba");
+
+  // aman jika element tidak ada
+  const persen = Number(diskonInput?.value) || 0;
+
   const potongan = subtotal * (persen / 100);
 
   const totalAkhir = subtotal - potongan;
 
-  // 🔥 LABA SESUAI KEINGINAN KAMU
+  // laba
   const labaKotor = subtotal - totalModal;
   const labaBersih = labaKotor - potongan;
 
-  document.getElementById("nilaiDiskon").innerText =
-    "Rp " + potongan.toLocaleString("id-ID");
+  // update UI jika element ada
+  if (nilaiDiskonEl) {
+    nilaiDiskonEl.innerText =
+      "Rp " + potongan.toLocaleString("id-ID");
+  }
 
-  document.getElementById("totalAkhir").innerText =
-    "Rp " + totalAkhir.toLocaleString("id-ID");
+  if (totalAkhirEl) {
+    totalAkhirEl.innerText =
+      "Rp " + totalAkhir.toLocaleString("id-ID");
+  }
 
-  document.getElementById("totalLaba").innerText =
-    "Rp " + labaBersih.toLocaleString("id-ID");
+  if (totalLabaEl) {
+    totalLabaEl.innerText =
+      "Rp " + labaBersih.toLocaleString("id-ID");
+  }
 }
-updateTotalDiskon(); // 🔥 supaya laba ikut update
-
 /* =======================
    UBAH QTY
 ======================= */
@@ -285,6 +344,9 @@ function hitungLaba(totalAwal, totalModal, potonganDiskon) {
 /* =======================
    SIMPAN TRANSAKSI
 ======================= */
+/* =======================
+   SIMPAN TRANSAKSI
+======================= */
 function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
   const transaksi = getTransaksi() || [];
 
@@ -303,11 +365,29 @@ function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
 
   const kasir = JSON.parse(localStorage.getItem("kasirAktif")) || {};
 
+  // =========================
+  // FORMAT DATA MEMBER
+  // =========================
+  const memberData = dataMember
+    ? {
+        nama: dataMember.nama || "-",
+        no: dataMember.no || dataMember.id || "-",
+        hp: dataMember.hp || dataMember.telepon || "-",
+        email: dataMember.email || "-",
+      }
+    : {
+        nama: "-",
+        no: "-",
+        hp: "-",
+        email: "-",
+      };
+
   const detailTransaksi = {
     id: id,
     tanggal: new Date().toLocaleString("id-ID"),
     tanggalISO: new Date().toISOString(),
 
+    // ITEM
     items: [...keranjang],
 
     // KEUANGAN
@@ -315,7 +395,7 @@ function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
     diskon: diskonData?.diskon || 0,
     potongan: diskonData?.potongan || 0,
     total: diskonData?.totalAkhir || 0,
-    totalModal: totalModal, // 🔥 TAMBAHAN
+    totalModal: totalModal,
     totalLaba: totalLaba,
     uang: uang,
     kembalian: kembalian,
@@ -325,17 +405,24 @@ function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
     kasirNama: kasir.nama || "-",
 
     // MEMBER
-    member: dataMember || null,
-    namaMember: dataMember?.nama || "-",
-    idMember: dataMember?.no || "-",
-    hpMember: dataMember?.hp || "-",
-    emailMember: dataMember?.email || "-",
+    member: memberData,
+
+    // MEMBER FLAT (UNTUK RIWAYAT)
+    namaMember: memberData.nama,
+    idMember: memberData.no,
+    hpMember: memberData.hp,
+    emailMember: memberData.email,
+
     // TAMBAHAN
     metode: "cash",
   };
 
   transaksi.push(detailTransaksi);
-  localStorage.setItem("transaksi", JSON.stringify(transaksi));
+
+  localStorage.setItem(
+    "transaksi",
+    JSON.stringify(transaksi)
+  );
 
   return detailTransaksi;
 }
@@ -452,23 +539,39 @@ function bayar() {
       `Cetak struk?`,
   );
 
-  if (konfirmasi && transaksi) {
-    cetakStruk({
-      id: idTransaksi,
-      total: diskonData.totalAkhir,
-      totalAwal: diskonData.totalAwal,
-      diskon: diskonData.diskon,
-      potongan: diskonData.potongan,
-      uang,
-      kembalian,
-      items: [...keranjang],
-      kasirNama: kasir.nama,
-      kasirId: kasir.id,
-      member: dataMember,
-      laba: transaksi.totalLaba, // Kirim laba ke struk jika perlu
-    });
-  }
+if (konfirmasi && transaksi) {
 
+  cetakStruk({
+
+    id: idTransaksi,
+
+    total: diskonData.totalAkhir,
+    totalAwal: diskonData.totalAwal,
+
+    diskon: diskonData.diskon,
+    potongan: diskonData.potongan,
+
+    uang,
+    kembalian,
+
+    items: [...keranjang],
+
+    kasirNama: kasir.nama,
+    kasirId: kasir.id,
+
+    member: dataMember
+      ? {
+          nama: dataMember.nama || "-",
+          no: dataMember.no || dataMember.id || "-",
+          hp: dataMember.hp || dataMember.telepon || "-",
+          email: dataMember.email || "-"
+        }
+      : null,
+
+    laba: transaksi.totalLaba,
+  });
+
+}
   // RESET
   keranjang = [];
   renderKeranjang();
@@ -774,3 +877,39 @@ function stopScanMemberKasir() {
       .catch((err) => console.error("Error stop scanner member kasir", err));
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
