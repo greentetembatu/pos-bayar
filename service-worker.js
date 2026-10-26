@@ -52,7 +52,7 @@ self.addEventListener("fetch", event => {
 
 
 
-const CACHE_NAME = "KASIR-V2";
+const CACHE_NAME = "KASIR-V3";
 
 const ASSETS = [
   "./",
@@ -83,7 +83,7 @@ const ASSETS = [
   "./js/produk.js",
   "./js/riwayat.js", 
   "./js/storage.js", 
-  "./js/sruk.js", 
+  "./js/struk.js", 
   
   "/manifest.json",
   "https://unpkg.com/html5-qrcode", 
