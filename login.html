@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Kasir</title>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #e2e8f0;
+  }
+
+  .login-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+
+  .login-box h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 22px;
+    color: #60a5fa;
+  }
+
+  .login-box input[type="text"] {
+    width: 100%;
+    padding: 11px 13px;
+    margin-bottom: 12px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #e2e8f0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .login-box input[type="text"]:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+  }
+
+  .login-box input[type="text"]::placeholder {
+    color: #64748b;
+  }
+
+  .login-box button {
+    width: 100%;
+    padding: 11px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-masuk {
+    background: #2563eb;
+    color: white;
+  }
+  .btn-masuk:hover { background: #1d4ed8; }
+
+  .btn-daftar {
+    background: #16a34a;
+    color: white;
+  }
+  .btn-daftar:hover { background: #15803d; }
+
+  .btn-install {
+    background: #7c3aed;
+    color: white;
+  }
+  .btn-install:hover { background: #6d28d9; }
+
+  /* ============ LAYAR KUNCI ============ */
+  #layarKunci h2 {
+    color: #dc2626;
+  }
+
+  #layarKunci p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .kontak-box {
+    background: #422006;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 15px 0;
+    font-size: 14px;
+    text-align: center;
+    color: #fbbf24;
+  }
+
+  .kontak-box div { margin: 4px 0; }
+
+  .kode-input {
+    text-align: center;
+    font-family: monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  #pesanKode {
+    font-size: 12px;
+    margin-top: 8px;
+    min-height: 16px;
+    text-align: center;
+  }
+
+  .sub {
+    font-size: 13px;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="login-box">
+
+  <!-- ============ FORM LOGIN ============ -->
+  <div id="formLoginArea">
+    <h2>Login Kasir</h2>
+
+    <input type="text" id="kasirId" placeholder="ID Kasir" autocomplete="username" />
+    <input type="text" id="kasirNama" placeholder="Nama Kasir" autocomplete="name" />
+
+    <button class="btn-masuk" onclick="loginKasir()">Masuk</button>
+    <button class="btn-daftar" onclick="tambahKasir()">Daftar</button>
+    <button id="installBtn" class="btn-install" style="display:none;">Install Aplikasi</button>
+  </div>
+
+  <!-- ============ LAYAR KUNCI (expired) ============ -->
+  <div id="layarKunci" style="display:none;">
+    <h2>🔒 Masa Aktif Habis</h2>
+
+    <p>
+      Masa penggunaan aplikasi Anda telah berakhir.<br>
+      Untuk memperpanjang, silakan hubungi:
+    </p>
+
+    <div class="kontak-box">
+      <div>📧 <strong>greentetembatu@gmail.com</strong></div>
+      <div>📱 WA <strong>085214056596</strong></div>
+    </div>
+
+    <p class="sub">
+      Setelah melakukan pembayaran, Anda akan menerima kode unik.<br>
+      Masukkan kode tersebut di bawah ini:
+    </p>
+
+    <input
+      type="text"
+      id="kodePerpanjang"
+      class="kode-input"
+      placeholder="Masukkan kode unik"
+    />
+
+    <button class="btn-masuk" onclick="perpanjangLisensi()">Aktifkan Kode</button>
+
+    <p id="pesanKode"></p>
+  </div>
+
+</div>
+
+<script>
+/* =====================================================
+   SISTEM LISENSI MULTI-DURASI
+   - Trial awal: 30 hari
+   - Notifikasi saat ≤5 hari sebelum expired
+   - Perpanjangan: 1 bulan / 3 bulan / 6 bulan / 1 tahun / selamanya
+   - Kode terenkripsi (XOR + base64 + split)
+===================================================== */
+
+/* ============ KONFIGURASI ============ */
+const DURASI_TRIAL_HARI = 30;
+const NOTIF_AMBANG_HARI = 5;
+
+const KEY_STORAGE = "app_license_v2";
+const KEY_MIRROR_1 = "app_mirror_a2";
+const KEY_MIRROR_2 = "app_mirror_b2";
+
+// Kunci XOR (acak, jangan diubah setelah dipakai)
+const XOR_KEY = [0x47, 0x52, 0x4E, 0x54, 0x42, 0x54, 0x55]; // "GRNTBTU"
+
+
+/* ============ KODE LISENSI (TERENKRIPSI) ============ */
+const _C = {
+  EXT_1BULAN:  ["AgoaeXMW", "AAsTAA=="],
+  EXT_3BULAN:  ["AgoaeXEW", "AAsTAA=="],
+  EXT_6BULAN:  ["AgoaeXQW", "AAsTAA=="],
+  EXT_1TAHUN:  ["AgoaeXMA", "FA8HAA=="],
+  EXT_FOREVER: ["AgoaeQQb", "BwIECwY="],
+};
+
+
+/* ============ ENCODE / DECODE ============ */
+function _enc(plain) {
+  let x = "";
+  for (let i = 0; i < plain.length; i++) {
+    x += String.fromCharCode(plain.charCodeAt(i) ^ XOR_KEY[i % XOR_KEY.length]);
+  }
+  return btoa(x);
+}
+
+function _dec(encoded) {
+  try {
+    const x = atob(encoded);
+    let p = "";
+    for (let i = 0; i < x.length; i++) {
+      p += String.fromCharCode(x.charCodeAt(i) ^ XOR_KEY[i % XOR_KEY.length]);
+    }
+    return p;
+  } catch (e) {
+    return "";
+  }
+}
+
+
+/* ============ CEK KODE PERPANJANGAN ============ */
+function cekKodePerpanjangan(input) {
+  if (!input) return null;
+  const user = input.trim().toUpperCase();
+
+  const mapping = [
+    { key: "EXT_1BULAN",  hari: 30  },
+    { key: "EXT_3BULAN",  hari: 90  },
+    { key: "EXT_6BULAN",  hari: 180 },
+    { key: "EXT_1TAHUN",  hari: 365 },
+    { key: "EXT_FOREVER", hari: -1  }, // -1 = selamanya
+  ];
+
+  for (const m of mapping) {
+    const arr = _C[m.key];
+    if (!arr) continue;
+    const plain = _dec(arr.join(""));
+    if (plain && plain.toUpperCase() === user) return m.hari;
+  }
+  return null;
+}
+
+
+/* ============ GET / SAVE LISENSI ============ */
+function getLisensi() {
+  try {
+    const a = JSON.parse(localStorage.getItem(KEY_STORAGE) || "null");
+    const b = localStorage.getItem(KEY_MIRROR_1);
+    const c = localStorage.getItem(KEY_MIRROR_2);
+    if (!a && !b && !c) return null;
+    return a || JSON.parse(b || c || "null");
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveLisensi(data) {
+  const str = JSON.stringify(data);
+  localStorage.setItem(KEY_STORAGE, str);
+  localStorage.setItem(KEY_MIRROR_1, str);
+  localStorage.setItem(KEY_MIRROR_2, str);
+}
+
+function sudahPernahDaftar() {
+  return getLisensi() !== null;
+}
+
+
+/* ============ MULAI LISENSI ============ */
+function mulaiLisensi() {
+  const now = Date.now();
+  const data = {
+    installDate: now,
+    lastActive: now,
+    extendLog: [],
+    forever: false,
+  };
+  saveLisensi(data);
+  return data;
+}
+
+
+/* ============ HITUNG SISA HARI ============ */
+function sisaHariLisensi() {
+  const data = getLisensi();
+  if (!data) return null;
+
+  if (data.forever) {
+    return { sisaHari: Infinity, expired: false, forever: true, batasAkhir: null };
+  }
+
+  const totalExtend = (data.extendLog || []).reduce(
+    (sum, x) => sum + (x.hari || 0), 0
+  );
+  const batasAkhir =
+    data.installDate + (DURASI_TRIAL_HARI + totalExtend) * 86400000;
+  const sisaMs = batasAkhir - Date.now();
+
+  return {
+    sisaHari: Math.ceil(sisaMs / 86400000),
+    expired: sisaMs <= 0,
+    forever: false,
+    batasAkhir: new Date(batasAkhir),
+  };
+}
+
+
+/* ============ DETEKSI RESET JAM ============ */
+function deteksiManipulasiJam() {
+  const data = getLisensi();
+  if (!data) return false;
+  const now = Date.now();
+
+  if (now < data.lastActive - 86400000) return true;
+
+  data.lastActive = Math.max(data.lastActive, now);
+  saveLisensi(data);
+  return false;
+}
+
+
+/* ============ TAMPILKAN / SEMBUNYIKAN ============ */
+function tampilkanLayarKunci() {
+  const form = document.getElementById("formLoginArea");
+  const kunci = document.getElementById("layarKunci");
+  if (form) form.style.display = "none";
+  if (kunci) kunci.style.display = "block";
+}
+
+function tampilkanFormLogin() {
+  const form = document.getElementById("formLoginArea");
+  const kunci = document.getElementById("layarKunci");
+  if (form) form.style.display = "block";
+  if (kunci) kunci.style.display = "none";
+}
+
+
+/* ============ CEK SAAT HALAMAN DIBUKA ============ */
+function cekLisensiSaatMuat() {
+  if (!sudahPernahDaftar()) {
+    tampilkanFormLogin();
+    return true;
+  }
+
+  if (deteksiManipulasiJam()) {
+    tampilkanLayarKunci();
+    return false;
+  }
+
+  const status = sisaHariLisensi();
+
+  if (!status || status.expired) {
+    tampilkanLayarKunci();
+    return false;
+  }
+
+  tampilkanFormLogin();
+
+  // Notifikasi hanya jika ≤5 hari & bukan forever
+  if (!status.forever && status.sisaHari <= NOTIF_AMBANG_HARI) {
+    setTimeout(() => {
+      alert(
+        `⚠️ Masa aktif aplikasi tinggal ${status.sisaHari} hari.\n\n` +
+        `Segera perpanjang dengan menghubungi:\n` +
+        `📧 greentetembatu@gmail.com\n` +
+        `📱 WA 085214056596`
+      );
+    }, 300);
+  }
+
+  return true;
+}
+
+
+/* ============ PERPANJANG LISENSI ============ */
+function perpanjangLisensi() {
+  const input = document.getElementById("kodePerpanjang");
+  const pesan = document.getElementById("pesanKode");
+  if (!input) return;
+
+  const kode = input.value.trim();
+
+  if (!kode) {
+    pesan.style.color = "#dc2626";
+    pesan.textContent = "Kode tidak boleh kosong.";
+    return;
+  }
+
+  const durasiHari = cekKodePerpanjangan(kode);
+
+  if (durasiHari === null) {
+    pesan.style.color = "#dc2626";
+    pesan.textContent = "❌ Kode tidak valid. Hubungi admin.";
+    input.value = "";
+    return;
+  }
+
+  const data = getLisensi() || mulaiLisensi();
+
+  // Kode FOREVER
+  if (durasiHari === -1) {
+    data.forever = true;
+    saveLisensi(data);
+    pesan.style.color = "#16a34a";
+    pesan.textContent = "✅ Lisensi selamanya aktif!";
+    setTimeout(() => location.reload(), 1500);
+    return;
+  }
+
+  // Kode durasi biasa
+  data.extendLog = data.extendLog || [];
+  data.extendLog.push({ tanggal: Date.now(), hari: durasiHari });
+  saveLisensi(data);
+
+  const label =
+    durasiHari === 30  ? "1 bulan"  :
+    durasiHari === 90  ? "3 bulan"  :
+    durasiHari === 180 ? "6 bulan"  :
+    durasiHari === 365 ? "1 tahun"  : `${durasiHari} hari`;
+
+  pesan.style.color = "#16a34a";
+  pesan.textContent = `✅ Lisensi diperpanjang ${label}. Aplikasi aktif kembali.`;
+
+  setTimeout(() => location.reload(), 1500);
+}
+
+
+/* ============ LOGIN & DAFTAR ============ */
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById("installBtn");
+  if (btn) btn.style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then((choice) => {
+    if (choice.outcome === "accepted") console.log("App installed");
+    deferredPrompt = null;
+  });
+});
+
+
+function loginKasir() {
+  if (!cekLisensiSaatMuat()) {
+    alert("Masa aktif aplikasi telah berakhir. Silakan perpanjang.");
+    return;
+  }
+
+  const id = document.getElementById("kasirId").value.trim();
+  const nama = document.getElementById("kasirNama").value.trim();
+
+  const kasirList = JSON.parse(localStorage.getItem("kasirList")) || [];
+
+  const valid = kasirList.find(
+    (k) =>
+      k.id.toLowerCase() === id.toLowerCase() &&
+      k.nama.toLowerCase() === nama.toLowerCase()
+  );
+
+  if (!valid) {
+    alert("ID atau Nama Kasir salah!");
+    return;
+  }
+
+  if (!sudahPernahDaftar()) mulaiLisensi();
+
+  localStorage.setItem("kasirAktif", JSON.stringify(valid));
+  alert("Login berhasil!");
+  window.location.href = "dashboard.html";
+}
+
+
+function tambahKasir() {
+  if (!cekLisensiSaatMuat()) {
+    alert("Masa aktif aplikasi telah berakhir. Silakan perpanjang.");
+    return;
+  }
+
+  const id = prompt("Masukkan ID Kasir:");
+  const nama = prompt("Masukkan Nama Kasir:");
+
+  if (!id || !nama) {
+    alert("ID dan Nama wajib diisi");
+    return;
+  }
+
+  let kasirList = JSON.parse(localStorage.getItem("kasirList")) || [];
+
+  const sudahAda = kasirList.find(
+    (k) => k.id.toLowerCase() === id.toLowerCase()
+  );
+
+  if (sudahAda) {
+    alert("ID Kasir sudah digunakan!");
+    return;
+  }
+
+  kasirList.push({ id: id.trim(), nama: nama.trim() });
+  localStorage.setItem("kasirList", JSON.stringify(kasirList));
+
+  if (!sudahPernahDaftar()) {
+    mulaiLisensi();
+    alert("Kasir berhasil ditambahkan! Masa aktif 30 hari dimulai.");
+  } else {
+    alert("Kasir berhasil ditambahkan!");
+  }
+}
+
+
+/* ============ INIT ============ */
+document.addEventListener("DOMContentLoaded", () => {
+  cekLisensiSaatMuat();
+});
+</script>
+
+</body>
+</html>

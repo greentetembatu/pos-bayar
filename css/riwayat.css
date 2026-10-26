@@ -1,0 +1,216 @@
+/* RESET */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+/* JUDUL */
+h2 {
+  margin-bottom: 10px;
+  color: #222;
+}
+
+/* BUTTON DASHBOARD */
+ul {
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+ul button {
+  background: #4CAF50;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+ul button a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+ul button:hover {
+  background: #43a047;
+}
+
+/* INPUT SEARCH */
+#searchTransaksi {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+#searchTransaksi:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* HEADER */
+thead {
+  background: #4CAF50;
+  color: white;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+/* BODY */
+tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+/* HOVER ROW */
+tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* AKSI BUTTON */
+td button {
+  margin-right: 5px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* DETAIL */
+td button:nth-child(1) {
+  background: #2196F3;
+  color: white;
+}
+
+/* CETAK */
+td button:nth-child(2) {
+  background: #ff9800;
+  color: white;
+}
+
+/* HAPUS */
+td button:nth-child(3) {
+  background: red;
+  color: white;
+}
+
+/* DOWNLOAD PANEL */
+.download-panel {
+  margin-top: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.download-panel h3 {
+  margin-bottom: 10px;
+}
+
+/* BUTTON DOWNLOAD */
+.download-panel button {
+  padding: 10px 15px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #4CAF50;
+  color: white;
+  transition: 0.3s;
+}
+
+.download-panel button:hover {
+  background: #388e3c;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* =========================
+   RESPONSIVE MOBILE
+   ========================= */
+@media (max-width: 768px) {
+
+  body {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  /* SEARCH */
+  #searchTransaksi {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  /* BUTTON DASHBOARD */
+  ul button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  /* TABLE JADI SCROLL */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  thead {
+    font-size: 12px;
+  }
+
+  tbody td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* BUTTON AKSI */
+  td button {
+    padding: 5px 8px;
+    font-size: 11px;
+    margin-bottom: 3px;
+  }
+
+  /* DOWNLOAD PANEL */
+  .download-panel {
+    padding: 15px;
+  }
+
+  .download-panel button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

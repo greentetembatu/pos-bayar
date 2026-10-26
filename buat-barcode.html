@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>buat-barcode</title>
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0d6efd" />
+
+    <meta
+      name="description"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Pos Bayar" />
+    <meta
+      property="og:description"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"
+    />
+    <meta
+      property="og:url"
+      content="https://greentetembatu.github.io/pos-bayar/"
+    />
+    <meta property="og:site_name" content="Pos Bayar" />
+    <meta
+      property="og:image"
+      content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    />
+
+    <!--<link rel="stylesheet" href="style.css" />-->
+    <link rel="stylesheet" href="css/produk.css" />
+  </head>
+
+  <body>
+    <section class="app">
+      <!-- SIDEBAR -->
+      <section class="sidebar">
+        <div class="sidebar-header">
+          <h2>DASHBOARD</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="kasir.html">Kasir</a></li>
+          <li><a href="produk.html">Produk</a></li>
+          <li><a href="riwayat.html">Riwayat</a></li>
+          <li><a href="member.html">Member</a></li>
+          <li><a href="cetak-member.html" class="active">Buat Barcode</a></li>
+        </ul>
+
+        <div class="button-aside">
+          <button class="btn-instal" id="installBtn" style="display: none">
+            Install Aplikasi
+          </button>
+          <button class="btn-logout" onclick="logoutKasir()">Logout</button>
+        </div>
+      </section>
+      <!-- Content -->
+      <main class="content">
+
+        <!-- ===================== -->
+<!-- CARD: GENERATOR BARCODE -->
+<!-- ===================== -->
+<div
+  class="card"
+  style="
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+    gap: 12px;
+  "
+>
+  <h3 style="margin: 0 0 5px; font-size: 15px;">🏷️ Buat Barcode Baru</h3>
+
+  <!-- Pilih format -->
+  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+    <label style="display: flex; align-items: center; gap: 5px; font-size: 13px;">
+      <input type="radio" name="formatBarcode" value="EAN13" checked>
+      EAN-13 (bisa discan)
+    </label>
+    <label style="display: flex; align-items: center; gap: 5px; font-size: 13px;">
+      <input type="radio" name="formatBarcode" value="CODE128">
+      CODE128 (teks/angka)
+    </label>
+  </div>
+
+  <!-- Tombol Generate -->
+  <button
+    type="button"
+    onclick="buatBarcodeBaru()"
+    style="
+      background: #2563eb;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    "
+  >
+    🎲 Buat Barcode Baru
+  </button>
+
+  <!-- Area Preview Barcode -->
+  <div
+    id="previewBarcodeBox"
+    style="
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 15px;
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+    "
+  >
+    <div style="font-size: 12px; color: #64748b;">Preview Barcode</div>
+
+    <!-- Canvas untuk render barcode -->
+    <canvas id="barcodeCanvas" style="max-width: 100%;"></canvas>
+
+    <!-- Teks kode barcode -->
+    <div
+      id="barcodeTextLabel"
+      style="
+        font-family: monospace;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 2px;
+      "
+    ></div>
+
+    <!-- Tombol aksi -->
+    <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+      <button
+        type="button"
+        onclick="copyBarcodeKeClipboard()"
+        style="background: #16a34a; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px;"
+      >
+        📋 Copy Kode
+      </button>
+
+      <button
+        type="button"
+        onclick="printBarcode()"
+        style="background: #f59e0b; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px;"
+      >
+        🖨️ Print
+      </button>
+
+      <button
+        type="button"
+        onclick="downloadBarcodePNG()"
+        style="background: #7c3aed; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px;"
+      >
+        💾 Simpan PNG
+      </button>
+    </div>
+  </div>
+</div>
+
+      </main>
+    </section>
+    <script src="js/barcode.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/produk.js"></script>
+    <script src="js/riwayat.js"></script>
+    <script src="js/kasir.js"></script>
+    <script src="js/dasboard.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("Service Worker registered"))
+          .catch((err) => console.error("SW failed:", err));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>KasirKu - By: Asbin Ecosystem</title>
+
+  <meta name="description" content="KasirKu adalah aplikasi kasir modern untuk warung, toko, dan UMKM. Kelola produk, transaksi, stok, dan member dengan mudah." >
+  <meta name="keywords" content="aplikasi kasir, kasir online, kasir offline, POS Indonesia, kasir UMKM, KasirKu, Asbin Ecosystem">
+  <meta name="author" content="Asbin Ecosystem">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/android-icon-192x192.png" >
+  <link rel="apple-touch-icon" href="./icons/android-icon-192x192.png" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="KasirKu" >
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
+
+
+  <!-- Font Google (Plus Jakarta Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+
+
+  <style>
+    /* ============ DESIGN SYSTEM & VARIABLES (DARK GOLD) ============ */
+:root {
+  --bg-dark: #0b0c10;
+  --bg-card: #15171e;
+  --bg-alt: #12141c;
+  --gold-primary: #d4af37;
+  --gold-light: #f3e5ab;
+  --gold-gradient: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa8c2c 100%);
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --border-color: rgba(212, 175, 55, 0.2);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-gold: 0 10px 30px -4px rgba(212, 175, 55, 0.15);
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============ RESET & BASE ============ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-dark);
+}
+
+body {
+  line-height: 1.6;
+  overflow-x: hidden;
+  background-color: var(--bg-dark);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ============ ANIMASI KEYFRAMES ============ */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatGlow {
+  0%, 100% {
+    box-shadow: 0 10px 30px -4px rgba(212, 175, 55, 0.15);
+  }
+  50% {
+    box-shadow: 0 15px 40px -2px rgba(212, 175, 55, 0.3);
+  }
+}
+
+.hero-inner, .section-title, .feature-card, .step-card {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ============ NAVBAR ============ */
+.navbar {
+  position: sticky;
+  top: 0;
+  background: rgba(11, 12, 16, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1000;
+  animation: fadeInDown 0.6s ease;
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+}
+
+.logo:hover {
+  transform: scale(1.02);
+}
+
+.logo-icon {
+  font-size: 1.8rem;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--border-color);
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-text .title {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.logo-text .subtitle {
+  font-size: 0.75rem;
+  color: var(--gold-primary);
+  font-weight: 500;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links a {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: var(--transition);
+  position: relative;
+}
+
+.nav-links a:not(.btn-login-nav):after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--gold-primary);
+  transition: var(--transition);
+}
+
+.nav-links a:hover {
+  color: var(--gold-primary);
+}
+
+.nav-links a:hover:after {
+  width: 100%;
+}
+
+.btn-login-nav {
+  background: var(--gold-gradient);
+  color: #0b0c10 !important;
+  font-weight: 700;
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+  transition: var(--transition);
+}
+
+.btn-login-nav:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+/* ============ HERO SECTION ============ */
+.hero {
+  background: radial-gradient(circle at 50% 10%, #1a1c26 0%, var(--bg-dark) 70%);
+  padding: 90px 24px 70px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.badge-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  padding: 6px 18px;
+  border-radius: 50px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-gold);
+  margin-bottom: 24px;
+  animation: fadeInDown 0.8s ease;
+}
+
+.badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.badge-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 8px;
+}
+
+.hero h1 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.hero .highlight {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto 36px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 54px;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 14px 28px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background: var(--gold-gradient);
+  color: #0b0c10;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--gold-primary);
+  color: var(--gold-light);
+  transform: translateY(-3px);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  background: var(--bg-card);
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  animation: floatGlow 6s ease-in-out infinite;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--gold-primary);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ============ LAYOUT GENERAL & SECTIONS ============ */
+.section-padding {
+  padding: 90px 24px;
+}
+
+.bg-alt {
+  background-color: var(--bg-alt);
+}
+
+.section-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 54px;
+}
+
+.section-title h2 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.section-title p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+}
+
+/* ============ FITUR ============ */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.feature-card {
+  background: var(--bg-card);
+  padding: 32px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold-primary);
+  box-shadow: var(--shadow-gold);
+}
+
+.feature-icon {
+  font-size: 2.2rem;
+  margin-bottom: 18px;
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.feature-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.feature-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ============ CARA KERJA ============ */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.step-card {
+  background: var(--bg-card);
+  padding: 36px 28px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  position: relative;
+  transition: var(--transition);
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--gold-primary);
+}
+
+.step-num {
+  width: 48px;
+  height: 48px;
+  background: var(--gold-gradient);
+  color: #0b0c10;
+  font-size: 1.25rem;
+  font-weight: 800;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.step-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.step-card p {
+  color: var(--text-muted);
+  font-size: 0.925rem;
+}
+
+/* ============ CTA BANNER ============ */
+.cta-banner {
+  background: linear-gradient(135deg, #15171e 0%, #0b0c10 100%);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.cta-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta-banner h2 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.cta-subtext {
+  font-size: 1.25rem;
+  color: var(--gold-primary);
+  font-weight: 600;
+}
+
+.cta-banner p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.btn-cta {
+  display: inline-block;
+  background: var(--gold-gradient);
+  color: #0b0c10;
+  padding: 14px 32px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+}
+
+.btn-cta:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+}
+
+/* ============ KONTAK ============ */
+.kontak-grid {
+  display: flex;
+  justify-content: center;
+}
+
+.kontak-card {
+  background: var(--bg-card);
+  padding: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  max-width: 450px;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.kontak-card:hover {
+  border-color: var(--gold-primary);
+  box-shadow: var(--shadow-gold);
+}
+
+.kontak-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.kontak-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.kontak-card p {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.kontak-link {
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  transition: var(--transition);
+}
+
+.kontak-link:hover {
+  color: var(--gold-primary);
+  text-decoration: underline;
+}
+
+/* ============ FOOTER ============ */
+.footer {
+  background: #08090c;
+  color: var(--text-muted);
+  padding: 60px 24px 30px;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-brand h3 {
+  color: var(--text-main);
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.footer-brand h3 span {
+  font-size: 0.85rem;
+  color: var(--gold-primary);
+  font-weight: 500;
+}
+
+.footer-brand p {
+  font-size: 0.95rem;
+  max-width: 500px;
+  margin: 0 auto 30px;
+}
+
+.footer-bottom {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.85rem;
+}
+
+/* ============ RESPONSIF (MOBILE & TABLET) ============ */
+@media (max-width: 900px) {
+  .hero h1 {
+    font-size: 2.4rem;
+  }
+  
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-inner {
+    padding: 12px 16px;
+  }
+  
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-links a:not(.btn-login-nav) {
+    display: none; 
+  }
+
+  .hero {
+    padding: 60px 16px 50px;
+  }
+
+  .hero h1 {
+    font-size: 1.9rem;
+  }
+
+  .badge-wrapper {
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 16px;
+  }
+
+  .badge-sub {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-padding {
+    padding: 60px 16px;
+  }
+
+  .section-title h2 {
+    font-size: 1.75rem;
+  }
+}
+  </style>
+
+
+</head>
+<body>
+
+  <!-- ============ NAVBAR ============ -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="#" class="logo" aria-label="KasirKu Beranda">
+        <div class="logo-icon">🛒</div>
+        <div class="logo-text">
+          <span class="title">KasirKu</span>
+          <span class="subtitle">By: Asbin Ecosystem</span>
+        </div>
+      </a>
+      
+      <div class="nav-links">
+        <a href="#fitur">Fitur</a>
+        <a href="#cara-kerja">Cara Kerja</a>
+        <a href="#kontak">Kontak</a>
+        <a href="login.html" class="btn-login-nav">Masuk</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO SECTION ============ -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="badge-wrapper">
+        <span class="badge">✨ Aplikasi Kasir/ POS Bayar Modern</span>
+        <span class="badge-sub">By: Asbin Ecosystem</span>
+      </div>
+
+      <h1>
+        Kelola Toko Lebih Mudah<br>
+        dengan <span class="highlight">Aplikasi Kasir Modern</span>
+      </h1>
+
+      <p>
+        Kelola produk, transaksi, stok, dan member dalam satu aplikasi.
+        Cepat, ringan, dan bisa dipakai offline. Sangat cocok untuk warung, toko ritel, dan UMKM.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="login.html" class="btn-primary">Mulai Sekarang →</a>
+        <a href="#fitur" class="btn-secondary">Lihat Fitur</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">Kompatibel</div>
+          <div class="stat-label">di Semua Perangkat</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Mode Offline</div>
+          <div class="stat-label">Bisa Tanpa Internet</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Instan</div>
+          <div class="stat-label">Siap Pakai di HP / PC</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ FITUR ============ -->
+  <section id="fitur" class="section-padding">
+    <div class="section-inner">
+      <div class="section-title">
+        <h2>Fitur Lengkap untuk Toko Anda</h2>
+        <p>Semua yang Anda butuhkan untuk mengelola toko dalam satu aplikasi yang praktis</p>
+      </div>
+
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-icon">📦</div>
+          <h3>Manajemen Produk</h3>
+          <p>Tambah, edit, dan hapus produk dengan mudah. Dilengkapi foto, barcode, dan manajemen harga jual.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">💳</div>
+          <h3>Transaksi Cepat</h3>
+          <p>Proses pembayaran kilat dengan scan barcode. Cetak struk belanja dan hitung kembalian otomatis.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Laporan Penjualan</h3>
+          <p>Pantau omzet harian, mingguan, dan bulanan. Ketahui produk terlaris dan stok yang mulai menipis.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>Kelola Member</h3>
+          <p>Daftarkan pelanggan setia, berikan diskon khusus, dan pantau riwayat belanja mereka secara berkala.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">🏷️</div>
+          <h3>Barcode Generator</h3>
+          <p>Buat barcode otomatis untuk produk yang belum memiliki kode barcode pabrik dan siap dicetak.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">📶</div>
+          <h3>Mode Offline</h3>
+          <p>Tetap bisa melayani transaksi berjualan meski koneksi internet mati. Data tersimpan aman di perangkat.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CARA KERJA ============ -->
+  <section id="cara-kerja" class="section-padding bg-alt">
+    <div class="section-inner">
+      <div class="section-title">
+        <h2>Mulai dalam 3 Langkah Mudah</h2>
+        <p>Tidak perlu instalasi rumit, cukup buka di browser HP, tablet, atau komputer Anda</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h3>Daftar Akun & Login</h3>
+          <p>Buat akun kasir Anda dalam waktu kurang dari 30 detik dan langsung login.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h3>Input Produk</h3>
+          <p>Tambahkan produk secara manual atau import sekaligus dari file CSV / JSON.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h3>Mulai Jualan</h3>
+          <p>Lakukan transaksi langsung, cetak struk pembeli, dan pantau hasilnya real-time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="cta-banner">
+    <div class="cta-inner">
+      <h2>Aplikasi KasirKu <br><span class="cta-subtext">By: Asbin Ecosystem</span></h2>
+      <p>Siap Meningkatkan Efisiensi Bisnis dan Penjualan Anda?</p>
+      <a href="login.html" class="btn-cta">Gunakan Sekarang Gratis</a>
+    </div>
+  </section>
+
+  <!-- ============ KONTAK ============ -->
+  <section id="kontak" class="section-padding">
+    <div class="section-inner">
+      <div class="section-title">
+        <h2>Butuh Bantuan?</h2>
+        <p>Tim support kami siap membantu pertanyaan dan kendala Anda</p>
+      </div>
+
+      <div class="kontak-grid">
+        <div class="kontak-card">
+          <div class="kontak-icon">📧</div>
+          <h3>Email Resmi</h3>
+          <p>Hubungi kami melalui alamat surel di bawah ini:</p>
+          <a href="mailto:greentetembatu@gmail.com" class="kontak-link">greentetembatu@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h3>🛒 KasirKu <span>By: Asbin Ecosystem</span></h3>
+        <p>Aplikasi kasir modern, fleksibel, dan terjangkau untuk warung, toko, dan UMKM Indonesia.</p>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="tahun"></span> KasirKu By: Asbin Ecosystem. Hak Cipta Dilindungi.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Otomatis update tahun di footer
+    document.getElementById('tahun').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

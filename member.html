@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pos Bayar Member</title>
+
+    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0d6efd" />
+
+    <meta
+      name="description"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Pos Bayar" />
+    <meta
+      property="og:description"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"
+    />
+    <meta
+      property="og:url"
+      content="https://greentetembatu.github.io/pos-bayar/"
+    />
+    <meta property="og:site_name" content="Pos Bayar" />
+    <meta
+      property="og:image"
+      content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <link rel="stylesheet" href="/css/member.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <button type="button" onclick="location.href = 'dashboard.html'">
+          Dashboard
+        </button>
+        <button type="button" onclick="location.href = 'kasir.html'">
+          Kasir
+        </button>
+        <button type="button" onclick="location.href = 'produk.html'">
+          Produk
+        </button>
+        <button type="button" onclick="location.href = 'riwayat.html'">
+          Riwayat
+        </button>
+        <button type="button" onclick="location.href = 'buat-barcode.html'">
+          Buat Barcode
+        </button>
+        <button class="btn-logout" onclick="logoutKasir()">Logout</button>
+
+        <h2>Data Toko</h2>
+        <div class="input-group">
+          <label>Nama Toko</label>
+          <input
+            type="text"
+            id="tokoNamaMember"
+            placeholder="Contoh: Toko Berkah"
+          />
+        </div>
+        <div class="input-group">
+          <label>Alamat Toko</label>
+          <input type="text" id="tokoAlamatMember" />
+        </div>
+        <div class="input-group">
+          <label>No HP Toko</label>
+          <input type="text" id="tokoHpMember" />
+        </div>
+        <div class="input-group">
+          <label>Nama Kasir</label>
+          <input type="text" id="kasirMember" />
+        </div>
+        <button onclick="simpanDataTokoMember()">Simpan Data Toko</button>
+      </div>
+
+      <div class="card">
+        <h2>Input Member Baru</h2>
+
+        <div class="counter-wrapper">
+          <span>Jumlah Member saat ini</span>
+          <div id="jumlahMember" class="badge-counter">0</div>
+        </div>
+
+        <div class="input-group">
+          <label>Nama Member</label>
+          <input
+            type="text"
+            id="namaMember"
+            placeholder="Masukkan nama lengkap..."
+          />
+        </div>
+
+        <div class="input-group">
+          <label>No HP Member</label>
+          <input type="text" id="hpMember" placeholder="Contoh: 08123456789" />
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input
+            type="text"
+            id="emailMember"
+            placeholder="Contoh: budi@gmail.com"
+          />
+        </div>
+
+        <div class="button-container">
+          <button
+            id="btnSimpanMember"
+            onclick="simpanDataMember()"
+            class="btn-primary"
+          >
+            Simpan & Buat Kartu
+          </button>
+          <button id="btnBatalEdit" onclick="batalEdit()" class="btn-secondary">
+            Batal Edit
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Cari Member</h2>
+        <div class="search-box" style="display: flex; gap: 10px">
+          <input
+            type="text"
+            id="searchMember"
+            style="
+              flex: 1;
+              padding: 10px;
+              border-radius: 10px;
+              border: 1px solid #ccc;
+            "
+            placeholder="Nama / ID / No HP"
+          />
+          <button onclick="cariDataMember()">Cari</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Scan Kartu</h2>
+        <div
+          id="readerMember"
+          style="width: 100%; max-width: 300px; margin: 0 auto 10px"
+        ></div>
+        <button onclick="mulaiScanMember()">Buka Kamera Scan Member</button>
+        <div id="readerMember"></div>
+      </div>
+
+      <div class="card">
+        <h2>Preview Kartu Member</h2>
+        <div
+          id="kartuMember"
+          class="member-card"
+          style="
+            display: none;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            background: #2d3748;
+            color: white;
+          "
+        >
+          <h3 id="cardTokoMember" style="margin-top: 0"></h3>
+          <small id="cardAlamatMember" style="display: block"></small>
+          <small id="cardHpTokoMember" style="display: block"></small>
+          <hr />
+          <div class="info-member">
+            <p id="cardNamaMember"></p>
+            <p id="cardEmailMember"></p>
+            <p id="cardHpMember"></p>
+            <p id="cardNoMember" style="font-weight: bold; color: #fbd38d"></p>
+          </div>
+          <svg
+            id="barcodeMember"
+            style="background: white; padding: 5px; border-radius: 5px"
+          ></svg>
+        </div>
+        <br />
+        <div
+          id="aksiMember"
+          style="
+            margin-top: 15px;
+            display: none;
+            gap: 10px;
+            justify-content: start;
+          "
+        >
+          <button
+            id="btnPrintMember"
+            onclick="printKartuMember()"
+            style="display: none; background: #4a5568"
+          >
+            Cetak Kartu
+          </button>
+
+          <button
+            onclick="pemicuEditMember()"
+            style="
+              background: #ed8936;
+              color: white;
+              border: none;
+              padding: 8px;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            Edit Data
+          </button>
+          <button
+            onclick="pemicuHapusMember()"
+            style="
+              background: #e53e3e;
+              color: white;
+              border: none;
+              padding: 8px;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            Hapus Member
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 20px; border-top: 4px solid #667eea">
+        <h3>Cadangan Data Member</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button onclick="backupDataMember()" style="background: #4a5568">
+            💾 Backup Data (.json)
+          </button>
+          <button
+            onclick="document.getElementById('fileInputMember').click()"
+            style="background: #718096"
+          >
+            📥 Impor Data (.json)
+          </button>
+          <input
+            type="file"
+            id="fileInputMember"
+            accept=".json"
+            onchange="importDataMember(event)"
+            style="display: none"
+          />
+        </div>
+        <small style="display: block; margin-top: 10px; color: #718096"
+          >*Gunakan file .json untuk pindah perangkat.</small
+        >
+        <button
+          onclick="downloadCSVMember()"
+          style="background: #38a169; margin-top: 10px"
+        >
+          Download CSV
+        </button>
+        <small style="display: block; margin-top: 10px; color: #718096"
+          >Download Semua Data Member</small
+        >
+      </div>
+    </div>
+
+    <script src="js/member.js"></script>
+    <script>
+      function logoutKasir() {
+  if (!confirm("Yakin ingin logout?")) return;
+
+  localStorage.removeItem("kasirAktif");
+  localStorage.removeItem("keranjang");
+
+  // pakai replace, bukan href
+  window.location.replace("login.html");
+}
+
+    </script>
+  </body>
+</html>
