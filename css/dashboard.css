@@ -6,13 +6,17 @@
   --biru-gelap: #061746;
   --hijau-terang: #21f8b0;
   --hijau-gelap: #065f41;
-  --kuning:#fffb00;
-  --ungu:#ea00ff;
+  --kuning: #fffb00;
+  --ungu: #ea00ff;
   --orange: #f37d0e;
   --merah: #f30e0e;
   --hitam: #000000;
   --putih: #ffffff;
-  
+
+  /* Tambahan yang sebelumnya belum ada */
+  --border: rgba(0, 0, 0, 0.15);
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+
   --transition: 0.3s ease;
   --sidebar-width: 260px;
 
@@ -35,16 +39,26 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--hitam);
   color: var(--putih);
   font-family: "Poppins", sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
   text-decoration: none;
   color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
 }
 
 /* =========================================================
@@ -71,14 +85,28 @@ a {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--biru-terang) transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--biru-terang);
+  border-radius: 3px;
 }
 
 /* =========================================================
    SIDEBAR HEADER
 ========================================================= */
-.sidebar-header{
+.sidebar-header {
   display: flex;
+  align-items: center;
 }
+
 .sidebar-header h2 {
   font-size: var(--h6);
   font-weight: 700;
@@ -94,59 +122,45 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   padding: 0;
   margin: 0;
-
 }
 
-/* =========================================================
-   MENU ITEM
-========================================================= */
+.sidebar-menu li {
+  width: 100%;
+}
+
 .sidebar-menu li a {
   display: block;
+  width: 100%;
   padding: 12px 18px;
   color: var(--hitam);
-  text-decoration: none;
   font-size: var(--p);
   font-weight: 600;
   border-radius: 12px;
   transition: var(--transition);
   background: var(--kuning);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* HOVER */
 .sidebar-menu li a:hover {
   background: var(--ungu);
   color: var(--hitam);
   transform: translateX(4px);
 }
+
 .sidebar-menu li a.active {
   background: var(--orange);
-  color: var(--white);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  color: var(--putih);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
 }
 
-/* Pastikan hover tidak merusak active */
 .sidebar-menu li a.active:hover {
   background: var(--ungu);
   color: var(--hitam);
   transform: translateX(4px);
-}
-
-/* ACTIVE */
-/*.sidebar-menu li a.active {
-  background-color: var(--hijau-terang);
-  color: var(--hitam);
-  display: block;
-
-}
-
-/* LINK */
-/*.sidebar-menu li a {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* =========================================================
@@ -158,47 +172,41 @@ a {
   gap: 12px;
 }
 
-/* =========================================================
-   BUTTON INSTALL
-========================================================= */
-.btn-instal {
-  border: none;
-  outline: none;
-  padding: 14px 18px;
-  border-radius: 14px;
-  background: var(--hijau-terang);
-  color: var(--hitam);
-  font-size: var(--p);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: left;
-}
-
-.btn-instal:hover {
-  background: var(--success-hover);
-}
-
-/* =========================================================
-   BUTTON LOGOUT
-========================================================= */
+.btn-instal,
 .btn-logout {
   border: none;
   outline: none;
   padding: 14px 18px;
   border-radius: 14px;
-  background: var(--merah);
-  color: var(--putih);
   font-size: var(--p);
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   text-align: left;
+  font-family: inherit;
+  width: 100%;
+}
+
+.btn-instal {
+  background: var(--hijau-terang);
+  color: var(--hitam);
+}
+
+.btn-instal:hover {
+  background: var(--putih);
+  color: var(--hitam);
+  transform: translateY(-2px);
+}
+
+.btn-logout {
+  background: var(--merah);
+  color: var(--putih);
 }
 
 .btn-logout:hover {
   background: var(--kuning);
   color: var(--hitam);
+  transform: translateY(-2px);
 }
 
 /* =========================================================
@@ -206,6 +214,7 @@ a {
 ========================================================= */
 .content {
   flex: 1;
+  min-width: 0;
   padding: 30px;
   overflow-x: hidden;
 }
@@ -216,7 +225,7 @@ a {
 .content-header {
   background: var(--ungu);
   padding: 28px;
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
@@ -224,14 +233,12 @@ a {
   margin-bottom: 25px;
 }
 
-/* TITLE */
 .content-header h1 {
   font-size: var(--h5);
   font-weight: 700;
   color: var(--hitam);
 }
 
-/* SUBTITLE */
 .content-header h3 {
   font-size: var(--h6);
   font-weight: 600;
@@ -245,20 +252,27 @@ a {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   background: #fafafa;
+  color: var(--hitam);
   outline: none;
   font-size: var(--p);
+  font-family: inherit;
   transition: var(--transition);
+}
+
+.content-header input::placeholder {
+  color: #888;
 }
 
 .content-header input:focus {
   border-color: var(--hijau-gelap);
   background: var(--putih);
+  box-shadow: 0 0 0 3px rgba(6, 95, 65, 0.15);
 }
 
 /* =========================================================
-   BUTTON SIMPAN WRAPPER
+   BUTTON SIMPAN
 ========================================================= */
 .button-simpan-header {
   width: 100%;
@@ -266,19 +280,17 @@ a {
   justify-content: flex-start;
 }
 
-/* =========================================================
-   BUTTON SIMPAN
-========================================================= */
 .button-simpan-header button {
   border: none;
   outline: none;
   padding: 14px 24px;
   border-radius: 12px;
   background: var(--hijau-gelap);
-  color: var(--white);
+  color: var(--putih);
   font-size: var(--p);
   font-weight: 600;
   cursor: pointer;
+  font-family: inherit;
   transition: var(--transition);
 }
 
@@ -300,7 +312,7 @@ a {
   border-radius: 12px;
   background: var(--hijau-terang);
   color: var(--hitam);
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 30px;
   transition: var(--transition);
 }
@@ -308,6 +320,7 @@ a {
 .btn-primary:hover {
   background: var(--orange);
   color: var(--putih);
+  transform: translateY(-2px);
 }
 
 /* =========================================================
@@ -315,8 +328,7 @@ a {
 ========================================================= */
 .stats {
   display: grid;
-  grid-template-columns:
-    repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
 }
 
@@ -325,9 +337,9 @@ a {
 ========================================================= */
 .card {
   background: var(--merah);
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: var(--putih);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
   transition: var(--transition);
 }
 
@@ -335,9 +347,16 @@ a {
   transform: translateY(-4px);
 }
 
-/* =========================================================
-   STAT CARD
-========================================================= */
+/* Stat-card dalam anchor dibuat penuh */
+.stats > a {
+  display: block;
+  height: 100%;
+}
+
+.stats > a .card {
+  height: 100%;
+}
+
 .stat-card {
   display: flex;
   flex-direction: column;
@@ -354,13 +373,14 @@ a {
   font-size: var(--h5);
   font-weight: 700;
   color: var(--putih);
+  word-break: break-word;
 }
 
 /* =========================================================
-   RESPONSIVE TABLET
+   RESPONSIVE — TABLET (≤ 992px)
+   Sidebar jadi topbar horizontal yang bisa scroll
 ========================================================= */
 @media (max-width: 992px) {
-
   .app {
     flex-direction: column;
   }
@@ -369,32 +389,59 @@ a {
     width: 100%;
     height: auto;
     position: sticky;
-    gap: 8px;
-    display: flex;
+    top: 0;
+    z-index: 50;
     flex-direction: row;
-    padding: 24px 20px;
-
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
-.sidebar-header{
-  display: none;
 
-}
-.sidebar-menu{
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.sidebar-menu li a{
-  border-radius: 4px;
-  padding: 12px 6px;
-}
+  .sidebar-header {
+    display: none;
+  }
+
+  .sidebar-menu {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .sidebar-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-menu li {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-menu li a {
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .button-aside {
+    flex-direction: row;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
   .btn-instal,
   .btn-logout {
-    border-radius: 4px;
-    padding: 12px 6px;
-
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    width: auto;
+    white-space: nowrap;
+    text-align: center;
   }
 
   .content {
@@ -402,12 +449,79 @@ a {
   }
 }
 
+/* =========================================================
+   RESPONSIVE — MOBILE (≤ 600px)
+========================================================= */
+@media (max-width: 600px) {
+  .sidebar {
+    padding: 10px 12px;
+    gap: 8px;
+  }
 
+  .sidebar-menu li a {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
 
+  .btn-instal,
+  .btn-logout {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
 
+  .content {
+    padding: 14px;
+  }
 
+  .content-header {
+    padding: 18px;
+    border-radius: 12px;
+  }
 
+  .content-header h1 {
+    font-size: 1.4rem;
+  }
 
+  .content-header h3 {
+    font-size: 1.05rem;
+  }
 
+  .button-simpan-header button {
+    width: 100%;
+  }
 
+  .btn-primary {
+    width: 100%;
+    padding: 12px 18px;
+  }
 
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE KECIL (≤ 380px)
+========================================================= */
+@media (max-width: 380px) {
+  .sidebar-menu li a {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+  }
+
+  .btn-instal,
+  .btn-logout {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+  }
+
+  .content {
+    padding: 10px;
+  }
+}

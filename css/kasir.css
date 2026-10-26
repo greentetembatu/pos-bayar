@@ -6,13 +6,17 @@
   --biru-gelap: #061746;
   --hijau-terang: #21f8b0;
   --hijau-gelap: #065f41;
-  --kuning:#fffb00;
-  --ungu:#ea00ff;
+  --kuning: #fffb00;
+  --ungu: #ea00ff;
   --orange: #f37d0e;
   --merah: #f30e0e;
   --hitam: #000000;
   --putih: #ffffff;
-  
+
+  /* Tambahan yang sebelumnya belum ada */
+  --border: rgba(0, 0, 0, 0.15);
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+
   --transition: 0.3s ease;
   --sidebar-width: 260px;
 
@@ -35,16 +39,26 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--hitam);
   color: var(--putih);
   font-family: "Poppins", sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
   text-decoration: none;
   color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
 }
 
 /* =========================================================
@@ -71,14 +85,28 @@ a {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--biru-terang) transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--biru-terang);
+  border-radius: 3px;
 }
 
 /* =========================================================
    SIDEBAR HEADER
 ========================================================= */
-.sidebar-header{
+.sidebar-header {
   display: flex;
+  align-items: center;
 }
+
 .sidebar-header h2 {
   font-size: var(--h6);
   font-weight: 700;
@@ -94,59 +122,45 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   padding: 0;
   margin: 0;
-
 }
 
-/* =========================================================
-   MENU ITEM
-========================================================= */
+.sidebar-menu li {
+  width: 100%;
+}
+
 .sidebar-menu li a {
   display: block;
+  width: 100%;
   padding: 12px 18px;
   color: var(--hitam);
-  text-decoration: none;
   font-size: var(--p);
   font-weight: 600;
   border-radius: 12px;
   transition: var(--transition);
   background: var(--kuning);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* HOVER */
 .sidebar-menu li a:hover {
   background: var(--ungu);
   color: var(--hitam);
   transform: translateX(4px);
 }
+
 .sidebar-menu li a.active {
   background: var(--orange);
-  color: var(--white);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  color: var(--putih);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
 }
 
-/* Pastikan hover tidak merusak active */
 .sidebar-menu li a.active:hover {
   background: var(--ungu);
   color: var(--hitam);
   transform: translateX(4px);
-}
-
-/* ACTIVE */
-/*.sidebar-menu li a.active {
-  background-color: var(--hijau-terang);
-  color: var(--hitam);
-  display: block;
-
-}
-
-/* LINK */
-/*.sidebar-menu li a {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* =========================================================
@@ -158,63 +172,80 @@ a {
   gap: 12px;
 }
 
-/* =========================================================
-   BUTTON INSTALL
-========================================================= */
-.btn-instal {
-  border: none;
-  outline: none;
-  padding: 14px 18px;
-  border-radius: 14px;
-  background: var(--hijau-terang);
-  color: var(--hitam);
-  font-size: var(--p);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: left;
-}
-
-.btn-instal:hover {
-  background: var(--success-hover);
-}
-
-/* =========================================================
-   BUTTON LOGOUT
-========================================================= */
+.btn-instal,
 .btn-logout {
   border: none;
   outline: none;
   padding: 14px 18px;
   border-radius: 14px;
-  background: var(--merah);
-  color: var(--putih);
   font-size: var(--p);
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   text-align: left;
+  font-family: inherit;
+  width: 100%;
+}
+
+.btn-instal {
+  background: var(--hijau-terang);
+  color: var(--hitam);
+}
+
+.btn-instal:hover {
+  background: var(--putih);
+  color: var(--hitam);
+  transform: translateY(-2px);
+}
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 30px;
+  overflow-x: hidden;
+}
+
+.btn-logout {
+  background: var(--merah);
+  color: var(--putih);
 }
 
 .btn-logout:hover {
   background: var(--kuning);
   color: var(--hitam);
+  transform: translateY(-2px);
 }
 
+
+
 /* =========================================================
-   MAIN CONTENT
+   BUTTON PRIMARY
 ========================================================= */
-.content {
-  flex: 1;
-  padding: 30px;
-  overflow-x: hidden;
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  font-weight: 700;
+  margin-bottom: 30px;
+  transition: var(--transition);
 }
 
+.btn-primary:hover {
+  background: var(--orange);
+  color: var(--putih);
+  transform: translateY(-2px);
+}
+
+
 /* =========================================================
-   RESPONSIVE TABLET
+   RESPONSIVE — TABLET (≤ 992px)
+   Sidebar jadi topbar horizontal yang bisa scroll
 ========================================================= */
 @media (max-width: 992px) {
-
   .app {
     flex-direction: column;
   }
@@ -223,37 +254,123 @@ a {
     width: 100%;
     height: auto;
     position: sticky;
-    gap: 8px;
-    display: flex;
+    top: 0;
+    z-index: 50;
     flex-direction: row;
-    padding: 24px 20px;
-    z-index: 10;
-
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
-.sidebar-header{
-  display: none;
 
-}
-.sidebar-menu{
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.sidebar-menu li a{
-  border-radius: 4px;
-  padding: 12px 6px;
-}
+  .sidebar-header {
+    display: none;
+  }
+
+  .sidebar-menu {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .sidebar-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-menu li {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-menu li a {
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .button-aside {
+    flex-direction: row;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
   .btn-instal,
   .btn-logout {
-    border-radius: 4px;
-    padding: 12px 6px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    width: auto;
+    white-space: nowrap;
+    text-align: center;
+  }
+    .content {
+    padding: 20px;
+  }
 
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE (≤ 600px)
+========================================================= */
+@media (max-width: 600px) {
+  .sidebar {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .sidebar-menu li a {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+
+  .btn-instal,
+  .btn-logout {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
   }
 
   .content {
-    padding: 20px 10px;
+    padding: 14px;
+  }
+
+  .content-header {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px 18px;
+  }
+
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE KECIL (≤ 380px)
+========================================================= */
+@media (max-width: 380px) {
+  .sidebar-menu li a {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+  }
+
+  .btn-instal,
+  .btn-logout {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+  }
+
+  .content {
+    padding: 10px;
   }
 }
 
@@ -270,123 +387,159 @@ a {
 
 
 
-/* ==================== 1. CSS untuk Content Utama ==================== */
+
+
+
+
+
+
+/* =========================================================
+   PAGE HEADER (h1 di dalam .content)
+========================================================= */
+.content-header {
+  background: var(--ungu);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 25px;
+}
 .content h1 {
-    color: var(--putih);
-    margin-bottom: 25px;
-    font-size: var(--h4);
-    /*border-left: 4px solid #3498db;*/
-    /*padding-left: 15px;*/
+  color: var(--putih);
+  margin-bottom: 24px;
+  font-size: var(--h4);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-/* ==================== 2. CSS untuk Card (Umum) ==================== */
+/* =========================================================
+   CARD UMUM
+========================================================= */
 .card {
-    background: var(--ungu);
-    border-radius: 6px;
-    padding: 20px 10px;
-    margin-bottom: 25px;
-    color: var(--hitam);
-    /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s, box-shadow 0.2s;*/
+  background: var(--ungu);
+  border-radius: 16px;
+  padding: 24px 20px;
+  margin-bottom: 24px;
+  color: var(--hitam);
+  box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, 0.25));
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
-/*.card:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}*/
+.card:hover {
+  transform: translateY(-2px);
+}
 
+.card h2,
 .card h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--hitam);
-    font-size: var(--h6);
+  margin: 0 0 18px;
+  color: var(--hitam);
+  font-size: var(--h6);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .card label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--hitam);
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--hitam);
+  font-size: var(--p);
 }
 
-/* ==================== 3. CSS untuk Form Kasir ==================== */
+/* =========================================================
+   FORM KASIR — PRODUK & SCAN
+========================================================= */
 .produk-wrapper {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .autocomplete {
-    position: relative;
-    flex: 1;
-    
+  position: relative;
+  flex: 1;
+  min-width: 0;
 }
 
 #produkInput {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--orange);
-    border-radius: 8px;
-    font-size: var(--p);
-    transition: all 0.3s;
-    box-sizing: border-box;
-    
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--orange);
+  border-radius: 12px;
+  font-size: var(--p);
+  font-family: inherit;
+  color: var(--hitam);
+  background: var(--putih);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  box-sizing: border-box;
+}
+
+#produkInput::placeholder {
+  color: #999;
 }
 
 #produkInput:focus {
-    outline: none;
-    border-color: var(--biru-terang);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  outline: none;
+  border-color: var(--biru-terang);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
+/* =========================================================
+   AUTOCOMPLETE LIST
+========================================================= */
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--hijau-terang);
+  border: 2px solid var(--kuning);
+  border-radius: 12px;
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  color: var(--hitam);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.autocomplete-list.show {
+  display: block;
+}
 
 .autocomplete-item {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  background: var(--biru-terang);
-  border-bottom: 1px solid #eee;
+  background: var(--hijau-terang);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--transition);
 }
 
-
-.autocomplete-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
-  min-width: 0;
+.autocomplete-item:last-child {
+  border-bottom: none;
 }
 
-.autocomplete-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--hijau-terang);
-    border: 1px solid var(--kuning);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    max-height: 350px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-    color: var(--hitam);
+.autocomplete-item:hover,
+.autocomplete-item.autocomplete-active {
+  background: var(--kuning);
+  color: var(--hitam);
 }
 
-/* Kotak foto */
 .autocomplete-foto {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 8px;
   background: #f1f5f9;
 }
 
-/* Gambar produk */
 .autocomplete-foto img {
   width: 100%;
   height: 100%;
@@ -394,508 +547,646 @@ a {
   display: block;
 }
 
-/* Informasi produk */
 .autocomplete-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
 }
 
-/* Nama produk */
 .autocomplete-nama {
   font-size: 14px;
   font-weight: 600;
-  color:var(--hitam);
+  color: var(--hitam);
   line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Harga produk */
 .autocomplete-harga {
   font-size: 13px;
-  color: var(--hitam);
   font-weight: 600;
+  color: var(--hitam);
 }
 
-/* Efek hover dan navigasi keyboard */
-.autocomplete-item:hover,
-.autocomplete-item.autocomplete-active {
+/* =========================================================
+   TOMBOL SCAN & TAMBAH KERANJANG
+========================================================= */
+#btnScanKasir,
+.btn-tambah-keranjang {
+  width: 100%;
+  padding: 14px 20px;
   background: var(--hijau-terang);
+  color: var(--hitam);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: var(--p);
+  font-weight: 700;
+  font-family: inherit;
+  transition: background var(--transition), transform var(--transition);
 }
 
-
-#btnScanKasir {
-    padding: 12px 20px;
-    background: var(--hijau-terang);
-    color: var(--hitam);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: var(--p);
-    transition: background 0.3s;
-    width: 30%;
-    font-weight: bold;
+#btnScanKasir:hover,
+.btn-tambah-keranjang:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+  transform: translateY(-2px);
 }
 
-#btnScanKasir:hover {
-    background: var(--kuning);
-    color: var(--hitam);
-}
-
+/* =========================================================
+   SCANNER KASIR
+========================================================= */
 .scanner-container-kasir {
-    margin: 15px 0;
-    position: relative;
-    display: none;
+  margin: 16px 0;
+  position: relative;
+  display: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
 }
 
 .scanner-container-kasir.active {
-    display: block;
+  display: block;
 }
 
 .scan-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #00ff00, transparent);
-    animation: scan 2s linear infinite;
-    pointer-events: none;
-    z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00ff00, transparent);
+  animation: scan 2s linear infinite;
+  pointer-events: none;
+  z-index: 2;
 }
 
 @keyframes scan {
-    0% {
-        top: 0;
-    }
-    100% {
-        top: 100%;
-    }
+  0%   { top: 0; }
+  100% { top: 100%; }
 }
 
 .reader-kasir {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-    
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
+/* =========================================================
+   INPUT QTY
+========================================================= */
 #qty {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid var(--orange);
-    border-radius: 8px;
-    font-size: var(--p);
-    box-sizing: border-box;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border: 2px solid var(--orange);
+  border-radius: 12px;
+  font-size: var(--p);
+  font-family: inherit;
+  color: var(--hitam);
+  background: var(--putih);
+  box-sizing: border-box;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.btn-tambah-keranjang {
-    width: 30%;
-    padding: 12px;
-    background: var(--hijau-terang);
-    color: var(--hitam);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: var(--p);
-    /*font-weight: bold;*/
-    transition: background 0.3s;
-    font-weight: bold;
+#qty:focus {
+  outline: none;
+  border-color: var(--biru-terang);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
-.btn-tambah-keranjang:hover {
-    background: var(--kuning);
-    color: var(--hitam);
+/* =========================================================
+   TABEL KERANJANG
+========================================================= */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
 }
 
-
-
-
-
-/* ==================== 4. CSS untuk Tabel Keranjang ==================== */
 #keranjangTable {
-    width: 100%;
-    border-collapse: collapse;
-
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
 }
 
 #keranjangTable thead {
-    background-color: var(--kuning);
-    color: var(--hitam);
-    overflow: scroll;
-
+  background: var(--kuning);
+  color: var(--hitam);
 }
 
 #keranjangTable th,
 #keranjangTable td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--putih);
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 0.9rem;
+}
 
+#keranjangTable th {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#keranjangTable tbody tr {
+  transition: background var(--transition);
 }
 
 #keranjangTable tbody tr:hover {
-    background-color: var(--hijau-terang);
-    color: var(--hitam);
+  background: var(--hijau-terang);
+  color: var(--hitam);
 }
 
 #keranjangTable td:last-child {
-    text-align: center;
+  text-align: center;
 }
 
-/* ==================== 5. CSS untuk Cari Member ==================== */
+/* Tombol aksi kecil di dalam tabel (jika ada) */
+#keranjangTable button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--merah);
+  color: var(--putih);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+#keranjangTable button:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+}
+
+/* =========================================================
+   CARI MEMBER / SCAN
+========================================================= */
 .search-box {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .search-box > div:first-child {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 #searchMember {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid var(--orange);
-    border-radius: 8px;
-    font-size: 14px;
-    min-width: 150px;
+  flex: 1 1 180px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 2px solid var(--orange);
+  border-radius: 12px;
+  font-size: var(--p);
+  font-family: inherit;
+  color: var(--hitam);
+  background: var(--putih);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+#searchMember:focus {
+  outline: none;
+  border-color: var(--biru-terang);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
 .search-box button {
-    padding: 12px 20px;
-    background: var(--kuning);
-    color: var(--hitam);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
+  flex: 0 0 auto;
+  padding: 14px 20px;
+  background: var(--kuning);
+  color: var(--hitam);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: var(--p);
+  font-weight: 700;
+  font-family: inherit;
+  transition: background var(--transition), transform var(--transition);
 }
 
 .search-box button:hover {
-    background: var(--hijau-terang);
-    color: var(--hitam);
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  transform: translateY(-2px);
 }
 
 #readerMember {
-    margin: 15px 0;
-    width: 100%;
-    max-width: 400px;
+  margin: 16px 0;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  overflow: hidden;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/* ==================== 6. CSS untuk Checkout Box ==================== */
-.checkout-box {
-    background: var(--ungu);
-    padding: 25px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    color: var(--hitam);
-}
-
-.checkout-box p {
-    margin: 12px 0;
-    font-size: var(--p);
-    font-weight: bold;
-    color: var(--biru-gelap);
-}
-
-.checkout-box strong {
-    color: var(--hitam);
-    font-size: var(--h5);
-    font-weight: bold;
-}
-
-.input-group {
-    margin: 15px 0;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: var(--h5);
-}
-
-#diskonPersen {
-    width: 150px;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: var(--p);
-}
-
-.total-highlight {
-    background: var(--kuning);
-    padding: 15px;
-    border-radius: 8px;
-    margin: 15px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: var(--h6);
-    color: var(--hitam);
-}
-
-.profit-info {
-    font-size: var(--p);
-    opacity: 0.9;
-    color: var(--merah);
-}
-
-.btn-pay {
-    width: 100%;
-    padding: 15px;
-    background: var(--merah);
-    color: var(--putih);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    transition: all 0.3s;
-    margin-top: 10px;
-}
-
-.btn-pay:hover {
-    background: var(--kuning);
-    color: var(--hitam);
-    transform: scale(1.02);
-}
-
-
-
-
-
-
-
-
-
-
-/* =========================================
-   SCANNER MEMBER
-========================================= */
 
 .scanner-info {
   display: block;
   margin-top: 10px;
   color: var(--hitam);
-  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
-/* =========================================
-   MEMBER CARD
-========================================= */
-
-.member-card {
-  display: none;
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 10px;
-  background: #2d3748;
-  color: white;
+/* =========================================================
+   CHECKOUT BOX
+========================================================= */
+.checkout-box {
+  background: var(--ungu);
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  color: var(--hitam);
+  box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, 0.25));
 }
 
-.member-title {
-  margin-top: 0;
-}
-
-.member-small {
-  display: block;
-}
-
-.member-number {
-  font-weight: bold;
-  color: #fbd38d;
-}
-
-.barcode-member {
-  background: white;
-  padding: 5px;
-  border-radius: 5px;
-}
-
-/* =========================================
-   STATUS LOYALITAS
-========================================= */
-
-.status-loyalitas {
+.checkout-box p {
+  margin: 12px 0;
   font-size: var(--p);
-  font-weight: bold;
-  margin-top: 5px;
-
+  font-weight: 700;
+  color: var(--biru-gelap);
 }
 
-/* =========================================
-   AKSI MEMBER
-========================================= */
+.checkout-box strong {
+  color: var(--hitam);
+  font-size: var(--h5);
+  font-weight: 700;
+}
 
-.aksi-member {
-  margin-top: 15px;
-  display: none;
+.input-group {
+  margin: 16px 0;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: var(--p);
+  color: var(--hitam);
+}
+
+#diskonPersen {
+  width: 100%;
+  max-width: 200px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: var(--p);
+  font-family: inherit;
+  color: var(--hitam);
+  background: var(--putih);
+  box-sizing: border-box;
+  transition: box-shadow var(--transition);
+}
+
+#diskonPersen:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35);
+}
+
+.total-highlight {
+  background: var(--kuning);
+  padding: 16px 18px;
+  border-radius: 12px;
+  margin: 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
-  justify-content: start;
+  font-size: var(--h6);
+  color: var(--hitam);
+  font-weight: 700;
 }
 
-.btn-print-member {
-  display: none;
+.total-highlight strong {
+  font-size: var(--h5);
+  color: var(--merah);
+}
+
+.profit-info {
+  font-size: var(--p);
+  color: var(--merah);
+  font-weight: 700;
+}
+
+.profit-info strong {
+  font-size: var(--p);
+  color: var(--merah);
+}
+
+.btn-pay {
+  width: 100%;
+  padding: 16px;
+  background: var(--merah);
+  color: var(--putih);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: background var(--transition), transform var(--transition);
+  margin-top: 12px;
+}
+
+.btn-pay:hover {
   background: var(--kuning);
   color: var(--hitam);
-  border: none;
-  padding: 8px;
-  border-radius: 5px;
-  cursor: pointer;
+  transform: scale(1.02);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ==================== 7. CSS untuk Preview Kartu Member ==================== */
-
-/* Container Utama Preview */
-.card-preview-member {
-margin-top: 20px;
-text-align: center;
-}
-
-.card-preview-member h2 {
-  font-family: "Poppins", sans-serif;
-  color: black; /* Agar kontras dengan background body */
-  margin-bottom: 15px;
-
-}
-
-/* Desain Kartu Member (Sesuai dengan spesifikasi Anda) */
+/* =========================================================
+   KARTU MEMBER — DEFAULT TERSEMBUNYI
+   (muncul saat JS menambahkan style display:block
+    atau class .show / .active)
+========================================================= */
 .member-card {
+  display: none;
   width: 85.6mm;
+  max-width: 100%;
   height: 53.98mm;
   border-radius: 12px;
-  padding: 20px;
+  padding: 18px;
   background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: #e69f08; /* Warna teks emas/kuning agar elegan */
+  color: #e69f08;
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  text-align: left; /* Konten di dalam kartu rata kiri */
-  
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  text-align: left;
+  margin: 0 auto;
 }
 
-.member-card h3 {
-  margin: 0;
+.member-card.show,
+.member-card.active {
+  display: block;
+}
+
+.member-card h3,
+.member-title {
+  margin: 0 0 4px;
   text-align: center;
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 700;
 }
 
-.member-card small {
+.member-card small,
+.member-small {
   display: block;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   opacity: 1;
+  line-height: 1.3;
 }
 
 .member-card hr {
+  border: none;
   border-top: 0.5px solid rgba(255, 255, 255, 0.3);
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
-/* Bagian Detail Member */
+.info-member {
+  font-size: 11px;
+  line-height: 1.4;
+  padding-right: 130px; /* ruang untuk barcode */
+}
 
+.info-member p {
+  margin: 2px 0;
+  color: #fff;
+}
 
-/* Barcode */
-#barcodeMember {
+.member-number {
+  font-weight: 700;
+  color: #fbd38d;
+}
+
+#barcodeMember,
+.barcode-member {
   background: #fff;
-  padding: 5px;
+  padding: 4px;
   border-radius: 4px;
   position: absolute;
-  bottom: 15px;
-  right: 15px;
-  width: 120px; /* Ukuran barcode disesuaikan */
-  height: 40px;
+  bottom: 12px;
+  right: 12px;
+  width: 110px;
+  height: 38px;
 }
 
-/* Tombol Cetak (Samakan dengan style button Anda) */
+/* Status loyalitas */
+.status-loyalitas {
+  font-size: var(--p);
+  font-weight: 700;
+  margin-top: 12px;
+  color: var(--hitam);
+}
 
-/* Sembunyikan elemen saat print kecuali kartunya */
+/* Aksi member */
+.aksi-member {
+  margin-top: 16px;
+  display: none;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.aksi-member.show,
+.aksi-member.active {
+  display: flex;
+}
+
+.btn-print-member {
+  background: var(--kuning);
+  color: var(--hitam);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: var(--p);
+  font-weight: 700;
+  font-family: inherit;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.btn-print-member:hover {
+  background: var(--hijau-terang);
+  transform: translateY(-2px);
+}
+
+/* =========================================================
+   PRINT — HANYA KARTU MEMBER
+========================================================= */
 @media print {
   body {
     background: none;
     padding: 0;
   }
-  .card-preview-member h2, 
+
+  .sidebar,
+  .content > *:not(.card),
+  .card h2,
   #btnPrintMember,
-  .container {
+  .aksi-member,
+  .card-preview-member h2 {
     display: none !important;
   }
+
   .member-card {
+    display: block !important;
     margin: 0;
     box-shadow: none;
     border: 1px solid #ddd;
-    display: block !important; /* Pastikan muncul saat print */
   }
 }
 
+/* =========================================================
+   RESPONSIVE — TABLET (≤ 992px)
+========================================================= */
+@media (max-width: 992px) {
+  .content {
+    padding: 20px 16px;
+  }
 
+  .card {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
 
+  .produk-wrapper {
+    flex-direction: row;
+    align-items: stretch;
+  }
 
+  #btnScanKasir {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 14px 18px;
+  }
 
+  .btn-tambah-keranjang {
+    width: auto;
+    padding: 14px 24px;
+  }
+}
 
+/* =========================================================
+   RESPONSIVE — MOBILE (≤ 600px)
+========================================================= */
+@media (max-width: 600px) {
+  .content {
+    padding: 14px 12px;
+  }
 
+  .content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 18px;
+  }
+
+  .card,
+  .checkout-box {
+    padding: 16px 14px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+
+  .card h2,
+  .card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 14px;
+  }
+
+  .produk-wrapper {
+    flex-direction: column;
+  }
+
+  #btnScanKasir,
+  .btn-tambah-keranjang,
+  .btn-pay {
+    width: 100%;
+  }
+
+  .search-box > div:first-child {
+    flex-direction: column;
+  }
+
+  .search-box button,
+  #searchMember {
+    width: 100%;
+  }
+
+  .total-highlight {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 1rem;
+  }
+
+  .total-highlight strong {
+    font-size: 1.3rem;
+  }
+
+  #diskonPersen {
+    max-width: 100%;
+  }
+
+  .member-card {
+    width: 100%;
+    height: auto;
+    min-height: 54mm;
+    padding: 14px;
+  }
+
+  .info-member {
+    padding-right: 0;
+    padding-bottom: 50px;
+  }
+
+  #barcodeMember,
+  .barcode-member {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: 10px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE KECIL (≤ 400px)
+========================================================= */
 @media (max-width: 400px) {
-    table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+  .content {
+    padding: 10px 8px;
   }
-.btn-tambah-keranjang {
-    width: 100%;
-}
-#btnScanKasir {
-    width: 100%;
-}
 
-}
+  .card,
+  .checkout-box {
+    padding: 14px 10px;
+  }
 
+  #keranjangTable th,
+  #keranjangTable td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
 
+  .autocomplete-foto {
+    width: 48px;
+    height: 48px;
+  }
 
+  .autocomplete-nama {
+    font-size: 13px;
+  }
 
-
-
-
-
-
-
-
-
-.autocomplete-item.autocomplete-active {
-  background: var(--hijau-terang);
-  color: var(--hitam);
+  .autocomplete-harga {
+    font-size: 12px;
+  }
 }

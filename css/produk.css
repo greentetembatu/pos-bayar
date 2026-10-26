@@ -9,7 +9,7 @@
   --kuning:#fffb00;
   --ungu:#ea00ff;
   --orange: #f37d0e;
-  --merah: #f30e0e;
+  --merah: #f30e0e; 
   --hitam: #000000;
   --putih: #ffffff;
   
@@ -176,7 +176,8 @@ a {
 }
 
 .btn-instal:hover {
-  background: var(--success-hover);
+  background: var(--putih);
+  color: var(--hitam);
 }
 
 /* =========================================================
@@ -256,17 +257,6 @@ a {
     padding: 20px 10px;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -373,7 +363,7 @@ input[type="file"] {
    BUTTON
 ========================================================= */
 
-button {
+#kamera {
   border: none;
   outline: none;
   cursor: pointer;
@@ -393,11 +383,8 @@ button {
    DEFAULT BUTTON
 ========================================================= */
 
-button {
 
-}
-
-button:hover {
+#kamera:hover {
   transform: translateY(-2px);
   opacity: 0.92;
   background: var(--hijau-terang);
