@@ -130,32 +130,42 @@ self.addEventListener("activate", event => {
 });
 
 // ✅ FETCH EVENT - Cache first, fallback to network
-self.addEventListener("fetch", event => {
+self.addEventListener("fetch", (event) => {
+  // Hanya tangani GET
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
-    caches.match(event.request).then(response => {
-      if (response) {
-        return response;
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        // KUNCI PERBAIKAN: Jika respons dari cache memiliki tanda redirect,
+        // kita buat salinan baru yang bersih tanpa tanda tersebut.
+        if (cachedResponse.redirected) {
+          return new Response(cachedResponse.body, {
+            headers: cachedResponse.headers,
+            status: cachedResponse.status,
+            statusText: cachedResponse.statusText,
+          });
+        }
+        return cachedResponse;
       }
 
-      return fetch(event.request)
-        .then(networkResponse => {
-          // Opsional: Simpan response baru ke cache
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(err => {
-          console.log("Fetch failed:", err);
-          
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-          return new Response('Offline', { status: 503 });
-        });
+      // Jika tidak ada di cache, ambil dari jaringan
+      return fetch(event.request).then((networkResponse) => {
+        // Simpan ke cache (hanya jika sukses)
+        if (networkResponse && networkResponse.status === 200) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clone);
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        // Fallback saat offline
+        if (event.request.mode === "navigate") {
+          return caches.match("/login.html");
+        }
+        return new Response("Offline", { status: 503 });
+      });
     })
   );
 });
