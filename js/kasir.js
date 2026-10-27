@@ -12,7 +12,6 @@ const produkList = document.getElementById("produkList");
 const produkIdInp = document.getElementById("produkId");
 
 if (produkInput && produkList && produkIdInp) {
-
   let currentFocus = -1;
 
   // Fungsi untuk menandai item aktif
@@ -36,20 +35,19 @@ if (produkInput && produkList && produkIdInp) {
 
     // Pastikan item aktif terlihat
     items[currentFocus].scrollIntoView({
-      block: "nearest"
+      block: "nearest",
     });
   }
 
   // Menghapus status aktif
   function removeActive(items) {
-    Array.from(items).forEach(item => {
+    Array.from(items).forEach((item) => {
       item.classList.remove("autocomplete-active");
     });
   }
 
   // Mencari produk
   produkInput.addEventListener("input", () => {
-
     const keyword = produkInput.value.toLowerCase().trim();
 
     produkList.innerHTML = "";
@@ -60,9 +58,12 @@ if (produkInput && produkList && produkIdInp) {
       return;
     }
 
-    const hasil = getProduk().filter(p =>
-      (p.nama || "").toLowerCase().includes(keyword) ||
-      String(p.barcode || "").toLowerCase().includes(keyword)
+    const hasil = getProduk().filter(
+      (p) =>
+        (p.nama || "").toLowerCase().includes(keyword) ||
+        String(p.barcode || "")
+          .toLowerCase()
+          .includes(keyword),
     );
 
     if (hasil.length === 0) {
@@ -70,66 +71,60 @@ if (produkInput && produkList && produkIdInp) {
       return;
     }
 
+    hasil.forEach((p) => {
+      const div = document.createElement("div");
+      div.className = "autocomplete-item";
 
-hasil.forEach(p => {
+      // DIV FOTO
+      const fotoBox = document.createElement("div");
+      fotoBox.className = "autocomplete-foto";
 
-  const div = document.createElement("div");
-  div.className = "autocomplete-item";
+      const img = document.createElement("img");
+      img.src = p.foto || "https://placehold.co/80x80";
+      img.alt = p.nama || "Foto produk";
 
-  // DIV FOTO
-  const fotoBox = document.createElement("div");
-  fotoBox.className = "autocomplete-foto";
+      img.onerror = function () {
+        this.onerror = null;
+        this.src = "https://placehold.co/80x80";
+      };
 
-  const img = document.createElement("img");
-  img.src = p.foto || "https://placehold.co/80x80";
-  img.alt = p.nama || "Foto produk";
+      fotoBox.appendChild(img);
 
-  img.onerror = function () {
-    this.onerror = null;
-    this.src = "https://placehold.co/80x80";
-  };
+      // DIV INFORMASI PRODUK
+      const infoBox = document.createElement("div");
+      infoBox.className = "autocomplete-info";
 
-  fotoBox.appendChild(img);
+      const nama = document.createElement("strong");
+      nama.className = "autocomplete-nama";
+      nama.textContent = p.nama || "Tanpa nama";
 
-  // DIV INFORMASI PRODUK
-  const infoBox = document.createElement("div");
-  infoBox.className = "autocomplete-info";
+      const harga = document.createElement("small");
+      harga.className = "autocomplete-harga";
+      harga.textContent = `Rp ${Number(p.harga_jual || 0).toLocaleString("id-ID")}`;
 
-  const nama = document.createElement("strong");
-  nama.className = "autocomplete-nama";
-  nama.textContent = p.nama || "Tanpa nama";
+      infoBox.appendChild(nama);
+      infoBox.appendChild(harga);
 
-  const harga = document.createElement("small");
-  harga.className = "autocomplete-harga";
-  harga.textContent = `Rp ${Number(p.harga_jual || 0).toLocaleString("id-ID")}`;
+      // GABUNGKAN FOTO DAN INFORMASI
+      div.appendChild(fotoBox);
+      div.appendChild(infoBox);
 
-  infoBox.appendChild(nama);
-  infoBox.appendChild(harga);
+      // PILIH PRODUK
+      div.addEventListener("click", () => {
+        pilihProduk(p);
+        produkList.style.display = "none";
+        currentFocus = -1;
+      });
 
-  // GABUNGKAN FOTO DAN INFORMASI
-  div.appendChild(fotoBox);
-  div.appendChild(infoBox);
-
-  // PILIH PRODUK
-  div.addEventListener("click", () => {
-    pilihProduk(p);
-    produkList.style.display = "none";
-    currentFocus = -1;
-  });
-
-  produkList.appendChild(div);
-});
+      produkList.appendChild(div);
+    });
 
     produkList.style.display = "block";
-    
   });
 
   // Navigasi keyboard
-  produkInput.addEventListener("keydown", function(e) {
-
-    const listItems = produkList.querySelectorAll(
-      ".autocomplete-item"
-    );
+  produkInput.addEventListener("keydown", function (e) {
+    const listItems = produkList.querySelectorAll(".autocomplete-item");
 
     // Panah bawah
     if (e.key === "ArrowDown") {
@@ -152,16 +147,15 @@ hasil.forEach(p => {
     }
 
     // Enter untuk memilih produk
-    else if (e.key === "Enter") {
+else if (e.key === "Enter") {
+  if (produkList.style.display === "block" && listItems.length) {
+    e.preventDefault();
+    e.stopImmediatePropagation();     // ← KUNCI: cegah Listener #2 ikut jalan
 
-      if (produkList.style.display !== "none" &&
-          currentFocus >= 0 &&
-          listItems[currentFocus]) {
-
-        e.preventDefault();
-        listItems[currentFocus].click();
-      }
-    }
+    const index = currentFocus >= 0 ? currentFocus : 0;
+    listItems[index].click();
+  }
+}
 
     // Escape untuk menutup daftar
     else if (e.key === "Escape") {
@@ -169,15 +163,7 @@ hasil.forEach(p => {
       currentFocus = -1;
     }
   });
-
 }
-
-
-
-
-
-
-
 
 function addActive(items) {
   if (!items) return false;
@@ -207,32 +193,27 @@ function pilihProduk(p) {
 
 /* ENTER = TAMBAH */
 /* ENTER = TAMBAH */
+/* ENTER = TAMBAH (hanya jika autocomplete tertutup) */
 if (produkInput) {
-
   produkInput.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
 
-    if (e.key === "Enter") {
+    // Jangan tambah ke keranjang jika user sedang memilih dari list
+    if (produkList && produkList.style.display === "block") return;
 
-      e.preventDefault();
-
-      tambahKeKeranjang();
-    }
+    e.preventDefault();
+    tambahKeKeranjang();
   });
-
 }
 
 document.addEventListener("click", (e) => {
-
   // pastikan produkList ada
   if (!produkList) return;
 
   // jika klik di luar autocomplete
   if (!e.target.closest(".autocomplete")) {
-
     produkList.style.display = "none";
-
   }
-
 });
 /* =========================
    TAMBAH KE KERANJANG
@@ -345,16 +326,11 @@ function renderKeranjang() {
 }*/
 
 function updateTotalDiskon() {
-
-  const subtotal = keranjang.reduce(
-    (s, i) => s + (Number(i.subtotal) || 0),
-    0
-  );
+  const subtotal = keranjang.reduce((s, i) => s + (Number(i.subtotal) || 0), 0);
 
   const totalModal = keranjang.reduce(
-    (s, i) =>
-      s + (Number(i.modal) || 0) * (Number(i.qty) || 0),
-    0
+    (s, i) => s + (Number(i.modal) || 0) * (Number(i.qty) || 0),
+    0,
   );
 
   // ambil element dulu
@@ -376,18 +352,15 @@ function updateTotalDiskon() {
 
   // update UI jika element ada
   if (nilaiDiskonEl) {
-    nilaiDiskonEl.innerText =
-      "Rp " + potongan.toLocaleString("id-ID");
+    nilaiDiskonEl.innerText = "Rp " + potongan.toLocaleString("id-ID");
   }
 
   if (totalAkhirEl) {
-    totalAkhirEl.innerText =
-      "Rp " + totalAkhir.toLocaleString("id-ID");
+    totalAkhirEl.innerText = "Rp " + totalAkhir.toLocaleString("id-ID");
   }
 
   if (totalLabaEl) {
-    totalLabaEl.innerText =
-      "Rp " + labaBersih.toLocaleString("id-ID");
+    totalLabaEl.innerText = "Rp " + labaBersih.toLocaleString("id-ID");
   }
 }
 /* =======================
@@ -503,10 +476,7 @@ function simpanTransaksi(uang, kembalian, id, diskonData, dataMember) {
 
   transaksi.push(detailTransaksi);
 
-  localStorage.setItem(
-    "transaksi",
-    JSON.stringify(transaksi)
-  );
+  localStorage.setItem("transaksi", JSON.stringify(transaksi));
 
   return detailTransaksi;
 }
@@ -623,39 +593,36 @@ function bayar() {
       `Cetak struk?`,
   );
 
-if (konfirmasi && transaksi) {
+  if (konfirmasi && transaksi) {
+    cetakStruk({
+      id: idTransaksi,
 
-  cetakStruk({
+      total: diskonData.totalAkhir,
+      totalAwal: diskonData.totalAwal,
 
-    id: idTransaksi,
+      diskon: diskonData.diskon,
+      potongan: diskonData.potongan,
 
-    total: diskonData.totalAkhir,
-    totalAwal: diskonData.totalAwal,
+      uang,
+      kembalian,
 
-    diskon: diskonData.diskon,
-    potongan: diskonData.potongan,
+      items: [...keranjang],
 
-    uang,
-    kembalian,
+      kasirNama: kasir.nama,
+      kasirId: kasir.id,
 
-    items: [...keranjang],
+      member: dataMember
+        ? {
+            nama: dataMember.nama || "-",
+            no: dataMember.no || dataMember.id || "-",
+            hp: dataMember.hp || dataMember.telepon || "-",
+            email: dataMember.email || "-",
+          }
+        : null,
 
-    kasirNama: kasir.nama,
-    kasirId: kasir.id,
-
-    member: dataMember
-      ? {
-          nama: dataMember.nama || "-",
-          no: dataMember.no || dataMember.id || "-",
-          hp: dataMember.hp || dataMember.telepon || "-",
-          email: dataMember.email || "-"
-        }
-      : null,
-
-    laba: transaksi.totalLaba,
-  });
-
-}
+      laba: transaksi.totalLaba,
+    });
+  }
   // RESET
   keranjang = [];
   renderKeranjang();
@@ -667,7 +634,6 @@ if (konfirmasi && transaksi) {
     document.getElementById("diskonPersen").value = "";
   updateTotalDiskon();
 }
-
 
 /* =======================
    FUNGSI BUNYI BEEP (Scanner)
@@ -948,7 +914,7 @@ function mulaiScanMemberKasir() {
       alert("Gagal akses kamera: " + err);
     });
 }
- 
+
 function stopScanMemberKasir() {
   if (html5QrCodeMemberKasir) {
     html5QrCodeMemberKasir
@@ -961,39 +927,3 @@ function stopScanMemberKasir() {
       .catch((err) => console.error("Error stop scanner member kasir", err));
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

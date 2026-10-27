@@ -1,0 +1,27 @@
+# ==============================
+# ROBOTS.TXT — KasirKu
+# ==============================
+
+User-agent: *
+# Izinkan akses ke halaman publik
+Allow: /
+Allow: /login.html
+Allow: /index.html
+
+# Blokir akses ke halaman privat (dashboard & fitur internal)
+Disallow: /dashboard.html
+Disallow: /kasir.html
+Disallow: /produk.html
+Disallow: /riwayat.html
+Disallow: /member.html
+Disallow: /cetak-member.html
+Disallow: /buat-barcode.html
+Disallow: /generator-lisensi.html
+
+# Blokir akses ke folder sistem (opsional, agar Google tidak bingung)
+Disallow: /js/
+Disallow: /css/
+Disallow: /icons/
+
+# Lokasi Sitemap
+Sitemap: https://kasirasbinecosystem.vercel.app/sitemap.xml

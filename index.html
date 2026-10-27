@@ -1,30 +1,201 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">  
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <title>KasirKu - By: Asbin Ecosystem</title>
+  <!-- ==============================
+       DASAR
+  ============================== -->
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
 
-  <meta name="description" content="KasirKu adalah aplikasi kasir modern untuk warung, toko, dan UMKM. Kelola produk, transaksi, stok, dan member dengan mudah." >
-  <meta name="keywords" content="aplikasi kasir, kasir online, kasir offline, POS Indonesia, kasir UMKM, KasirKu, Asbin Ecosystem">
-  <meta name="author" content="Asbin Ecosystem">
-  <meta name="theme-color" content="#2563eb">
-  <link rel="manifest" href="./manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="./icons/android-icon-192x192.png" >
-  <link rel="apple-touch-icon" href="./icons/android-icon-192x192.png" >
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="KasirKu" >
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="mobile-web-app-capable" content="yes">
+  <!-- ==============================
+       SEO UTAMA
+  ============================== -->
+  <title>KasirKu - Aplikasi Kasir Online & Offline untuk UMKM | Asbin Ecosystem</title>
 
+  <meta
+    name="description"
+    content="KasirKu adalah aplikasi kasir (POS) modern untuk warung, toko, dan UMKM Indonesia. Kelola produk, transaksi, stok, dan member dengan mudah — online maupun offline. Gratis dan siap pakai."
+  />
+
+  <meta
+    name="keywords"
+    content="aplikasi kasir, kasir online, kasir offline, POS Indonesia, kasir UMKM, aplikasi POS gratis, kasir warung, kasir toko, manajemen stok, KasirKu, Asbin Ecosystem"
+  />
+
+  <meta name="author" content="Asbin Ecosystem" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="application-name" content="KasirKu" />
+  <meta name="generator" content="Asbin Ecosystem" />
+
+  <link rel="canonical" href="https://kasirasbinecosystem.vercel.app/" />
+
+  <!-- Bahasa & Lokasi -->
+  <meta http-equiv="content-language" content="id" />
+  <meta name="geo.region" content="ID" />
+  <meta name="geo.placename" content="Indonesia" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+
+  <!-- ==============================
+       OPEN GRAPH (WhatsApp, FB, LinkedIn)
+  ============================== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="KasirKu" />
+  <meta property="og:locale" content="id_ID" />
+  <meta property="og:url" content="https://kasirasbinecosystem.vercel.app/" />
+  <meta
+    property="og:title"
+    content="KasirKu - Aplikasi Kasir Online & Offline untuk UMKM"
+  />
+  <meta
+    property="og:description"
+    content="Aplikasi kasir (POS) modern untuk warung, toko, dan UMKM. Kelola produk, transaksi, stok, dan member dengan mudah. Gratis dan siap pakai."
+  />
+  <meta
+    property="og:image"
+    content="https://kasirasbinecosystem.vercel.app/icons/icon-512x512.png"
+  />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="Logo KasirKu - Aplikasi Kasir UMKM" />
+
+  <!-- ==============================
+       TWITTER CARD
+  ============================== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta
+    name="twitter:title"
+    content="KasirKu - Aplikasi Kasir Online & Offline untuk UMKM"
+  />
+  <meta
+    name="twitter:description"
+    content="Aplikasi kasir (POS) modern untuk warung, toko, dan UMKM. Kelola produk, transaksi, stok, dan member dengan mudah."
+  />
+  <meta
+    name="twitter:image"
+    content="https://kasirasbinecosystem.vercel.app/icons/icon-512x512.png"
+  />
+  <meta name="twitter:creator" content="@asbinecosystem" />
+
+  <!-- ==============================
+       PWA / MOBILE
+  ============================== -->
+  <!--<link rel="manifest" href="./manifest.json" />-->
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="./icons/android-icon-192x192.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="512x512"
+    href="./icons/icon-512x512.png"
+  />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="./icons/android-icon-192x192.png"
+  />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="KasirKu" />
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+  />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- ==============================
+       PERFORMA — Preconnect
+  ============================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="https://unpkg.com" />
 
   <!-- Font Google (Plus Jakarta Sans) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
 
+  <!-- ==============================
+       STRUKTUR DATA — Schema.org
+       Bantu Google pahami ini aplikasi (rich result)
+  ============================== -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://kasirasbinecosystem.vercel.app/#app",
+          "name": "KasirKu",
+          "alternateName": "KasirKu by Asbin Ecosystem",
+          "url": "https://kasirasbinecosystem.vercel.app/",
+          "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "Point of Sale (POS)",
+          "operatingSystem": "Web, Android, iOS",
+          "inLanguage": "id-ID",
+          "description": "Aplikasi kasir (POS) modern untuk warung, toko, dan UMKM. Kelola produk, transaksi, stok, dan member dengan mudah — online maupun offline.",
+          "image": "https://kasirasbinecosystem.vercel.app/icons/icon-512x512.png",
+          "screenshot": "https://kasirasbinecosystem.vercel.app/icons/icon-512x512.png",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "IDR",
+            "availability": "https://schema.org/InStock"
+          },
+          "featureList": [
+            "Manajemen produk & stok",
+            "Transaksi cepat dengan barcode",
+            "Riwayat penjualan & laba",
+            "Manajemen member & loyalitas",
+            "Dukungan offline (PWA)",
+            "Cetak struk & kartu member"
+          ],
+          "author": {
+            "@type": "Organization",
+            "name": "Asbin Ecosystem",
+            "url": "https://kasirasbinecosystem.vercel.app/"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://kasirasbinecosystem.vercel.app/#org",
+          "name": "Asbin Ecosystem",
+          "url": "https://kasirasbinecosystem.vercel.app/",
+          "logo": "https://kasirasbinecosystem.vercel.app/icons/icon-512x512.png",
+          "sameAs": []
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://kasirasbinecosystem.vercel.app/#website",
+          "url": "https://kasirasbinecosystem.vercel.app/",
+          "name": "KasirKu",
+          "publisher": {
+            "@id": "https://kasirasbinecosystem.vercel.app/#org"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://kasirasbinecosystem.vercel.app/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+  </script>
 
 
 

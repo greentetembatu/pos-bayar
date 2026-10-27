@@ -1,179 +1,173 @@
 <!doctype html>
 <html lang="id">
   <head>
+    <!-- ==============================
+       DASAR & PWA
+  ============================== -->
     <meta charset="UTF-8" />
-    <title>Pos Bayar Riwayat</title>
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#2563eb" />
 
-    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#0d6efd" />
+    <!-- ==============================
+       PRIVASI: CEGAH GOOGLE MENGINDEKS
+       (Sangat penting untuk halaman dashboard)
+  ============================== -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Riwayat - KasirKu By: Asbin Ecosystem</title>
 
+    <!-- ==============================
+       FAVICON & MANIFEST (Path Absolut)
+  ============================== -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/icons/android-icon-192x192.png"
+    />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
 
-<meta name="description" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."/>
-<meta property="og:locale" content="id_ID" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Pos Bayar" />
-<meta property="og:description" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"/>
-<meta property="og:url" content="https://greentetembatu.github.io/pos-bayar/"/>
-<meta property="og:site_name" content="Pos Bayar" />
-<meta property="og:image" content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"/>
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:type" content="image/png" />
-<meta property="og:image:alt" content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."/>
+    <!-- ==============================
+       PWA / MOBILE
+  ============================== -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="KasirKu" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
 
-
+    <!-- ==============================
+       PERFORMA — Font Google
+  ============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
     <link rel="stylesheet" href="css/riwayat.css" />
   </head>
 
   <body>
-    <h2>Riwayat Transaksi</h2>
-    <ul>
-      <button onclick="window.location.href = 'dashboard.html'">
-        Dashboard
-      </button>
-      <button onclick="window.location.href = 'kasir.html'">
-        Kasir
-      </button>
-      <button onclick="window.location.href = 'produk.html'">
-        Produk
-      </button>
-      <button onclick="window.location.href = 'member.html'">
-        Member
-      </button>
-      <button onclick="window.location.href = 'buat-barcode.html'">
-        Buat Barcode
-      </button>
+    <section class="app">
+      <!-- SIDEBAR -->
+      <section class="sidebar">
+        <div class="sidebar-header">
+          <h2>DASHBOARD</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="kasir.html">Kasir</a></li>
+          <li><a href="produk.html">Produk</a></li>
+          <li><a href="riwayat.html" class="active">Riwayat</a></li>
+          <li><a href="member.html">Member</a></li>
+          <li><a href="buat-barcode.html">Cetak Barcode</a></li>
+        </ul>
 
-            <button class="btn-logout" onclick="logoutKasir()">
-               Logout</button>
+        <div class="button-aside">
+          <button class="btn-instal" id="installBtn" style="display: none">
+            Install Aplikasi
+          </button>
+          <button class="btn-logout" onclick="logoutKasir()">Logout</button>
+        </div>
+      </section>
 
-    </ul>
-    <input
-      type="text"
-      id="searchTransaksi"
-      placeholder="Cari ID / Kasir / Item..."
-      oninput="cariTransaksi()"
-    />
-    <div id="listRiwayat"></div>
-    <table>
-      <thead>
-        <tr>
-          <th>ID Transaksi</th>
-          <th>Tanggal</th>
-          <th>Kasir</th>
-          <!-- 🔥 -->
-          <th>ID Kasir</th>
-          <th>Nama/ Hp/ Email/ id Member</th>
+      <main class="content">
+<h2>Riwayat Transaksi</h2>
+<input
+  type="text"
+  id="searchTransaksi"
+  placeholder="Cari ID / Kasir / Item..."
+  oninput="cariTransaksi()"
+/>
+<div id="listRiwayat"></div>
 
-          <!-- 🔥 -->
-          <th>Produk</th>
-          <th>Total</th>
-          <th>Laba</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="riwayatTable"></tbody>
-    </table>
+<!-- WRAPPER: tabel riwayat -->
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>ID Transaksi</th>
+        <th>Tanggal</th>
+        <th>Kasir</th>
+        <th>ID Kasir</th>
+        <th>Nama/ Hp/ Email/ id Member</th>
+        <th>Produk</th>
+        <th>Total</th>
+        <th>Laba</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="riwayatTable"></tbody>
+  </table>
+</div>
 
-    <div
-      id="navigasiRiwayat"
-      style="
-        display: none;
-        justify-content: center;
-        align-items: center;
-        gap: 15px;
-        margin-top: 20px;
-        padding: 10px;
-      "
-    >
-      <button
-        id="btnPrevRiwayat"
-        onclick="gantiHalamanRiwayat(-1)"
-        style="
-          padding: 8px 15px;
-          background: #4a5568;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        "
-      >
-        ⬅ Prev
-      </button>
+<div id="navigasiRiwayat" style="display: none; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding: 10px;">
+  <button id="btnPrevRiwayat" onclick="gantiHalamanRiwayat(-1)">⬅ Prev</button>
+  <span id="infoHalamanRiwayat" style="font-weight: bold">Halaman 1</span>
+  <button id="btnNextRiwayat" onclick="gantiHalamanRiwayat(1)">Next ➡</button>
+</div>
 
-      <span id="infoHalamanRiwayat" style="font-weight: bold">Halaman 1</span>
+<h3>🏆 Ranking Member</h3>
 
-      <button
-        id="btnNextRiwayat"
-        onclick="gantiHalamanRiwayat(1)"
-        style="
-          padding: 8px 15px;
-          background: #4a5568;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        "
-      >
-        Next ➡
-      </button>
-    </div>
+<!-- WRAPPER: tabel ranking -->
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Nama</th>
+        <th>ID Member</th>
+        <th>HP</th>
+        <th>Transaksi</th>
+        <th>Total Belanja</th>
+        <th>Total Laba</th>
+      </tr>
+    </thead>
+    <tbody id="rankingMember"></tbody>
+  </table>
+</div>
 
-    <h3>🏆 Ranking Member</h3>
+<div style="margin-top: 10px; text-align: center">
+  <button onclick="prevPage()">⬅ Sebelumnya</button>
+  <span id="pageInfo"></span>
+  <button onclick="nextPage()">Berikutnya ➡</button>
+</div>
 
-    <table border="1" width="100%">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Nama</th>
-          <th>ID Member</th>
-          <th>HP</th>
-          <th>Transaksi</th>
-          <th>Total Belanja</th>
-          <th>Total Laba</th>
-        </tr>
-      </thead>
-      <tbody id="rankingMember"></tbody>
-    </table>
-    <div style="margin-top: 10px; text-align: center">
-      <button onclick="prevPage()">⬅ Sebelumnya</button>
-      <span id="pageInfo"></span>
-      <button onclick="nextPage()">Berikutnya ➡</button>
-    </div>
+<div class="download-panel">
+  <h3>📥 Download Data Transaksi</h3>
+  <button onclick="downloadJSON()">Download JSON</button>
+  <button onclick="downloadCSV()">Download Excel (CSV)</button>
+</div>
+      </main>
+    </section>
 
-    <div class="download-panel">
-      <h3>📥 Download Data Transaksi</h3>
+    <!--<script src="js/dasboard.js"></script>-->
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
 
-      <button onclick="downloadJSON()">Download JSON</button>
-      <button onclick="downloadCSV()">Download Excel (CSV)</button>
-    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<!--<script src="js/dasboard.js"></script>-->
-<script src="js/data.js"></script>
-<script src="js/storage.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-
-<script src="js/struk.js"></script>
-<script src="js/riwayat.js"></script>
-<script src="js/produk.js"></script>
-<script>
-  function logoutKasir() {
-  if (!confirm("Yakin ingin logout?")) return;
-
-  localStorage.removeItem("kasirAktif");
-  localStorage.removeItem("keranjang");
-
-  // pakai replace, bukan href
-  window.location.replace("login.html");
-}
-
-</script>
+    <script src="js/struk.js"></script>
+    <script src="js/riwayat.js"></script>
+    <script src="js/produk.js"></script>
+        <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("Service Worker registered"))
+          .catch((err) => console.error("SW failed:", err));
+      }
+    </script>
 
   </body>
 </html>

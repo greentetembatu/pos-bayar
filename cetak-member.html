@@ -1,9 +1,59 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Pos Bayar Cetak Kartu Member</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <head>
+    <!-- ==============================
+       DASAR & PWA
+  ============================== -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#2563eb" />
+
+    <!-- ==============================
+       PRIVASI: CEGAH GOOGLE MENGINDEKS
+       (Sangat penting untuk halaman dashboard)
+  ============================== -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Cetak Member - KasirKu By: Asbin Ecosystem</title>
+
+    <!-- ==============================
+       FAVICON & MANIFEST (Path Absolut)
+  ============================== -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/icons/android-icon-192x192.png"
+    />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ==============================
+       PWA / MOBILE
+  ============================== -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="KasirKu" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- ==============================
+       PERFORMA — Font Google
+  ============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
 <style>
     /* Dasar & Reset */
     body {

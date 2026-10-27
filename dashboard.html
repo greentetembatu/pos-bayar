@@ -1,47 +1,58 @@
 <!doctype html>
 <html lang="id">
   <head>
+    <!-- ==============================
+       DASAR & PWA
+  ============================== -->
     <meta charset="UTF-8" />
-    <title>Pos Bayar Dashboard</title>
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0d6efd" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
-      name="description"
-      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta property="og:locale" content="id_ID" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Pos Bayar" />
-    <meta
-      property="og:description"
-      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"
-    />
-    <meta
-      property="og:url"
-      content="https://greentetembatu.github.io/pos-bayar/"
-    />
-    <meta property="og:site_name" content="Pos Bayar" />
-    <meta
-      property="og:image"
-      content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"
-    />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
-    <meta
-      property="og:image:alt"
-      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
-    />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-store, no-cache, must-revalidate, max-age=0"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+    <meta name="theme-color" content="#2563eb" />
 
-    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
-    <link rel="manifest" href="manifest.json" />
+    <!-- ==============================
+       PRIVASI: CEGAH GOOGLE MENGINDEKS
+       (Sangat penting untuk halaman dashboard)
+  ============================== -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Dashboard - KasirKu By: Asbin Ecosystem</title>
+
+    <!-- ==============================
+       FAVICON & MANIFEST (Path Absolut)
+  ============================== -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/icons/android-icon-192x192.png"
+    />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ==============================
+       PWA / MOBILE
+  ============================== -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="KasirKu" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- ==============================
+       PERFORMA — Font Google
+  ============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
     <!--<link rel="stylesheet" href="style.css" />-->
     <link rel="stylesheet" href="css/dashboard.css" />
@@ -53,29 +64,28 @@
         <div class="sidebar-header">
           <h2>DASHBOARD</h2>
         </div>
-          <ul class="sidebar-menu">
-            <li><a href="dashboard.html" class="active">Dashboard</a></li>
-            <li><a href="kasir.html">Kasir</a></li>
-            <li><a href="produk.html">Produk</a></li>
-            <li><a href="riwayat.html">Riwayat</a></li>
-            <li><a href="member.html">Member</a></li>
-            <li><a href="buat-barcode.html">Ceyak Barcode</a></li>
+        <ul class="sidebar-menu">
+          <li><a href="dashboard.html" class="active">Dashboard</a></li>
+          <li><a href="kasir.html">Kasir</a></li>
+          <li><a href="produk.html">Produk</a></li>
+          <li><a href="riwayat.html">Riwayat</a></li>
+          <li><a href="member.html">Member</a></li>
+          <li><a href="buat-barcode.html">Cetak Barcode</a></li>
+        </ul>
 
-          </ul>
-       
-          <div class="button-aside">
-            <button class="btn-instal" id="installBtn" style="display: flex">
-              Install Aplikasi</button>
-            <button class="btn-logout" onclick="logoutKasir()">
-               Logout</button>
-          </div>
+        <div class="button-aside">
+          <button class="btn-instal" id="installBtn" style="display: none">
+            Install Aplikasi
+          </button>
+          <button class="btn-logout" onclick="logoutKasir()">Logout</button>
+        </div>
       </section>
-      
+
       <main class="content">
         <header class="content-header">
           <h1>Dashboard</h1>
           <h3>Pengaturan Toko</h3>
-      
+
           <input type="text" id="namaToko" placeholder="Nama Toko" />
           <input type="text" id="alamatToko" placeholder="Teks Baris 1" />
           <input type="text" id="additionalToko" placeholder="Teks Baris 2" />

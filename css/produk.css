@@ -6,15 +6,15 @@
   --biru-gelap: #061746;
   --hijau-terang: #21f8b0;
   --hijau-gelap: #065f41;
-  --kuning:#fffb00;
-  --ungu:#ea00ff;
+  --kuning: #fffb00;
+  --ungu: #ea00ff;
   --orange: #f37d0e;
-  --merah: #f30e0e; 
+  --merah: #f30e0e;
   --hitam: #000000;
   --putih: #ffffff;
-  
+
   --transition: 0.3s ease;
-  --sidebar-width: 260px;
+  /*--sidebar-width: 260px;*/
 
   --h1: clamp(2.5rem, 5vw, 5rem);
   --h2: clamp(2rem, 4vw, 4rem);
@@ -60,7 +60,7 @@ a {
    SIDEBAR
 ========================================================= */
 .sidebar {
-  width: var(--sidebar-width);
+  width: 260px;
   background: var(--biru-gelap);
   padding: 24px 18px;
   display: flex;
@@ -71,12 +71,13 @@ a {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  z-index: 999;
 }
 
 /* =========================================================
    SIDEBAR HEADER
 ========================================================= */
-.sidebar-header{
+.sidebar-header {
   display: flex;
 }
 .sidebar-header h2 {
@@ -94,10 +95,8 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   padding: 0;
   margin: 0;
-
 }
 
 /* =========================================================
@@ -134,21 +133,6 @@ a {
   transform: translateX(4px);
 }
 
-/* ACTIVE */
-/*.sidebar-menu li a.active {
-  background-color: var(--hijau-terang);
-  color: var(--hitam);
-  display: block;
-
-}
-
-/* LINK */
-/*.sidebar-menu li a {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
 /* =========================================================
    BUTTON ASIDE
 ========================================================= */
@@ -176,8 +160,7 @@ a {
 }
 
 .btn-instal:hover {
-  background: var(--putih);
-  color: var(--hitam);
+  background: var(--success-hover);
 }
 
 /* =========================================================
@@ -202,20 +185,7 @@ a {
   color: var(--hitam);
 }
 
-/* =========================================================
-   MAIN CONTENT
-========================================================= */
-.content {
-  flex: 1;
-  padding: 30px;
-  overflow-x: hidden;
-}
-
-/* =========================================================
-   RESPONSIVE TABLET
-========================================================= */
 @media (max-width: 992px) {
-
   .app {
     flex-direction: column;
   }
@@ -227,54 +197,76 @@ a {
     gap: 8px;
     display: flex;
     flex-direction: row;
-    padding: 24px 20px;
-    z-index: 10;
-
+    top: 0;
+    right: 0;
+    padding: 16px;
   }
-.sidebar-header{
-  display: none;
-
-}
-.sidebar-menu{
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.sidebar-menu li a{
-  border-radius: 4px;
-  padding: 12px 6px;
-}
+  .sidebar-header {
+    display: none;
+  }
+  .sidebar-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sidebar-menu li a {
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
   .btn-instal,
   .btn-logout {
     border-radius: 4px;
-    padding: 12px 6px;
-
-  }
-
-  .content {
-    padding: 20px 10px;
+    padding: 10px 6px;
   }
 }
 
+@media (max-width: 448px) {
+  .app {
+    flex-direction: column;
+  }
 
+  .sidebar {
+    padding: 10px;
+  }
+  .sidebar-header {
+    display: none;
+  }
+  .sidebar-menu li a {
+    border-radius: 4px;
+    padding: 4px 6px;
+  }
+  .btn-instal,
+  .btn-logout {
+    border-radius: 4px;
+    padding: 5px 6px;
+  }
+}
 
 /* =========================================================
-   PRODUCT PAGE
+   MAIN CONTENT
 ========================================================= */
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-x: hidden;
+}
 
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
 .content h1 {
   font-size: var(--h4);
   color: var(--putih);
   margin-bottom: 25px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 /* =========================================================
    CARD
 ========================================================= */
-
 .card {
   background: var(--ungu);
   border: 1px solid var(--orange);
@@ -287,21 +279,13 @@ a {
   gap: 14px;
 
   transition: var(--transition);
-  
+  position: relative; /* penting: stacking context hasil pencarian */
 }
-
-/*.card:hover {
-  transform: translateY(-2px);
-}*/
 
 .card h3 {
   font-size: var(--h5);
   color: var(--hitam);
 }
-
-/* =========================================================
-   LABEL
-========================================================= */
 
 .card label {
   font-size: var(--p);
@@ -310,24 +294,25 @@ a {
 }
 
 /* =========================================================
-   INPUT
+   INPUT & SELECT
 ========================================================= */
-
 .card input,
 .card select {
   width: 100%;
   border: none;
   outline: none;
-
   padding: 14px 16px;
-
   border-radius: 14px;
-
   background: var(--putih);
   color: var(--hitam);
   font-size: var(--p);
-  transition: var(--transition);
+  font-family: inherit;
   font-weight: bold;
+  transition: var(--transition);
+}
+
+.card input::placeholder {
+  color: #888;
 }
 
 .card input:focus,
@@ -336,10 +321,13 @@ a {
   background: var(--kuning);
 }
 
-/* =========================================================
-   FILE INPUT
-========================================================= */
+/* Readonly input (barcode) */
+.card input[readonly] {
+  background: #f0f0f0;
+  cursor: not-allowed;
+}
 
+/* File input */
 input[type="file"] {
   padding: 10px;
   cursor: pointer;
@@ -348,7 +336,6 @@ input[type="file"] {
 /* =========================================================
    IMAGE PREVIEW
 ========================================================= */
-
 #imgPreview {
   display: none;
   width: 120px;
@@ -356,48 +343,40 @@ input[type="file"] {
   object-fit: cover;
   margin-top: 10px;
   border-radius: 14px;
-  border: 2px solid rgba(255,255,255,0.08);
+  border: 2px solid rgba(255, 255, 255, 0.08);
 }
 
 /* =========================================================
-   BUTTON
+   BUTTON (default)
 ========================================================= */
-
-#kamera {
+button {
   border: none;
   outline: none;
   cursor: pointer;
-
   padding: 14px 18px;
   border-radius: 8px;
   font-size: var(--p);
   font-weight: 600;
+  font-family: inherit;
   transition: var(--transition);
-
-    background: orange;
+  background: var(--orange);
   color: var(--hitam);
-  margin-bottom: 20px;
+  
 }
 
-/* =========================================================
-   DEFAULT BUTTON
-========================================================= */
-
-
-#kamera:hover {
+button:hover {
   transform: translateY(-2px);
   opacity: 0.92;
   background: var(--hijau-terang);
 }
 
-/* =========================================================
-   PRODUCT SAVE BUTTON
-========================================================= */
-
+/* Tombol Simpan Produk */
 .card button[onclick="simpanProduk()"] {
   background: var(--hijau-terang);
   color: var(--hitam);
-  width: 40%;
+  width: 100%;
+  max-width: 280px;
+  text-align: left;  
 }
 
 .card button[onclick="simpanProduk()"]:hover {
@@ -408,30 +387,142 @@ input[type="file"] {
 /* =========================================================
    SCANNER
 ========================================================= */
-
 #reader {
   width: 100%;
   max-width: 400px;
   margin: 20px auto;
-
   overflow: hidden;
   border-radius: 18px;
-
-  /*border: 2px solid rgba(255,255,255,0.08);*/
-
   background: #111;
 }
 
+#kamera {
+  display: block;
+  margin: 0 0 20px 0;      /* ← kiri 0, kanan 0, bawah 20px */
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  width: 100%;             /* jangan full-width, biar tombol kecil di kiri */
+  max-width: 280px;
+  text-align: left;
+
+}
+
+#kamera:hover {
+  background: var(--biru-gelap);
+  color: var(--putih);
+}
 /* =========================================================
-   TABLE
+   SEARCH WRAPPER + HASIL PENCARIAN
 ========================================================= */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-wrapper > input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#hasilPencarianProduk {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+
+  background: var(--biru-terang);
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  color: var(--hitam);
+
+  z-index: 999;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+  display: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Muncul via .show (JS class) — atau inline display:block */
+#hasilPencarianProduk.show {
+  display: block;
+}
+
+/* =========================================================
+   HASIL ITEM
+========================================================= */
+.hasil-item {
+  padding: 12px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  border-bottom: 1px solid #f1f1f1;
+  transition: 0.2s;
+}
+
+.hasil-item:last-child {
+  border-bottom: none;
+}
+
+.hasil-item:hover {
+  background: var(--hijau-terang);
+  color: var(--hitam);
+}
+
+.hasil-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.hasil-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hasil-info h4 {
+  margin: 0;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hasil-info small {
+  color: var(--hitam);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#hasilPencarianProduk .hasil-item:hover,
+#hasilPencarianProduk .hasil-item.hasil-item-active {
+  background: var(--hijau-terang);
+  outline: 2px solid #0d6efd;
+  outline-offset: -2px;
+}
+
+/* =========================================================
+   TABEL
+========================================================= */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 16px;
+}
 
 table {
   width: 100%;
+  min-width: 640px;
   border-collapse: collapse;
-  overflow: hidden;
-  border-radius: 16px;
-    
 }
 
 table thead {
@@ -443,13 +534,15 @@ table th {
   text-align: left;
   color: var(--putih);
   font-size: var(--p);
+  font-weight: 700;
 }
 
 table td {
   padding: 14px;
   color: var(--putih);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   font-size: var(--p);
+  vertical-align: middle;
 }
 
 table tbody tr {
@@ -461,10 +554,6 @@ table tbody tr:hover {
   background: var(--hijau-gelap);
 }
 
-/* =========================================================
-   TABLE IMAGE
-========================================================= */
-
 table img {
   width: 55px;
   height: 55px;
@@ -475,15 +564,14 @@ table img {
 /* =========================================================
    PAGINATION
 ========================================================= */
-
 #navigasiProduk {
   display: none;
   justify-content: center;
   align-items: center;
   gap: 15px;
-
   margin-top: 20px;
   padding: 10px;
+  flex-wrap: wrap;
 }
 
 #btnPrevProduk,
@@ -504,50 +592,66 @@ table img {
   font-weight: bold;
   font-size: var(--p);
 }
-/* =========================================================
-   FILTER SECTION
-========================================================= */
 
-#filterStok {
+/* =========================================================
+   CARD EXPORT / IMPORT (JSON & CSV)
+   Menggantikan inline style di HTML
+========================================================= */
+.card-export {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+  gap: 10px;
+}
+
+.card-export h3 {
+  margin: 0 0 5px;
+  font-size: 15px;
+}
+
+/* Label sebagai tombol impor */
+.label-file {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: var(--p);
+  transition: var(--transition);
 }
 
-/* =========================================================
-   SEARCH INPUT
-========================================================= */
-
-#searchProduk {
-  margin-bottom: 5px;
+.label-file:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
-/* =========================================================
-   RESPONSIVE LARGE TABLET
-========================================================= */
+.label-json { background: var(--biru-terang); color: var(--hitam); }
+.label-csv  { background: #f59e0b; color: var(--putih); }
 
+/* Tombol ekspor */
+.btn-export-json { background: var(--biru-gelap); color: var(--putih); }
+.btn-export-csv  { background: #16a34a;        color: var(--putih); }
+
+/* =========================================================
+   RESPONSIVE — LARGE TABLET (≤ 992px)
+========================================================= */
 @media (max-width: 992px) {
-
+  .content {
+    padding: 20px;
+  }
 
   .card {
     padding: 20px;
-
   }
-
-  table {
-    overflow-x: auto;
-    white-space: nowrap;
-    
-    
-    
-  }
-
 }
 
 /* =========================================================
-   RESPONSIVE TABLET
+   RESPONSIVE — TABLET (≤ 768px)
 ========================================================= */
-
 @media (max-width: 768px) {
-
   .content {
     padding: 18px 12px;
   }
@@ -557,35 +661,27 @@ table img {
     border-radius: 16px;
   }
 
-  .card .card {
-    flex-direction: column !important;
-  }
-
-  table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    
-  }
-
   #reader {
     max-width: 100%;
   }
 
-  button {
+  /*.card button[onclick="simpanProduk()"] {
+    width: 100%;
+    max-width: 100%;
+  }*/
+
+  #kamera {
     width: 100%;
   }
-
 }
 
 /* =========================================================
-   RESPONSIVE MOBILE
+   RESPONSIVE — MOBILE (≤ 576px)
 ========================================================= */
-
 @media (max-width: 576px) {
-
   .content h1 {
     font-size: var(--h5);
+    margin-bottom: 18px;
   }
 
   .card {
@@ -616,107 +712,49 @@ table img {
     padding: 10px 12px;
   }
 
+  #navigasiProduk {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #btnPrevProduk,
+  #btnNextProduk {
+    width: 100%;
+  }
+
+  /* Hasil pencarian di mobile */
+  .hasil-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .hasil-item img {
+    width: 56px;
+    height: 56px;
+  }
+
+  .hasil-info h4 {
+    font-size: 13px;
+  }
+
+  .hasil-info small {
+    font-size: 11px;
+  }
+
+  #hasilPencarianProduk {
+    max-height: 260px;
+  }
 }
 
+/* =========================================================
+   RESPONSIVE — MOBILE KECIL (≤ 448px)
+========================================================= */
+@media (max-width: 448px) {
+  .content {
+    padding: 12px 10px;
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#hasilPencarianProduk{
-    position:absolute;
-    top:100px;
-    left:0;
-    right:0;
-
-    background:var(--biru-terang);
-    border:1px solid #ddd;
-    border-radius:10px;
-    color: var(--hitam);
-
-
-    z-index:999;
-
-    box-shadow:0 10px 25px rgba(0,0,0,0.08);
-
-    display:none;
-        max-height: 320px;
-    overflow-y: auto;
-
-}
-
-.hasil-item{
-    padding:12px;
-    cursor:pointer;
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    border-bottom:1px solid #f1f1f1;
-
-    transition:0.2s;
-}
-
-.hasil-item:hover{
-    background:var(--hijau-terang);
-    color: var(--hitam);
-}
-
-.hasil-item img{
-    width:80px;
-    height:80px;
-    object-fit:cover;
-    border-radius:8px;
-}
-
-.hasil-info{
-    flex:1;
-}
-
-.hasil-info h4{
-    margin:0;
-    font-size:14px;
-}
-
-.hasil-info small{
-    color:var(--hitam);
-}
-
-
-
-
-
-
-#hasilPencarianProduk .hasil-item:hover,
-#hasilPencarianProduk .hasil-item.hasil-item-active {
-    background:var(--hijau-terang);
-    outline: 2px solid #0d6efd;
-    outline-offset: -2px;
+  .card {
+    padding: 14px;
+  }
 }

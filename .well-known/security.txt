@@ -1,0 +1,4 @@
+Contact: mailto:greentetembatu@gmail.com
+Expires: 2026-12-31T23:59:00.000Z
+Preferred-Languages: id, en
+Canonical: https://kasirasbinecosystem.vercel.app/.well-known/security.txt

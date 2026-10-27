@@ -1,11 +1,10 @@
-
 {
-  "id": "./login.html",
+  "id": "/login.html",
   "name": "KasirKu — By: Asbin Ecosystem",
   "short_name": "KasirKu",
   "description": "Aplikasi kasir modern untuk warung, toko, dan UMKM. Kelola produk, transaksi, stok, dan member dalam satu aplikasi.",
-  "start_url": "./login.html",
-  "scope": "./",
+  "start_url": "/login.html",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
@@ -19,25 +18,25 @@
   ],
   "icons": [
     {
-      "src": "icons/android-icon-192x192.png",
+      "src": "/icons/android-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/android-icon-192x192.png",
+      "src": "/icons/android-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "icons/android-icon-512x512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/android-icon-512x512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -48,10 +47,10 @@
       "name": "Login Kasir",
       "short_name": "Login",
       "description": "Buka halaman login kasir",
-      "url": "./login.html",
+      "url": "/login.html",
       "icons": [
         {
-          "src": "icons/icon-192-maskable.png",
+          "src": "/icons/android-icon-192x192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -61,10 +60,10 @@
       "name": "Dashboard",
       "short_name": "Dashboard",
       "description": "Buka dashboard kasir",
-      "url": "./dashboard.html",
+      "url": "/dashboard.html",
       "icons": [
         {
-          "src": "icons/android-icon-192x192.png",
+          "src": "/icons/android-icon-192x192.png",
           "sizes": "192x192",
           "type": "image/png"
         }

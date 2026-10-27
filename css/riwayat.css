@@ -1,216 +1,627 @@
-/* RESET */
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f5f7fa;
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+:root {
+  --biru-terang: #2563eb;
+  --biru-gelap: #061746;
+  --hijau-terang: #21f8b0;
+  --hijau-gelap: #065f41;
+  --kuning: #fffb00;
+  --ungu: #ea00ff;
+  --orange: #f37d0e;
+  --merah: #f30e0e;
+  --hitam: #000000;
+  --putih: #ffffff;
+
+  --transition: 0.3s ease;
+  /*--sidebar-width: 260px;*/
+
+  --h1: clamp(2.5rem, 5vw, 5rem);
+  --h2: clamp(2rem, 4vw, 4rem);
+  --h3: clamp(1.75rem, 3.5vw, 3rem);
+  --h4: clamp(1.5rem, 3vw, 2.5rem);
+  --h5: clamp(1.25rem, 2.5vw, 2rem);
+  --h6: clamp(1rem, 2vw, 1.5rem);
+
+  --p: clamp(0.95rem, 1.2vw, 1.125rem);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+* {
   margin: 0;
-  padding: 20px;
-  color: #333;
-}
-
-/* JUDUL */
-h2 {
-  margin-bottom: 10px;
-  color: #222;
-}
-
-/* BUTTON DASHBOARD */
-ul {
   padding: 0;
-  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
-ul button {
-  background: #4CAF50;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
+body {
+  background: var(--hitam);
+  color: var(--putih);
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
 }
 
-ul button a {
-  color: white;
+a {
   text-decoration: none;
+  color: inherit;
+}
+
+/* =========================================================
+   APP LAYOUT
+========================================================= */
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+.sidebar {
+  width: 260px;
+  background: var(--biru-gelap);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+/* =========================================================
+   SIDEBAR HEADER
+========================================================= */
+.sidebar-header {
+  display: flex;
+}
+.sidebar-header h2 {
+  font-size: var(--h6);
+  font-weight: 700;
+  color: var(--putih);
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   SIDEBAR MENU
+========================================================= */
+.sidebar-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+}
+
+/* =========================================================
+   MENU ITEM
+========================================================= */
+.sidebar-menu li a {
+  display: block;
+  padding: 12px 18px;
+  color: var(--hitam);
+  text-decoration: none;
+  font-size: var(--p);
+  font-weight: 600;
+  border-radius: 12px;
+  transition: var(--transition);
+  background: var(--kuning);
+}
+
+/* HOVER */
+.sidebar-menu li a:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+.sidebar-menu li a.active {
+  background: var(--orange);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Pastikan hover tidak merusak active */
+.sidebar-menu li a.active:hover {
+  background: var(--ungu);
+  color: var(--hitam);
+  transform: translateX(4px);
+}
+
+/* =========================================================
+   BUTTON ASIDE
+========================================================= */
+.button-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================================================
+   BUTTON INSTALL
+========================================================= */
+.btn-instal {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-instal:hover {
+  background: var(--success-hover);
+}
+
+/* =========================================================
+   BUTTON LOGOUT
+========================================================= */
+.btn-logout {
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--merah);
+  color: var(--putih);
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.btn-logout:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+}
+
+@media (max-width: 992px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    top: 0;
+    right: 0;
+    padding: 16px;
+  }
+  .sidebar-header {
+    display: none;
+  }
+  .sidebar-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sidebar-menu li a {
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+  .btn-instal,
+  .btn-logout {
+    border-radius: 4px;
+    padding: 10px 6px;
+  }
+}
+
+@media (max-width: 448px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    padding: 10px;
+  }
+  .sidebar-header {
+    display: none;
+  }
+  .sidebar-menu li a {
+    border-radius: 4px;
+    padding: 4px 6px;
+  }
+  .btn-instal,
+  .btn-logout {
+    border-radius: 4px;
+    padding: 5px 6px;
+  }
+}
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   RIWAYAT — JUDUL & SEARCH
+========================================================= */
+.content h2 {
+  font-size: var(--h4);
+  color: var(--putih);
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.content h3 {
+  font-size: var(--h5);
+  color: var(--putih);
+  font-weight: 700;
+  margin: 30px 0 16px;
+  line-height: 1.3;
+}
+
+#searchTransaksi {
+  width: 100%;
+  max-width: 520px;
+  padding: 14px 16px;
+  border: 2px solid var(--orange);
+  border-radius: 12px;
+  background: var(--putih);
+  color: var(--hitam);
+  font-family: inherit;
+  font-size: var(--p);
+  font-weight: 600;
+  margin-bottom: 20px;
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+#searchTransaksi::placeholder {
+  color: #888;
   font-weight: 500;
 }
 
-ul button:hover {
-  background: #43a047;
-}
-
-/* INPUT SEARCH */
-#searchTransaksi {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  margin-bottom: 20px;
-  font-size: 14px;
-  outline: none;
-  transition: 0.3s;
-}
-
 #searchTransaksi:focus {
-  border-color: #4CAF50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+  outline: none;
+  border-color: var(--biru-terang);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
 }
 
-/* TABLE */
-table {
+/* =========================================================
+   WRAPPER TABEL — supaya bisa scroll horizontal di HP
+   (Anda perlu menambahkan <div class="table-wrapper"> di HTML)
+========================================================= */
+.table-wrapper {
   width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+/* =========================================================
+   TABEL UMUM (riwayat & ranking)
+========================================================= */
+.content table {
+  width: 100%;
+  min-width: 720px; /* kolom tidak "gepeng" di HP */
   border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  background: var(--biru-gelap);
 }
 
-/* HEADER */
-thead {
-  background: #4CAF50;
-  color: white;
+.content table thead {
+  background: var(--biru-terang);
 }
 
-thead th {
-  padding: 12px;
+.content table th {
+  padding: 14px 12px;
   text-align: left;
-  font-size: 14px;
+  color: var(--putih);
+  font-size: var(--p);
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-/* BODY */
-tbody td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  font-size: 13px;
+.content table td {
+  padding: 12px;
+  color: var(--putih);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: var(--p);
+  vertical-align: middle;
 }
 
-/* HOVER ROW */
-tbody tr:hover {
-  background: #f9f9f9;
+.content table tbody tr {
+  background: var(--biru-gelap);
+  transition: var(--transition);
 }
 
-/* AKSI BUTTON */
-td button {
-  margin-right: 5px;
-  padding: 6px 10px;
+.content table tbody tr:hover {
+  background: var(--hijau-gelap);
+}
+
+/* Foto produk di tabel */
+.content table img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Tombol aksi di tabel */
+.content table td button {
+  padding: 8px 12px;
+  margin: 2px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  background: var(--orange);
+  color: var(--hitam);
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 12px;
+  transition: var(--transition);
 }
 
-/* DETAIL */
-td button:nth-child(1) {
-  background: #2196F3;
-  color: white;
+.content table td button:hover {
+  background: var(--kuning);
+  color: var(--hitam);
+  transform: translateY(-2px);
 }
 
-/* CETAK */
-td button:nth-child(2) {
-  background: #ff9800;
-  color: white;
+/* Tombol hapus (jika ada) */
+.content table td button.btn-hapus,
+.content table td button[onclick*="hapus"] {
+  background: var(--merah);
+  color: var(--putih);
 }
 
-/* HAPUS */
-td button:nth-child(3) {
-  background: red;
-  color: white;
+.content table td button.btn-hapus:hover,
+.content table td button[onclick*="hapus"]:hover {
+  background: var(--kuning);
+  color: var(--hitam);
 }
 
-/* DOWNLOAD PANEL */
+/* =========================================================
+   PAGINATION (navigasiRiwayat & ranking)
+========================================================= */
+#navigasiRiwayat {
+  display: none; /* default sembunyi, JS set flex */
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+#btnPrevRiwayat,
+#btnNextRiwayat,
+.download-panel button,
+div[style*="text-align: center"] button {
+  padding: 10px 18px;
+  background: var(--biru-gelap);
+  color: var(--putih);
+  border: none;
+  border-radius: 10px;
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+#btnPrevRiwayat:hover,
+#btnNextRiwayat:hover,
+.download-panel button:hover,
+div[style*="text-align: center"] button:hover {
+  background: var(--biru-terang);
+  transform: translateY(-2px);
+}
+
+#infoHalamanRiwayat,
+#pageInfo {
+  color: var(--putih);
+  font-weight: 700;
+  font-size: var(--p);
+}
+
+/* Container pagination ranking (div inline style) */
+.content > div[style*="text-align: center"] {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px !important;
+  padding: 10px;
+}
+
+/* =========================================================
+   RANKING MEMBER — penanda khusus
+========================================================= */
+#rankingMember tr:nth-child(1) {
+  background: linear-gradient(90deg, #facc15, #f59e0b);
+  color: var(--hitam);
+  font-weight: 700;
+}
+
+#rankingMember tr:nth-child(2) {
+  background: linear-gradient(90deg, #e5e7eb, #9ca3af);
+  color: var(--hitam);
+  font-weight: 700;
+}
+
+#rankingMember tr:nth-child(3) {
+  background: linear-gradient(90deg, #fb923c, #c2410c);
+  color: var(--putih);
+  font-weight: 700;
+}
+
+#rankingMember tr:nth-child(1) td,
+#rankingMember tr:nth-child(2) td,
+#rankingMember tr:nth-child(3) td {
+  color: inherit;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+#rankingMember tr:nth-child(1):hover,
+#rankingMember tr:nth-child(2):hover,
+#rankingMember tr:nth-child(3):hover {
+  filter: brightness(1.08);
+}
+
+/* =========================================================
+   DOWNLOAD PANEL
+========================================================= */
 .download-panel {
+  background: var(--ungu);
+  border: 2px solid var(--orange);
+  border-radius: 16px;
+  padding: 24px;
   margin-top: 30px;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .download-panel h3 {
-  margin-bottom: 10px;
+  color: var(--hitam);
+  font-size: var(--h6);
+  margin: 0;
 }
 
-/* BUTTON DOWNLOAD */
 .download-panel button {
-  padding: 10px 15px;
-  margin-right: 10px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #4CAF50;
-  color: white;
-  transition: 0.3s;
+  background: var(--hijau-terang);
+  color: var(--hitam);
+  width: auto;
+  min-width: 200px;
+  align-self: flex-start;
 }
 
 .download-panel button:hover {
-  background: #388e3c;
+  background: var(--kuning);
+  color: var(--hitam);
 }
 
+/* Tombol download kedua (CSV) beda warna */
+.download-panel button:nth-of-type(2) {
+  background: var(--biru-terang);
+  color: var(--putih);
+}
 
+.download-panel button:nth-of-type(2):hover {
+  background: var(--hijau-terang);
+  color: var(--hitam);
+}
 
+/* =========================================================
+   LIST RIWAYAT (jika #listRiwayat berisi HTML)
+========================================================= */
+#listRiwayat {
+  width: 100%;
+  margin-bottom: 20px;
+}
 
-
-
-
-
-
-
-
-/* =========================
-   RESPONSIVE MOBILE
-   ========================= */
-@media (max-width: 768px) {
-
-  body {
-    padding: 10px;
+/* =========================================================
+   RESPONSIVE — TABLET (≤ 992px)
+========================================================= */
+@media (max-width: 992px) {
+  .content {
+    padding: 20px 16px;
   }
 
-  h2 {
-    font-size: 18px;
-  }
-
-  /* SEARCH */
   #searchTransaksi {
-    font-size: 13px;
-    padding: 10px;
+    max-width: 100%;
   }
 
-  /* BUTTON DASHBOARD */
-  ul button {
+  .content table {
+    min-width: 700px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE (≤ 768px)
+========================================================= */
+@media (max-width: 768px) {
+  .content {
+    padding: 18px 12px;
+  }
+
+  .content h2 {
+    font-size: var(--h5);
+  }
+
+  .content h3 {
+    font-size: var(--h6);
+  }
+
+  #searchTransaksi {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  .content table {
+    min-width: 640px;
+  }
+
+  .content table th,
+  .content table td {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+
+  #navigasiRiwayat {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #btnPrevRiwayat,
+  #btnNextRiwayat {
     width: 100%;
-    margin-bottom: 10px;
   }
 
-  /* TABLE JADI SCROLL */
-  table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  thead {
-    font-size: 12px;
-  }
-
-  tbody td {
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  /* BUTTON AKSI */
-  td button {
-    padding: 5px 8px;
-    font-size: 11px;
-    margin-bottom: 3px;
-  }
-
-  /* DOWNLOAD PANEL */
   .download-panel {
-    padding: 15px;
+    padding: 18px;
   }
 
   .download-panel button {
     width: 100%;
-    margin-bottom: 10px;
+    min-width: 0;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE KECIL (≤ 448px)
+========================================================= */
+@media (max-width: 448px) {
+  .content {
+    padding: 12px 10px;
+  }
+
+  .content table {
+    min-width: 600px;
+  }
+
+  .content table th,
+  .content table td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+
+  .download-panel {
+    padding: 14px;
   }
 }

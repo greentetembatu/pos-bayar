@@ -1,41 +1,57 @@
 <!doctype html>
 <html lang="id">
   <head>
+    <!-- ==============================
+       DASAR & PWA
+  ============================== -->
     <meta charset="UTF-8" />
-    <title>Pos Bayar Produk</title>
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#2563eb" />
 
-    <link rel="shortcut icon" href="icon-512.ico" type="image/x-icon" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#0d6efd" />
+    <!-- ==============================
+       PRIVASI: CEGAH GOOGLE MENGINDEKS
+       (Sangat penting untuk halaman dashboard)
+  ============================== -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Produk - KasirKu By: Asbin Ecosystem</title>
 
-    <meta
-      name="description"
-      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    <!-- ==============================
+       FAVICON & MANIFEST (Path Absolut)
+  ============================== -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/icons/android-icon-192x192.png"
     />
-    <meta property="og:locale" content="id_ID" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Pos Bayar" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ==============================
+       PWA / MOBILE
+  ============================== -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="KasirKu" />
     <meta
-      property="og:description"
-      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel"
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
     />
-    <meta
-      property="og:url"
-      content="https://greentetembatu.github.io/pos-bayar/"
-    />
-    <meta property="og:site_name" content="Pos Bayar" />
-    <meta
-      property="og:image"
-      content="https://greentetembatu.github.io/pos-bayar/adi-mardani-dev.png"
-    />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
-    <meta
-      property="og:image:alt"
-      content="Aplikasi Kasir Mandiri, Multifungsi, Fleksibel."
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- ==============================
+       PERFORMA — Font Google
+  ============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
     />
 
     <!--<link rel="stylesheet" href="style.css" />-->
@@ -56,11 +72,10 @@
           <li><a href="riwayat.html">Riwayat</a></li>
           <li><a href="member.html">Member</a></li>
           <li><a href="buat-barcode.html">Buat Barcode</a></li>
-
         </ul>
 
         <div class="button-aside">
-          <button class="btn-instal" id="installBtn" style="display: flex">
+          <button class="btn-instal" id="installBtn" style="display: none">
             Install Aplikasi
           </button>
           <button class="btn-logout" onclick="logoutKasir()">Logout</button>
@@ -69,26 +84,24 @@
       <!-- Content -->
       <main class="content">
         <h1>Manajemen Produk</h1>
-        <div
-          class="card"
-          style="display: flex; flex-direction: column; position: relative"
-        >
-          <label>Cari Produk</label>
 
-          <input
-            type="text"
-            id="searchProduk"
-            placeholder="nama produk..."
-            autocomplete="off"
-          />
+        <div class="card">
+          <label for="searchProduk">Cari Produk</label>
 
-          <!-- HASIL PENCARIAN -->
-          <div id="hasilPencarianProduk"></div>
+          <!-- WRAPPER: input + hasil pencarian -->
+          <div class="search-wrapper">
+            <input
+              type="text"
+              id="searchProduk"
+              placeholder="nama produk..."
+              autocomplete="off"
+            />
 
-          <span></span>
+            <!-- HASIL PENCARIAN -->
+            <div id="hasilPencarianProduk"></div>
+          </div>
 
-          <label>Filter Stok</label>
-
+          <label for="filterStok">Filter Stok</label>
           <select id="filterStok" onchange="renderProduk()">
             <option value="all">Semua</option>
             <option value="tersedia">Stok Tersedia</option>
@@ -96,6 +109,7 @@
             <option value="menipis">Stok Menipis (≤ 5)</option>
           </select>
         </div>
+
         <div
           id="reader"
           style="width: 100%; max-width: 400px; margin: auto"
@@ -143,9 +157,12 @@
           <button onclick="simpanProduk()">Simpan Produk</button>
         </div>
         <!-- Tabel Produk -->
-        <div class="card">
+         <div class="card">
           <h3>Daftar Produk</h3>
-          <table width="100%">
+  
+          <div class="table-wrapper">              <!-- ← wrapper baru -->
+            <table>
+
             <thead>
               <tr>
                 <th>Foto</th>
@@ -159,6 +176,7 @@
             </thead>
             <tbody id="produkTable"></tbody>
           </table>
+          </div>
 
           <div
             id="navigasiProduk"
@@ -206,50 +224,17 @@
             </button>
           </div>
         </div>
-<!-- ===================== -->
-<!-- CARD 1: JSON          -->
-<!-- ===================== -->
-<div
-  class="card"
-  style="
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 20px;
-    width: 100%;
-    gap: 10px;
-    
-  "
->
-  <h3 style="margin: 0 0 5px; font-size: 15px;">Data JSON</h3>
+        <!-- ===================== -->
+        <!-- CARD 1: JSON          -->
+        <!-- ===================== -->
+<div class="card card-export">
+  <h3>Data JSON</h3>
 
-  <!-- EXPORT JSON -->
-  <button
-    onclick="eksporDataProduk()"
-    style="
-      background: var(--biru-gelap);
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      border: none;
-    "
-  >
+  <button onclick="eksporDataProduk()" class="btn-export-json">
     Ekspor JSON
   </button>
 
-  <!-- IMPORT JSON -->
-  <label
-    for="inputImpor"
-    style="
-      background: var(--biru-terang);
-      color: black;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
-      cursor: pointer;
-    "
-  >
+  <label for="inputImpor" class="label-file label-json">
     Impor JSON
   </label>
 
@@ -262,50 +247,14 @@
   />
 </div>
 
+<div class="card card-export">
+  <h3>Data CSV</h3>
 
-<!-- ===================== -->
-<!-- CARD 2: CSV           -->
-<!-- ===================== -->
-<div
-  class="card"
-  style="
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 20px;
-    width: 100%;
-    gap: 10px;
-  "
->
-  <h3 style="margin: 0 0 5px; font-size: 15px;">Data CSV</h3>
-
-  <!-- EXPORT CSV -->
-  <button
-    onclick="eksporCSVProduk()"
-    style="
-      background: #16a34a;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      border: none;
-    "
-  >
+  <button onclick="eksporCSVProduk()" class="btn-export-csv">
     Ekspor CSV
   </button>
 
-  <!-- IMPORT CSV -->
-  <label
-    for="inputImporCSV"
-    style="
-      background: #f59e0b;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
-      cursor: pointer;
-    "
-  >
+  <label for="inputImporCSV" class="label-file label-csv">
     Impor CSV
   </label>
 
