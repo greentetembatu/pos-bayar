@@ -53,6 +53,8 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <!--<link rel="stylesheet" href="style.css" />-->
     <link rel="stylesheet" href="css/dashboard.css" />
@@ -118,6 +120,63 @@
             <p id="totalLaba">Rp 0</p>
           </div>
         </section>
+
+      <!-- ========================================== -->
+<!-- BLOK INDEPENDEN: BACKUP & RESTORE TERPADU  -->
+<!-- ========================================== -->
+<div class="card" id="panelBackupRestore" style="margin-top: 30px; background: peachpuff; color: black;">
+  <h3>💾 Pusat Data (Backup & Restore)</h3>
+  <p style="margin-bottom: 15px; font-size: 0.9rem;">
+    Kelola seluruh data aplikasi (Produk, Member, Transaksi, Kasir, Pengaturan) dalam satu tempat.
+  </p>
+
+  <div class="backup-grid">
+    <!-- SIMPAN & DOWNLOAD -->
+    <div class="backup-box">
+      <h4>📥 Simpan / Download</h4>
+      <button type="button" onclick="simpanSemuaDataKeStorage()" class="btn-backup bg-blue">
+        Simpan ke Memori (Local)
+      </button>
+      <button type="button" onclick="downloadSemuaDataJSON()" class="btn-backup bg-green">
+        Download Semua Data (JSON)
+      </button>
+      <button type="button" onclick="downloadSemuaDataExcel()" class="btn-backup bg-orange">
+        Download Semua Data (Excel Multi-Sheet)
+      </button>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="backup-box">
+      <h4>📤 Upload / Restore</h4>
+      <p style="font-size: 0.8rem; margin-bottom: 8px; color: #555;">
+        *Hanya menerima : 1. File DATA JSON dari Kolom Simpan / Download. 2. File ZIP untuk data dan Foto.
+      </p>
+      <label for="uploadSemuaData" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer;">
+        Pilih File Backup (.json)
+      </label>
+      <label for="uploadZip" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer; margin-top: 10px;">
+  Restore Data dari ZIP (Excel + Foto)
+</label>
+<input type="file" id="uploadZip" accept=".zip" onchange="uploadDariZip(event)" style="display: none;">
+      <input type="file" id="uploadSemuaData" accept=".json" onchange="uploadSemuaDataJSON(event)" style="display: none;">
+    </div>
+  </div>
+
+  <!-- DOWNLOAD OTOMATIS -->
+  <div style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ccc;">
+    <h4>⏱️ Download Otomatis (Auto-Backup)</h4>
+    <p style="font-size: 0.9rem; margin-bottom: 10px;">Otomatis mengunduh backup jika sudah melewati batas waktu.</p>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button type="button" onclick="aturAutoBackup(12)" class="btn-backup bg-dark">Set Auto 12 Jam</button>
+      <button type="button" onclick="aturAutoBackup(24)" class="btn-backup bg-dark">Set Auto 24 Jam</button>
+      <button type="button" onclick="batalkanAutoBackup()" class="btn-backup bg-red">Matikan Auto</button>
+    </div>
+    <p id="statusAutoBackup" style="margin-top: 10px; font-weight: bold; color: #2563eb;">Status: Tidak Aktif</p>
+  </div>
+</div>
+
+
+
       </main>
     </section>
     <!-- SCRIPT (TIDAK DIUBAH) -->

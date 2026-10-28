@@ -412,3 +412,72 @@ a {
     padding: 10px 8px;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+/* ==========================================
+   STYLE BLOK BACKUP
+   ========================================== */
+.backup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.backup-box {
+  background:var(--hijau-terang);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.backup-box h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--hitam);
+}
+
+.btn-backup {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 6px;
+  color:var(--hitam);
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-backup:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.bg-blue { background: #2563eb; }
+.bg-green { background: #16a34a; }
+.bg-orange { background: #f37d0e; }
+.bg-purple { background: #9333ea; }
+.bg-dark { background: #4a5568; }
+.bg-red { background: #e53e3e; }
+
+@media (max-width: 768px) {
+  .backup-grid {
+    grid-template-columns: 1fr;
+  }
+}
