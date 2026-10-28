@@ -54,7 +54,7 @@
       rel="stylesheet"
     />
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>-->
 
     <!--<link rel="stylesheet" href="style.css" />-->
     <link rel="stylesheet" href="css/dashboard.css" />
@@ -149,15 +149,15 @@
     <div class="backup-box">
       <h4>📤 Upload / Restore</h4>
       <p style="font-size: 0.8rem; margin-bottom: 8px; color: #555;">
-        *Hanya menerima : 1. File DATA JSON dari Kolom Simpan / Download. 2. File ZIP untuk data dan Foto.
+        *Hanya menerima File DATA JSON dari Kolom Simpan / Download.
       </p>
       <label for="uploadSemuaData" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer;">
         Pilih File Backup (.json)
       </label>
-      <label for="uploadZip" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer; margin-top: 10px;">
-  Restore Data dari ZIP (Excel + Foto)
-</label>
-<input type="file" id="uploadZip" accept=".zip" onchange="uploadDariZip(event)" style="display: none;">
+      <!--<label for="uploadZip" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer; margin-top: 10px;">
+        Restore Data dari ZIP (Excel + Foto)
+      </label>-->
+      <input type="file" id="uploadZip" accept=".zip" onchange="uploadDariZip(event)" style="display: none;">
       <input type="file" id="uploadSemuaData" accept=".json" onchange="uploadSemuaDataJSON(event)" style="display: none;">
     </div>
   </div>

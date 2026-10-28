@@ -30,7 +30,7 @@ function simpanProduk() {
 
   if (id) {
     // Edit Produk
-    const dashboard = produk.findDashboard(p => p.id == id);
+    const dashboard = produk.findIndex(p => p.id == id);
     if (dashboard === -1) return;
 
     produk[dashboard] = {
@@ -63,7 +63,7 @@ function simpanProduk() {
 ======================= */
 function editProduk(id) {
   const produk = getProduk();
-  const p = produk.find(item => item.id === id);
+  const p = produk.find(item => item.id == id);
   if (!p) return;
 
   // Mengisi form dengan data yang ada

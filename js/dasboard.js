@@ -250,13 +250,8 @@ function downloadSemuaDataJSON() {
 }
 
 // 3. DOWNLOAD SEMUA DATA (EXCEL MULTI-SHEET VIA HTML)
-async function downloadSemuaDataExcel() {
-  // Validasi Library
-  if (typeof XLSX === "undefined" || typeof JSZip === "undefined") {
-    alert("Library Excel atau ZIP belum termuat. Periksa koneksi internet.");
-    return;
-  }
-
+function downloadSemuaDataExcel() {
+  // 1. Ambil data
   const produk = JSON.parse(localStorage.getItem("produk")) || [];
   const member = JSON.parse(localStorage.getItem("member")) || [];
   const transaksi = JSON.parse(localStorage.getItem("transaksi")) || [];
@@ -266,102 +261,68 @@ async function downloadSemuaDataExcel() {
     return;
   }
 
-  // Tampilkan loading (opsional)
-  const btn = document.querySelector("button[onclick='downloadSemuaDataExcel()']");
-  const textAsli = btn ? btn.innerText : "";
-  if (btn) btn.innerText = "Menyiapkan File...";
+  // 2. Format Data Produk (Paksa ID & Barcode jadi Teks agar tidak jadi notasi ilmiah)
+  const dataProduk = produk.map(p => ({
+    "ID": String(p.id || ""),
+    "Barcode": String(p.barcode || ""),
+    "Nama Produk": p.nama || "",
+    "Modal": Number(p.modal) || 0,
+    "Harga Jual": Number(p.harga_jual) || 0,
+    "Stok": Number(p.stok) || 0,
+    "Foto": p.foto ? "Ada Foto" : "Tidak Ada"
+  }));
 
-  try {
-    // ==========================================
-    // 1. PROSES EXCEL
-    // ==========================================
-    const dataProduk = produk.map(p => ({
-      "ID": String(p.id || ""),
-      "Barcode": String(p.barcode || ""),
-      "Nama Produk": p.nama || "",
-      "Modal": Number(p.modal) || 0,
-      "Harga Jual": Number(p.harga_jual) || 0,
-      "Stok": Number(p.stok) || 0,
-      "Nama File Foto": p.foto ? `produk_${p.id}.jpeg` : "Tidak Ada" // Tautkan ke nama file
-    }));
+  // 3. Format Data Member
+  const dataMember = member.map(m => ({
+    "No Member": String(m.no || ""),
+    "Nama": m.nama || "",
+    "No HP": String(m.hp || ""),
+    "Email": m.email || "",
+    "Tgl Daftar": m.tanggal || "",
+    "Kasir": m.kasir || ""
+  }));
 
-    const dataMember = member.map(m => ({
-      "No Member": String(m.no || ""), "Nama": m.nama || "", "No HP": String(m.hp || ""), "Email": m.email || "", "Tgl Daftar": m.tanggal || "", "Kasir": m.kasir || ""
-    }));
+  // 4. Format Data Transaksi
+  const dataTransaksi = transaksi.map(t => ({
+    "ID Transaksi": String(t.id || ""),
+    "Tanggal": t.tanggal || "",
+    "Kasir": t.kasirNama || "",
+    "Member": t.namaMember || "",
+    "Total": Number(t.total) || 0,
+    "Laba": Number(t.totalLaba) || 0,
+    "Metode": t.metode || "cash",
+    "Detail Item": (t.items || []).map(i => `${i.nama} (${i.qty})`).join(", ")
+  }));
 
-    const dataTransaksi = transaksi.map(t => ({
-      "ID Transaksi": String(t.id || ""), "Tanggal": t.tanggal || "", "Kasir": t.kasirNama || "", "Member": t.namaMember || "", "Total": Number(t.total) || 0, "Laba": Number(t.totalLaba) || 0, "Metode": t.metode || "cash", "Detail Item": (t.items || []).map(i => `${i.nama} (${i.qty})`).join(", ")
-    }));
+  // 5. Buat Workbook (Buku Kerja Excel)
+  const wb = XLSX.utils.book_new();
 
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataProduk), "Daftar Produk");
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataMember), "Data Member");
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataTransaksi), "Riwayat Transaksi");
+  // 6. Buat Worksheet (Lembar Kerja) dari masing-masing data
+  const wsProduk = XLSX.utils.json_to_sheet(dataProduk);
+  const wsMember = XLSX.utils.json_to_sheet(dataMember);
+  const wsTransaksi = XLSX.utils.json_to_sheet(dataTransaksi);
 
-    // Ubah Excel menjadi Blob (file biner)
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const excelBlob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  // Opsional: Atur lebar kolom agar rapi saat dibuka
+  wsProduk['!cols'] = [{ wch: 15 }, { wch: 15 }, { wch: 30 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 12 }];
+  wsMember['!cols'] = [{ wch: 15 }, { wch: 20 }, { wch: 15 }, { wch: 25 }, { wch: 12 }, { wch: 15 }];
+  wsTransaksi['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 10 }, { wch: 40 }];
 
-    // ==========================================
-    // 2. PROSES ZIP & FOTO
-    // ==========================================
-    const zip = new JSZip();
+  // 7. Masukkan Worksheet ke dalam Workbook dengan nama Sheet
+  XLSX.utils.book_append_sheet(wb, wsProduk, "Daftar Produk");
+  XLSX.utils.book_append_sheet(wb, wsMember, "Data Member");
+  XLSX.utils.book_append_sheet(wb, wsTransaksi, "Riwayat Transaksi");
 
-    // Masukkan file Excel ke dalam ZIP
-    zip.file(`Laporan-Data-${formatTanggalFile()}.xlsx`, excelBlob);
+  // 8. Unduh File (.xlsx)
+  const namaFile = `LAPORAN-KASIR-${formatTanggalFile()}.xlsx`;
+  XLSX.writeFile(wb, namaFile);
 
-    // Buat folder "Foto Produk" di dalam ZIP
-    const folderFoto = zip.folder("Foto Produk");
-    let jumlahFoto = 0;
-
-    // Looping semua produk untuk mengambil Base64 fotonya
-    produk.forEach(p => {
-      if (p.foto && p.foto.startsWith("data:image")) {
-        // Pisahkan header base64 dengan datanya
-        // Format: data:image/jpeg;base64,/9j/4AAQSkZJRg...
-        const parts = p.foto.split(",");
-        const mime = parts[0].match(/:(.*?);/)[1];
-        const ext = mime.split("/")[1]; // jpeg, png, dll
-        const base64Data = parts[1];
-
-        // Masukkan ke folder ZIP dengan nama file yang rapi
-        folderFoto.file(`produk_${p.id}.${ext}`, base64Data, { base64: true });
-        jumlahFoto++;
-      }
-    });
-
-    // ==========================================
-    // 3. SELESAIKAN & DOWNLOAD ZIP
-    // ==========================================
-    const zipBlob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(zipBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `BACKUP-KASIR-${formatTanggalFile()}.zip`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    // Kembalikan tombol
-    if (btn) btn.innerText = textAsli;
-    catatWaktuBackup();
-
-    if (jumlahFoto > 0) {
-      alert(`✅ Berhasil!\nFile ZIP berisi Laporan Excel dan ${jumlahFoto} file Foto Produk telah diunduh.`);
-    } else {
-      alert(`✅ Berhasil!\nFile ZIP berisi Laporan Excel telah diunduh (Tidak ada foto produk).`);
-    }
-
-  } catch (error) {
-    console.error(error);
-    alert("Terjadi kesalahan saat membuat file ZIP.");
-    if (btn) btn.innerText = textAsli;
-  }
+  catatWaktuBackup();
 }
 
 
 
 // BAGIAN ZIP UPLOAD 
-async function uploadDariZip(event) {
+/*async function uploadDariZip(event) {
   const file = event.target.files[0];
   if (!file) return;
 
@@ -488,7 +449,7 @@ async function uploadDariZip(event) {
   }
   
   event.target.value = ""; // Reset input
-}
+}*/
 
 // 4. UPLOAD & RESTORE SEMUA DATA (JSON) MENIMPA DATA LAMA 
 /*function uploadSemuaDataJSON(event) {
