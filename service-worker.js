@@ -52,7 +52,7 @@ self.addEventListener("fetch", event => {
 
 
 
-const CACHE_NAME = "KASIR-V3";
+const CACHE_NAME = "KASIR-V4";
 
 const ASSETS = [
   "./",
