@@ -24,7 +24,7 @@ const ASSETS = [
   "./js/dasboard.js",
   "./js/data.js",
   "./js/kasir.js",
-  "./js/login.js",
+  //"./js/login.js",
   "./js/member.js",
   "./js/produk.js",
   "./js/riwayat.js", 
