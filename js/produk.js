@@ -1099,7 +1099,7 @@ if (searchInput && hasilBox) {
       const barcode = document.createElement("small");
       barcode.style.display = "block";
       barcode.style.fontSize = "11px";
-      barcode.style.color = "#0000";
+      barcode.style.color = "#ff0101";
       barcode.textContent = `Barcode: ${p.barcode || "-"}`;
 
       info.appendChild(nama);

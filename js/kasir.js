@@ -74,14 +74,16 @@ if (produkInput && produkList && produkIdInp) {
       // 1. Harga
       const harga = document.createElement("small");
       harga.className = "autocomplete-harga";
-      harga.textContent = `Rp ${Number(p.harga_jual || 0).toLocaleString("id-ID")}`;
+      //harga.textContent = `Rp ${Number(p.harga_jual || 0).toLocaleString("id-ID")}`;
+
+      harga.textContent = `Rp ${(Number(p.harga_jual) || 0).toLocaleString("id-ID")} • Stok: ${p.stok ?? 0}`;
 
       // 🔥 2. TAMBAHKAN BARCODE DI SINI
       const barcode = document.createElement("small");
       barcode.className = "autocomplete-barcode"; // Anda bisa tambahkan CSS jika ingin diatur
       barcode.style.display = "block"; // Agar turun ke bawah
-      barcode.style.fontSize = "11px"; // Ukuran lebih kecil
-      barcode.style.color = "#0000"; // Warna abu-abu
+      barcode.style.fontSize = "12px"; // Ukuran lebih kecil
+      barcode.style.color = "#f20000"; // Warna abu-abu
       barcode.textContent = `Barcode: ${p.barcode || "-"}`;
       
       infoBox.appendChild(nama);
