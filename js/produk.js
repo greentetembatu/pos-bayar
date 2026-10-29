@@ -1091,11 +1091,20 @@ if (searchInput && hasilBox) {
       const nama = document.createElement("h4");
       nama.textContent = p.nama || "Tanpa nama";
 
+      // 1. Harga & Stok
       const detail = document.createElement("small");
       detail.textContent = `Rp ${(Number(p.harga_jual) || 0).toLocaleString("id-ID")} • Stok: ${p.stok ?? 0}`;
 
+      // 🔥 2. TAMBAHKAN BARCODE DI SINI
+      const barcode = document.createElement("small");
+      barcode.style.display = "block";
+      barcode.style.fontSize = "11px";
+      barcode.style.color = "#0c0c0c";
+      barcode.textContent = `Barcode: ${p.barcode || "-"}`;
+
       info.appendChild(nama);
       info.appendChild(detail);
+      info.appendChild(barcode); // Masukkan barcode ke dalam info
 
       div.appendChild(img);
       div.appendChild(info);

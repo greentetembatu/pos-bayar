@@ -66,14 +66,27 @@ if (produkInput && produkList && produkIdInp) {
       // INFO
       const infoBox = document.createElement("div");
       infoBox.className = "autocomplete-info";
+      
       const nama = document.createElement("strong");
       nama.className = "autocomplete-nama";
       nama.textContent = p.nama || "Tanpa nama";
+      
+      // 1. Harga
       const harga = document.createElement("small");
       harga.className = "autocomplete-harga";
       harga.textContent = `Rp ${Number(p.harga_jual || 0).toLocaleString("id-ID")}`;
+
+      // 🔥 2. TAMBAHKAN BARCODE DI SINI
+      const barcode = document.createElement("small");
+      barcode.className = "autocomplete-barcode"; // Anda bisa tambahkan CSS jika ingin diatur
+      barcode.style.display = "block"; // Agar turun ke bawah
+      barcode.style.fontSize = "11px"; // Ukuran lebih kecil
+      barcode.style.color = "#555"; // Warna abu-abu
+      barcode.textContent = `Barcode: ${p.barcode || "-"}`;
+      
       infoBox.appendChild(nama);
       infoBox.appendChild(harga);
+      infoBox.appendChild(barcode); // Tambahkan barcode ke dalam kotak info
 
       div.appendChild(fotoBox);
       div.appendChild(infoBox);
@@ -87,7 +100,7 @@ if (produkInput && produkList && produkIdInp) {
 
       produkList.appendChild(div);
     });
-
+    
     produkList.style.display = "block";
   });
 
@@ -187,6 +200,7 @@ function tambahKeKeranjang() {
     keranjang.push({
       id: item.id,
       nama: item.nama,
+      barcode: item.barcode || "-", // 🔥 TAMBAHKAN INI
       foto: item.foto || "",
       qty,
       harga: item.harga_jual,
@@ -223,6 +237,8 @@ function renderKeranjang() {
         <img src="${fotoUrl}" style="width: 90px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
         <span>${item.nama}</span>
       </td>
+      <td><code style="background: #eee; padding: 2px 5px; border-radius: 4px; color: #333;">${item.barcode || "-"}</code></td>
+      
       <td>
         <input type="number" value="${item.qty}" min="1"
           onchange="ubahQty(${i}, this.value)"
