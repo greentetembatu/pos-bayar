@@ -81,7 +81,7 @@ if (produkInput && produkList && produkIdInp) {
       barcode.className = "autocomplete-barcode"; // Anda bisa tambahkan CSS jika ingin diatur
       barcode.style.display = "block"; // Agar turun ke bawah
       barcode.style.fontSize = "11px"; // Ukuran lebih kecil
-      barcode.style.color = "#555"; // Warna abu-abu
+      barcode.style.color = "#0000"; // Warna abu-abu
       barcode.textContent = `Barcode: ${p.barcode || "-"}`;
       
       infoBox.appendChild(nama);
@@ -100,7 +100,7 @@ if (produkInput && produkList && produkIdInp) {
 
       produkList.appendChild(div);
     });
-    
+
     produkList.style.display = "block";
   });
 
