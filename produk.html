@@ -53,6 +53,9 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <!--<link rel="stylesheet" href="style.css" />-->
     <link rel="stylesheet" href="css/produk.css" />
@@ -157,25 +160,25 @@
           <button onclick="simpanProduk()">Simpan Produk</button>
         </div>
         <!-- Tabel Produk -->
-         <div class="card">
+        <div class="card">
           <h3>Daftar Produk</h3>
-  
-          <div class="table-wrapper">              <!-- ← wrapper baru -->
-            <table>
 
-            <thead>
-              <tr>
-                <th>Foto</th>
-                <th>Barcode</th>
-                <th>Nama</th>
-                <th>Modal</th>
-                <th>Harga</th>
-                <th>Stok</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="produkTable"></tbody>
-          </table>
+          <div class="table-wrapper">
+            <!-- ← wrapper baru -->
+            <table>
+              <thead>
+                <tr>
+                  <th>Foto</th>
+                  <th>Barcode</th>
+                  <th>Nama</th>
+                  <th>Modal</th>
+                  <th>Harga</th>
+                  <th>Stok</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="produkTable"></tbody>
+            </table>
           </div>
 
           <div
@@ -227,7 +230,7 @@
         <!-- ===================== -->
         <!-- CARD 1: JSON          -->
         <!-- ===================== -->
-<div class="card card-export">
+        <!--<div class="card card-export">
   <h3>Data JSON</h3>
 
   <button onclick="eksporDataProduk()" class="btn-export-json">
@@ -245,27 +248,25 @@
     onchange="imporJSONProduk(event)"
     style="display: none"
   />
-</div>
+</div>-->
 
 <div class="card card-export">
-  <h3>Data CSV</h3>
+  <h3>Cadangan Data Produk</h3>
+  
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <!-- Excel Saja -->
+    <button onclick="eksporExcelProduk()" style="background: #16a34a; color: white;">💾 Download Excel (Teks)</button>
+    <label for="inputImporExcel" style="background: #22c55e; color: white; padding: 10px; border-radius: 5px; cursor: pointer;">📥 Upload Excel (Teks)</label>
+    <input type="file" id="inputImporExcel" accept=".xlsx" onchange="imporExcelProduk(event)" style="display: none;" />
 
-  <button onclick="eksporCSVProduk()" class="btn-export-csv">
-    Ekspor CSV
-  </button>
-
-  <label for="inputImporCSV" class="label-file label-csv">
-    Impor CSV
-  </label>
-
-  <input
-    type="file"
-    id="inputImporCSV"
-    accept=".csv,text/csv"
-    onchange="imporCSVProduk(event)"
-    style="display: none"
-  />
+    <!-- ZIP + Foto -->
+    <button onclick="eksporZipProduk(event)" style="background: #f37d0e; color: white;">📦 Download ZIP (Excel + Foto)</button>
+    <label for="inputImporZip" style="background: #f59e0b; color: white; padding: 10px; border-radius: 5px; cursor: pointer;">📥 Upload ZIP + Foto</label>
+    <input type="file" id="inputImporZip" accept=".zip" onchange="imporZipProduk(event)" style="display: none;" />
+  </div>
 </div>
+
+
 
 </main>
     </section>

@@ -53,9 +53,12 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>-->
-
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    
     <!--<link rel="stylesheet" href="style.css" />-->
     <link rel="stylesheet" href="css/dashboard.css" />
   </head>
@@ -124,41 +127,46 @@
       <!-- ========================================== -->
 <!-- BLOK INDEPENDEN: BACKUP & RESTORE TERPADU  -->
 <!-- ========================================== -->
+
 <div class="card" id="panelBackupRestore" style="margin-top: 30px; background: peachpuff; color: black;">
   <h3>💾 Pusat Data (Backup & Restore)</h3>
   <p style="margin-bottom: 15px; font-size: 0.9rem;">
     Kelola seluruh data aplikasi (Produk, Member, Transaksi, Kasir, Pengaturan) dalam satu tempat.
   </p>
 
-  <div class="backup-grid">
-    <!-- SIMPAN & DOWNLOAD -->
-    <div class="backup-box">
-      <h4>📥 Simpan / Download</h4>
-      <button type="button" onclick="simpanSemuaDataKeStorage()" class="btn-backup bg-blue">
-        Simpan ke Memori (Local)
+  <div class="backup-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    
+    <!-- DOWNLOAD / BACKUP -->
+    <div class="backup-box" style="background: rgba(255,255,255,0.4); padding: 15px; border-radius: 8px;">
+      <h4>📥 Download / Backup</h4>
+      
+      <button type="button" onclick="downloadDataExcel(false)" class="btn-backup bg-orange" style="width: 100%; margin-bottom: 10px;">
+        📊 Download Excel (Multi-Sheet)
       </button>
-      <button type="button" onclick="downloadSemuaDataJSON()" class="btn-backup bg-green">
-        Download Semua Data (JSON)
-      </button>
-      <button type="button" onclick="downloadSemuaDataExcel()" class="btn-backup bg-orange">
-        Download Semua Data (Excel Multi-Sheet)
+      
+      <button type="button" onclick="downloadDataExcel(true)" class="btn-backup bg-green" style="width: 100%;">
+        📦 Download ZIP (Excel + Foto)
       </button>
     </div>
 
-    <!-- UPLOAD -->
-    <div class="backup-box">
+    <!-- UPLOAD / RESTORE -->
+    <div class="backup-box" style="background: rgba(255,255,255,0.4); padding: 15px; border-radius: 8px;">
       <h4>📤 Upload / Restore</h4>
       <p style="font-size: 0.8rem; margin-bottom: 8px; color: #555;">
-        *Hanya menerima File DATA JSON dari Kolom Simpan / Download.
+        *Gunakan file hasil download dari tombol di samping.
       </p>
-      <label for="uploadSemuaData" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer;">
-        Pilih File Backup (.json)
+      
+      <!-- Tombol Upload Excel -->
+      <label for="uploadExcel" class="btn-backup bg-blue" style="display: block; text-align: center; cursor: pointer; margin-bottom: 10px;">
+        📊 Upload Excel Saja
       </label>
-      <!--<label for="uploadZip" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer; margin-top: 10px;">
-        Restore Data dari ZIP (Excel + Foto)
-      </label>-->
-      <input type="file" id="uploadZip" accept=".zip" onchange="uploadDariZip(event)" style="display: none;">
-      <input type="file" id="uploadSemuaData" accept=".json" onchange="uploadSemuaDataJSON(event)" style="display: none;">
+      <input type="file" id="uploadExcel" accept=".xlsx" onchange="uploadDataExcel(event, false)" style="display: none;">
+
+      <!-- Tombol Upload ZIP -->
+      <label for="uploadZip" class="btn-backup bg-purple" style="display: block; text-align: center; cursor: pointer;">
+        📦 Upload ZIP (Excel + Foto)
+      </label>
+      <input type="file" id="uploadZip" accept=".zip" onchange="uploadDataExcel(event, true)" style="display: none;">
     </div>
   </div>
 
@@ -174,7 +182,6 @@
     <p id="statusAutoBackup" style="margin-top: 10px; font-weight: bold; color: #2563eb;">Status: Tidak Aktif</p>
   </div>
 </div>
-
 
 
       </main>

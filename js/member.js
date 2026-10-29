@@ -41,37 +41,23 @@ function simpanDataTokoMember() {
 //===================================//
 //===================================//
 
-
-
 function generateNoMember() {
   const now = new Date();
   const tgl = now.getDate().toString().padStart(2, "0");
   const bln = (now.getMonth() + 1).toString().padStart(2, "0");
   const thn = now.getFullYear().toString().slice(-2);
-  
+
   // Ambil JamMenitDetik (6 digit) + Random 2 digit
-  const waktu = now.getHours().toString().padStart(2, "0") + 
-                now.getMinutes().toString().padStart(2, "0") +
-                now.getSeconds().toString().padStart(2, "0");
-  const rand = Math.floor(Math.random() * 90).toString().padStart(2, "0");
+  const waktu =
+    now.getHours().toString().padStart(2, "0") +
+    now.getMinutes().toString().padStart(2, "0") +
+    now.getSeconds().toString().padStart(2, "0");
+  const rand = Math.floor(Math.random() * 90)
+    .toString()
+    .padStart(2, "0");
 
   return `${tgl}${bln}${thn}${waktu}${rand}`;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //===================================//
 //===================================//
@@ -173,102 +159,104 @@ function cariDataMember() {
       (d.hp && d.hp.includes(key)),
   );
 
-if (found) {
+  if (found) {
     memberDitemukan = found;
     tampilKartuMember(found);
 
     // 🔥 TAMBAHKAN BARIS INI:
-    localStorage.setItem("memberAktif", JSON.stringify(found)); 
+    localStorage.setItem("memberAktif", JSON.stringify(found));
     alert("Member Terpilih: " + found.nama);
-    
-    // Jika ada fungsi update diskon otomatis, panggil di sini
-    if(typeof updateTotalDiskon === "function") updateTotalDiskon();
 
+    // Jika ada fungsi update diskon otomatis, panggil di sini
+    if (typeof updateTotalDiskon === "function") updateTotalDiskon();
   } else {
     memberDitemukan = null;
     localStorage.removeItem("memberAktif"); // Bersihkan jika tidak ketemu
     alert("Member tidak ditemukan!");
   }
-  
 }
 //===================================//
 //===================================//
-let html5QrCodeMember; 
+let html5QrCodeMember;
 
 function mulaiScanMember() {
-    // 1. Pastikan container ada
-    const container = document.getElementById("readerMember");
-    if (!container) return alert("Elemen readerMember tidak ditemukan di HTML!");
+  // 1. Pastikan container ada
+  const container = document.getElementById("readerMember");
+  if (!container) return alert("Elemen readerMember tidak ditemukan di HTML!");
 
-    // 2. Inisialisasi jika belum ada
-    if (!html5QrCodeMember) {
-        html5QrCodeMember = new Html5Qrcode("readerMember");
-    }
-    
-    const config = { 
-        fps: 20, 
-        qrbox: { width: 250, height: 250 }, 
-        aspectRatio: 1.0,
-        formatsToSupport: [ 
-            Html5QrcodeSupportedFormats.QR_CODE, 
-            Html5QrcodeSupportedFormats.EAN_13, 
-            Html5QrcodeSupportedFormats.CODE_128 
-        ]
-    };
+  // 2. Inisialisasi jika belum ada
+  if (!html5QrCodeMember) {
+    html5QrCodeMember = new Html5Qrcode("readerMember");
+  }
 
-    // 3. Gunakan FORMAT OBJEK { facingMode: "environment" } agar sama dengan Kasir
-    html5QrCodeMember.start(
-        { facingMode: "environment" }, 
-        config, 
-        (barcodeText) => {
-            if (typeof playBeep === "function") playBeep(); 
-            if (navigator.vibrate) navigator.vibrate(100);
+  const config = {
+    fps: 20,
+    qrbox: { width: 250, height: 250 },
+    aspectRatio: 1.0,
+    formatsToSupport: [
+      Html5QrcodeSupportedFormats.QR_CODE,
+      Html5QrcodeSupportedFormats.EAN_13,
+      Html5QrcodeSupportedFormats.CODE_128,
+    ],
+  };
 
-            // Berhenti setelah dapet
-            stopScanMember();
+  // 3. Gunakan FORMAT OBJEK { facingMode: "environment" } agar sama dengan Kasir
+  html5QrCodeMember
+    .start({ facingMode: "environment" }, config, (barcodeText) => {
+      if (typeof playBeep === "function") playBeep();
+      if (navigator.vibrate) navigator.vibrate(100);
 
-            // SINKRONISASI DATA
-            // Gunakan variabel dataMember yang sudah ada di aplikasi Anda
-            const mTerdaftar = dataMember.find(m => m.no === barcodeText);
+      // Berhenti setelah dapet
+      stopScanMember();
 
-            if (mTerdaftar) {
-                memberDitemukan = mTerdaftar;
-                localStorage.setItem("memberAktif", JSON.stringify(mTerdaftar));
-                
-                const jumlahBelanja = hitungLoyalitasMember(mTerdaftar.no);
-                tampilKartuMember(mTerdaftar);
+      // SINKRONISASI DATA
+      // Gunakan variabel dataMember yang sudah ada di aplikasi Anda
+      const mTerdaftar = dataMember.find((m) => m.no === barcodeText);
 
-                alert(`Member Ditemukan: ${mTerdaftar.nama}\nTotal Kunjungan: ${jumlahBelanja}x`);
+      if (mTerdaftar) {
+        memberDitemukan = mTerdaftar;
+        localStorage.setItem("memberAktif", JSON.stringify(mTerdaftar));
 
-                if (typeof updateTotalDiskon === "function") updateTotalDiskon();
-            } else {
-                alert("Kartu Member tidak terdaftar!");
-                const inputSearch = document.getElementById("searchMember");
-                if (inputSearch) {
-                    inputSearch.value = barcodeText;
-                    inputSearch.focus();
-                }
-            }
+        const jumlahBelanja = hitungLoyalitasMember(mTerdaftar.no);
+        tampilKartuMember(mTerdaftar);
+
+        alert(
+          `Member Ditemukan: ${mTerdaftar.nama}\nTotal Kunjungan: ${jumlahBelanja}x`,
+        );
+
+        if (typeof updateTotalDiskon === "function") updateTotalDiskon();
+      } else {
+        alert("Kartu Member tidak terdaftar!");
+        const inputSearch = document.getElementById("searchMember");
+        if (inputSearch) {
+          inputSearch.value = barcodeText;
+          inputSearch.focus();
         }
-    ).catch(err => {
-        console.error("Gagal akses kamera member:", err);
-        alert("Gagal akses kamera member. Pastikan ID 'readerMember' tersedia dan izin kamera diberikan.");
+      }
+    })
+    .catch((err) => {
+      console.error("Gagal akses kamera member:", err);
+      alert(
+        "Gagal akses kamera member. Pastikan ID 'readerMember' tersedia dan izin kamera diberikan.",
+      );
     });
 }
 
 function stopScanMember() {
-    if (html5QrCodeMember) {
-        html5QrCodeMember.stop().then(() => {
-            // Bersihkan instance agar bisa dibuat ulang dengan bersih
-            html5QrCodeMember = null; 
-            console.log("Scanner Member Berhenti.");
-        }).catch(err => console.error("Error stop scanner", err));
-    }
+  if (html5QrCodeMember) {
+    html5QrCodeMember
+      .stop()
+      .then(() => {
+        // Bersihkan instance agar bisa dibuat ulang dengan bersih
+        html5QrCodeMember = null;
+        console.log("Scanner Member Berhenti.");
+      })
+      .catch((err) => console.error("Error stop scanner", err));
+  }
 }
 
 //===================================//
 //===================================//
-
 
 function pemicuEditMember() {
   if (!memberDitemukan) return;
@@ -345,8 +333,226 @@ function updateCounterMember() {
 //===================================//
 //===================================//
 
+// --- FUNGSI BACKUP & RESTORE (CSV) ---
+
+// 1. FUNGSI DOWNLOAD CSV
+/* ==========================================
+   UPLOAD DATA MEMBER (EXCEL)
+========================================== */
+function importDataMember(event) {
+  if (typeof XLSX === "undefined") return alert("Library Excel belum dimuat.");
+
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (
+    !confirm(
+      "Upload Excel:\n• Member dengan No Member sama akan diperbarui.\n• Member baru akan ditambahkan.\n\nLanjutkan?",
+    )
+  ) {
+    event.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+
+      // Ambil sheet pertama
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+
+      // Konversi ke JSON
+      const hasilImport = XLSX.utils.sheet_to_json(worksheet);
+
+      if (hasilImport.length === 0) {
+        alert("File Excel kosong atau format tidak valid.");
+        return;
+      }
+
+      // Normalisasi data agar sesuai dengan format aplikasi
+      const dataBersih = hasilImport.map((row) => ({
+        tanggal: row["Tanggal"] || "-",
+        kasir: row["Kasir"] || "-",
+        nama: row["Nama Member"] || row["Nama"] || "-",
+        email: row["Email"] || "-",
+        hp: String(row["No HP"] || row["HP"] || "-"),
+        no: String(row["No Member"] || row["ID"] || "-"),
+      }));
+
+      // === MERGE DATA ===
+      let dataLama = JSON.parse(localStorage.getItem("member")) || [];
+
+      const mapLama = new Map();
+      dataLama.forEach((m, idx) => {
+        if (m.no) mapLama.set(String(m.no).trim(), idx);
+      });
+
+      let jumlahUpdate = 0;
+      let jumlahTambah = 0;
+
+      dataBersih.forEach((mBaru) => {
+        const key = String(mBaru.no).trim();
+
+        if (key && key !== "-" && mapLama.has(key)) {
+          // No Member sudah ada -> Update data
+          const idx = mapLama.get(key);
+          dataLama[idx] = { ...dataLama[idx], ...mBaru };
+          jumlahUpdate++;
+        } else {
+          // No Member belum ada -> Tambah data baru
+          dataLama.push(mBaru);
+          if (key && key !== "-") mapLama.set(key, dataLama.length - 1);
+          jumlahTambah++;
+        }
+      });
+
+      // Simpan ke LocalStorage
+      localStorage.setItem("member", JSON.stringify(dataLama));
+
+      // Update variabel global & UI jika ada
+      if (typeof dataMember !== "undefined") dataMember = dataLama;
+      if (typeof updateCounterMember === "function") updateCounterMember();
+
+      alert(
+        `✅ Berhasil!\n• ${jumlahUpdate} data diperbarui.\n• ${jumlahTambah} data baru ditambahkan.`,
+      );
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Gagal memproses file Excel. Pastikan format file benar.");
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
+  event.target.value = "";
+}
+
+/* ==========================================
+   UPLOAD DATA MEMBER (EXCEL)
+========================================== */
+function importDataMember(event) {
+  if (typeof XLSX === "undefined") return alert("Library Excel belum dimuat.");
+
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (
+    !confirm(
+      "Upload Excel:\n• Member dengan No Member sama akan diperbarui.\n• Member baru akan ditambahkan.\n\nLanjutkan?",
+    )
+  ) {
+    event.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+
+      // Ambil sheet pertama
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+
+      // Konversi ke JSON
+      const hasilImport = XLSX.utils.sheet_to_json(worksheet);
+
+      if (hasilImport.length === 0) {
+        alert("File Excel kosong atau format tidak valid.");
+        return;
+      }
+
+      // Normalisasi data agar sesuai dengan format aplikasi
+      const dataBersih = hasilImport.map((row) => ({
+        tanggal: row["Tanggal"] || "-",
+        kasir: row["Kasir"] || "-",
+        nama: row["Nama Member"] || row["Nama"] || "-",
+        email: row["Email"] || "-",
+        hp: String(row["No HP"] || row["HP"] || "-"),
+        no: String(row["No Member"] || row["ID"] || "-"),
+      }));
+
+      // === MERGE DATA ===
+      let dataLama = JSON.parse(localStorage.getItem("member")) || [];
+
+      const mapLama = new Map();
+      dataLama.forEach((m, idx) => {
+        if (m.no) mapLama.set(String(m.no).trim(), idx);
+      });
+
+      let jumlahUpdate = 0;
+      let jumlahTambah = 0;
+
+      dataBersih.forEach((mBaru) => {
+        const key = String(mBaru.no).trim();
+
+        if (key && key !== "-" && mapLama.has(key)) {
+          // No Member sudah ada -> Update data
+          const idx = mapLama.get(key);
+          dataLama[idx] = { ...dataLama[idx], ...mBaru };
+          jumlahUpdate++;
+        } else {
+          // No Member belum ada -> Tambah data baru
+          dataLama.push(mBaru);
+          if (key && key !== "-") mapLama.set(key, dataLama.length - 1);
+          jumlahTambah++;
+        }
+      });
+
+      // Simpan ke LocalStorage
+      localStorage.setItem("member", JSON.stringify(dataLama));
+
+      // Update variabel global & UI jika ada
+      if (typeof dataMember !== "undefined") dataMember = dataLama;
+      if (typeof updateCounterMember === "function") updateCounterMember();
+
+      alert(
+        `✅ Berhasil!\n• ${jumlahUpdate} data diperbarui.\n• ${jumlahTambah} data baru ditambahkan.`,
+      );
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Gagal memproses file Excel. Pastikan format file benar.");
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
+  event.target.value = "";
+}
+
+// 3. FUNGSI CETAK KARTU (PERBAIKAN)
+function printKartuMember() {
+  // Perbaikan: replace() disesuaikan dengan teks yang ada di HTML (ID: dan WA:)
+  const params = new URLSearchParams({
+    noMember: document
+      .getElementById("cardNoMember")
+      .innerText.replace("ID: ", ""),
+    tokoMember: document.getElementById("cardTokoMember").innerText,
+    alamatMember: document.getElementById("cardAlamatMember").innerText,
+    hpTokoMember: document
+      .getElementById("cardHpTokoMember")
+      .innerText.replace("Telp: ", ""),
+    namaMember: document
+      .getElementById("cardNamaMember")
+      .innerText.replace("Nama: ", ""),
+    hpMember: document
+      .getElementById("cardHpMember")
+      .innerText.replace("WA: ", ""),
+    emailMember: document
+      .getElementById("cardEmailMember")
+      .innerText.replace("Email: ", ""),
+  });
+  window.open("cetak-member.html?" + params.toString(), "_blank");
+}
+
 // --- FUNGSI TAMBAHAN (BACKUP, CSV, SCAN) ---
-function backupDataMember() {
+/*function backupDataMember() {
   if (dataMember.length === 0) return alert("Data kosong");
   const dataStr = JSON.stringify(dataMember, null, 2);
   const blob = new Blob([dataStr], { type: "application/json" });
@@ -510,4 +716,4 @@ function printKartuMember() {
       .innerText.replace("Email: ", ""),
   });
   window.open("cetak-member.html?" + params.toString(), "_blank");
-}
+}*/

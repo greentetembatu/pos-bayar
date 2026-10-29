@@ -82,72 +82,129 @@
       </section>
 
       <main class="content">
-<h2>Riwayat Transaksi</h2>
-<input
-  type="text"
-  id="searchTransaksi"
-  placeholder="Cari ID / Kasir / Item..."
-  oninput="cariTransaksi()"
-/>
-<div id="listRiwayat"></div>
+        <h2>Riwayat Transaksi</h2>
+        <input
+          type="text"
+          id="searchTransaksi"
+          placeholder="Cari ID / Kasir / Item..."
+          oninput="cariTransaksi()"
+        />
+        <div id="listRiwayat"></div>
 
-<!-- WRAPPER: tabel riwayat -->
-<div class="table-wrapper">
-  <table>
-    <thead>
-      <tr>
-        <th>ID Transaksi</th>
-        <th>Tanggal</th>
-        <th>Kasir</th>
-        <th>ID Kasir</th>
-        <th>Nama/ Hp/ Email/ id Member</th>
-        <th>Produk</th>
-        <th>Total</th>
-        <th>Laba</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody id="riwayatTable"></tbody>
-  </table>
-</div>
+        <!-- WRAPPER: tabel riwayat -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Transaksi</th>
+                <th>Tanggal</th>
+                <th>Kasir</th>
+                <th>ID Kasir</th>
+                <th>Nama/ Hp/ Email/ id Member</th>
+                <th>Produk</th>
+                <th>Total</th>
+                <th>Laba</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="riwayatTable"></tbody>
+          </table>
+        </div>
 
-<div id="navigasiRiwayat" style="display: none; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding: 10px;">
-  <button id="btnPrevRiwayat" onclick="gantiHalamanRiwayat(-1)">⬅ Prev</button>
-  <span id="infoHalamanRiwayat" style="font-weight: bold">Halaman 1</span>
-  <button id="btnNextRiwayat" onclick="gantiHalamanRiwayat(1)">Next ➡</button>
-</div>
+        <div
+          id="navigasiRiwayat"
+          style="
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 10px;
+          "
+        >
+          <button id="btnPrevRiwayat" onclick="gantiHalamanRiwayat(-1)">
+            ⬅ Prev
+          </button>
+          <span id="infoHalamanRiwayat" style="font-weight: bold"
+            >Halaman 1</span
+          >
+          <button id="btnNextRiwayat" onclick="gantiHalamanRiwayat(1)">
+            Next ➡
+          </button>
+        </div>
 
-<h3>🏆 Ranking Member</h3>
+        <h3>🏆 Ranking Member</h3>
 
-<!-- WRAPPER: tabel ranking -->
-<div class="table-wrapper">
-  <table>
-    <thead>
-      <tr>
-        <th>Rank</th>
-        <th>Nama</th>
-        <th>ID Member</th>
-        <th>HP</th>
-        <th>Transaksi</th>
-        <th>Total Belanja</th>
-        <th>Total Laba</th>
-      </tr>
-    </thead>
-    <tbody id="rankingMember"></tbody>
-  </table>
-</div>
+        <!-- WRAPPER: tabel ranking -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Nama</th>
+                <th>ID Member</th>
+                <th>HP</th>
+                <th>Transaksi</th>
+                <th>Total Belanja</th>
+                <th>Total Laba</th>
+              </tr>
+            </thead>
+            <tbody id="rankingMember"></tbody>
+          </table>
+        </div>
 
-<div style="margin-top: 10px; text-align: center">
-  <button onclick="prevPage()">⬅ Sebelumnya</button>
-  <span id="pageInfo"></span>
-  <button onclick="nextPage()">Berikutnya ➡</button>
-</div>
+        <div style="margin-top: 10px; text-align: center">
+          <button onclick="prevPage()">⬅ Sebelumnya</button>
+          <span id="pageInfo"></span>
+          <button onclick="nextPage()">Berikutnya ➡</button>
+        </div>
 
-<div class="download-panel">
-  <h3>📥 Download Data Transaksi</h3>
-  <button onclick="downloadJSON()">Download JSON</button>
-  <button onclick="downloadCSV()">Download Excel (CSV)</button>
-</div>
+        <div class="download-panel">
+          <h3>📥 Cadangan Data Transaksi</h3>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <!-- Tombol Download -->
+            <button
+              onclick="downloadExcelTransaksi()"
+              style="
+                background: #38a169;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+              "
+            >
+              💾 Download Transaksi (.xlsx)
+            </button>
+
+            <!-- Tombol Upload -->
+            <button
+              onclick="document.getElementById('fileInputTransaksi').click()"
+              style="
+                background: #3182ce;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+              "
+            >
+              📥 Upload Transaksi (.xlsx)
+            </button>
+
+            <!-- Input File Tersembunyi -->
+            <input
+              type="file"
+              id="fileInputTransaksi"
+              accept=".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              onchange="uploadExcelTransaksi(event)"
+              style="display: none"
+            />
+          </div>
+        </div>
       </main>
     </section>
 
@@ -160,7 +217,19 @@
     <script src="js/struk.js"></script>
     <script src="js/riwayat.js"></script>
     <script src="js/produk.js"></script>
-        <script>
+    <script>
+      function logoutKasir() {
+        if (!confirm("Yakin ingin logout?")) return;
+
+        localStorage.removeItem("kasirAktif");
+        localStorage.removeItem("keranjang");
+
+        // pakai replace, bukan href
+        window.location.replace("login.html");
+      }
+    </script>
+
+    <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
           .register("service-worker.js")
@@ -168,6 +237,5 @@
           .catch((err) => console.error("SW failed:", err));
       }
     </script>
-
   </body>
 </html>

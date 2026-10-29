@@ -53,8 +53,13 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+    
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    
+    
     <script src="https://unpkg.com/html5-qrcode"></script>
     <link rel="stylesheet" href="/css/member.css" />
   </head>
@@ -250,7 +255,7 @@
         </div>
       </div>
 
-      <div class="card" style="margin-top: 20px; border-top: 4px solid #667eea">
+      <!--<div class="card" style="margin-top: 20px; border-top: 4px solid #667eea">
         <h3>Cadangan Data Member</h3>
         <div style="display: flex; gap: 10px; flex-wrap: wrap">
           <button onclick="backupDataMember()" style="background: #4a5568">
@@ -282,23 +287,56 @@
         <small style="display: block; margin-top: 10px; color: #718096"
           >Download Semua Data Member</small
         >
-      </div>
-    </div>
+      </div>-->
+<div class="card" style="margin-top: 20px; border-top: 4px solid #667eea">
+  <h3>Cadangan Data Member</h3>
+  <p style="margin-bottom: 15px; font-size: 0.9rem; color: #4a5568;">
+    Gunakan format Excel (.xlsx) untuk mencadangkan atau memindahkan data member ke perangkat lain.
+  </p>
+
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <!-- Tombol Download -->
+    <button 
+      onclick="downloadExcelMember()" 
+      style="background: #38a169; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+      💾 Download Data (.xlsx)
+    </button>
+
+    <!-- Tombol Upload -->
+    <button 
+      onclick="document.getElementById('fileInputMember').click()" 
+      style="background: #3182ce; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+      📥 Upload Data (.xlsx)
+    </button>
+    
+    <!-- Input File Tersembunyi -->
+    <input 
+      type="file" 
+      id="fileInputMember" 
+      accept=".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+      onchange="importDataMember(event)" 
+      style="display: none;" 
+    />
+  </div>
+
+  <small style="display: block; margin-top: 15px; color: #718096;">
+    *Data lama tidak akan terhapus. Member dengan No Member yang sama akan diperbarui.
+  </small>
+</div>
 
     <script src="js/member.js"></script>
     <script>
       function logoutKasir() {
-  if (!confirm("Yakin ingin logout?")) return;
+        if (!confirm("Yakin ingin logout?")) return;
 
-  localStorage.removeItem("kasirAktif");
-  localStorage.removeItem("keranjang");
+        localStorage.removeItem("kasirAktif");
+        localStorage.removeItem("keranjang");
 
-  // pakai replace, bukan href
-  window.location.replace("login.html");
-}
-
+        // pakai replace, bukan href
+        window.location.replace("login.html");
+      }
     </script>
-            <script>
+    <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
           .register("service-worker.js")

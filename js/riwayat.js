@@ -159,15 +159,18 @@ function cetakStrukRiwayat(id) {
     id: t.id,
     kasirNama: t.kasirNama,
     kasirId: t.kasirId,
-    
+
     // 🔥 BAGIAN PENTING: Bungkus dalam objek 'member'
     // Cek dulu apakah di riwayat ada namaMember, jika tidak ada jangan buat objek member
-    member: t.namaMember && t.namaMember !== "Umum/Non-Member" ? {
-        nama: t.namaMember,
-        no: t.idMember,
-        hp: t.hpMember,
-        email: t.emailMember // Gunakan emailMember (sudah diperbaiki dari typo emaiMember)
-    } : null,
+    member:
+      t.namaMember && t.namaMember !== "Umum/Non-Member"
+        ? {
+            nama: t.namaMember,
+            no: t.idMember,
+            hp: t.hpMember,
+            email: t.emailMember, // Gunakan emailMember (sudah diperbaiki dari typo emaiMember)
+          }
+        : null,
 
     items: t.items,
     totalAwal: t.totalAwal || t.total,
@@ -175,13 +178,12 @@ function cetakStrukRiwayat(id) {
     potongan: t.potongan || 0,
     total: t.total,
     uang: t.uang,
-    kembalian: t.kembalian
+    kembalian: t.kembalian,
   };
 
   // Panggil fungsi cetakStruk yang sudah ada di bagian kasir
   cetakStruk(dataUntukCetak);
 }
-
 
 function hapusTransaksi(id) {
   if (
@@ -229,7 +231,12 @@ function hapusTransaksiDanRollback(id) {
   alert("Transaksi & stok berhasil dikembalikan");
 }
 
-function downloadJSON() {
+/* ==========================================
+   DOWNLOAD DATA TRANSAKSI (EXCEL)
+========================================== */
+function downloadExcelTransaksi() {
+  if (typeof XLSX === "undefined") return alert("Library Excel belum dimuat.");
+
   const transaksi = getTransaksi();
 
   if (!transaksi || transaksi.length === 0) {
@@ -237,67 +244,65 @@ function downloadJSON() {
     return;
   }
 
-  const dataStr = JSON.stringify(transaksi, null, 2);
-  const blob = new Blob([dataStr], { type: "application/json" });
-
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "data-transaksi.json";
-  a.click();
-}
-
-function downloadCSV() {
-  const transaksi = getTransaksi();
-
-  if (!transaksi || transaksi.length === 0) {
-    alert("Tidak ada data untuk didownload");
-    return;
-  }
-
-  let csv =
-    "Tanggal;ID Transaksi;Kasir;ID Kasir;Nama Member;ID Member;HP;Email;Nama Produk;Qty;Harga;Subtotal Item;Subtotal Transaksi;Diskon (%);Potongan;Total Akhir;Laba\n";
-
-  transaksi.forEach((t) => {
-    const tanggal = t.tanggal || "-";
-
+  // Siapkan array objek untuk diubah ke Excel
+  const dataExcel = transaksi.map((t) => {
     const totalAwal = t.totalAwal || t.total || 0;
     const diskon = t.diskon || 0;
     const potongan = t.potongan || 0;
     const totalAkhir = t.total || 0;
     const laba = t.totalLaba || 0;
 
-    const kasirNama = t.kasirNama || "-";
-    const kasirId = t.kasirId || "-";
-
-    const namaMember = t.namaMember || "-";
-    const idMember = t.idMember || "-";
-    const hpMember = t.hpMember || "-";
-    const emailMember = t.emailMember || "-";
-
+    // Gabungkan detail item menjadi satu teks
+    let detailItems = "-";
     if (Array.isArray(t.items) && t.items.length > 0) {
-      t.items.forEach((i) => {
-        const nama = `"${i.nama}"`;
-        const qty = i.qty || 0;
-        const harga = i.harga || 0;
-        const subtotal = i.subtotal || 0;
-
-        csv += `${tanggal};${t.id};${kasirNama};${kasirId};${namaMember};'${idMember};'${hpMember};${emailMember};${nama};${qty};${harga};${subtotal};${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
-      });
-    } else {
-      csv += `${tanggal};${t.id};${kasirNama};${kasirId};-;0;0;0;${totalAwal};${diskon};${potongan};${totalAkhir};${laba}\n`;
+      detailItems = t.items.map((i) => `${i.nama} (${i.qty})`).join(" | ");
     }
+
+    return {
+      Tanggal: t.tanggal || "-",
+      "ID Transaksi": String(t.id || "-"),
+      Kasir: t.kasirNama || "-",
+      "ID Kasir": String(t.kasirId || "-"),
+      "Nama Member": t.namaMember || "-",
+      "ID Member": String(t.idMember || "-"),
+      HP: String(t.hpMember || "-"),
+      Email: t.emailMember || "-",
+      "Detail Item": detailItems,
+      Subtotal: Number(totalAwal),
+      "Diskon (%)": Number(diskon),
+      Potongan: Number(potongan),
+      "Total Akhir": Number(totalAkhir),
+      Laba: Number(laba),
+    };
   });
 
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  // Buat Workbook dan Worksheet
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(dataExcel);
 
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
+  // Atur lebar kolom agar rapi saat dibuka
+  ws["!cols"] = [
+    { wch: 20 }, // Tanggal
+    { wch: 20 }, // ID Transaksi
+    { wch: 15 }, // Kasir
+    { wch: 15 }, // ID Kasir
+    { wch: 20 }, // Nama Member
+    { wch: 15 }, // ID Member
+    { wch: 15 }, // HP
+    { wch: 25 }, // Email
+    { wch: 40 }, // Detail Item
+    { wch: 12 }, // Subtotal
+    { wch: 10 }, // Diskon
+    { wch: 12 }, // Potongan
+    { wch: 12 }, // Total Akhir
+    { wch: 12 }, // Laba
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, "Riwayat Transaksi");
+
+  // Unduh File
   const now = new Date();
-
-  // format tanggal
-  const tanggal = now.toLocaleDateString("id-ID").replace(/\//g, "");
-
-  // format jam
+  const tanggal = now.toLocaleDateString("id-ID").replace(/\//g, "-");
   const jam = now
     .toLocaleTimeString("id-ID", {
       hour: "2-digit",
@@ -306,9 +311,114 @@ function downloadCSV() {
     })
     .replace(":", ".");
 
-  // gabungkan
-  a.download = `laporan-transaksi-${tanggal}-${jam}.csv`;
-  a.click();
+  XLSX.writeFile(wb, `laporan-transaksi-${tanggal}-${jam}.xlsx`);
+}
+
+/* ==========================================
+   UPLOAD DATA TRANSAKSI (EXCEL)
+========================================== */
+function uploadExcelTransaksi(event) {
+  if (typeof XLSX === "undefined") return alert("Library Excel belum dimuat.");
+
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (
+    !confirm(
+      "Upload Excel Transaksi:\n• Transaksi dengan ID yang sudah ada akan dilewati.\n• Transaksi baru akan ditambahkan.\n\nLanjutkan?",
+    )
+  ) {
+    event.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+
+      // Ambil sheet pertama
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+
+      // Konversi ke JSON
+      const hasilImport = XLSX.utils.sheet_to_json(worksheet);
+
+      if (hasilImport.length === 0) {
+        alert("File Excel kosong atau format tidak valid.");
+        return;
+      }
+
+      // Bentuk ulang struktur objek Transaksi
+      const transaksiBaru = hasilImport.map((row) => ({
+        id: String(row["ID Transaksi"] || row["id"] || "-"),
+        tanggal: row["Tanggal"] || "-",
+        kasirNama: row["Kasir"] || "-",
+        kasirId: String(row["ID Kasir"] || "-"),
+        namaMember: row["Nama Member"] || "-",
+        idMember: String(row["ID Member"] || "-"),
+        hpMember: String(row["HP"] || "-"),
+        emailMember: row["Email"] || "-",
+        // Karena Excel hanya menyimpan teks, kita masukkan sebagai 1 item keterangan
+        items: [
+          {
+            nama: row["Detail Item"] || "-",
+            qty: 1,
+            harga: Number(row["Total Akhir"]) || 0,
+            subtotal: Number(row["Total Akhir"]) || 0,
+          },
+        ],
+        totalAwal: Number(row["Subtotal"]) || 0,
+        diskon: Number(row["Diskon (%)"] || row["Diskon"]) || 0,
+        potongan: Number(row["Potongan"]) || 0,
+        total: Number(row["Total Akhir"]) || 0,
+        totalLaba: Number(row["Laba"]) || 0,
+        metode: "cash",
+      }));
+
+      // === MERGE DATA ===
+      let transaksiLama = getTransaksi() || [];
+
+      const mapLama = new Map();
+      transaksiLama.forEach((t, idx) => {
+        if (t.id) mapLama.set(String(t.id).trim(), idx);
+      });
+
+      let jumlahTambah = 0;
+      let jumlahSkip = 0;
+
+      transaksiBaru.forEach((tBaru) => {
+        const key = String(tBaru.id).trim();
+
+        if (key && mapLama.has(key)) {
+          jumlahSkip++; // Lewati jika ID sudah ada
+        } else {
+          transaksiLama.push(tBaru); // Tambahkan transaksi baru
+          if (key) mapLama.set(key, transaksiLama.length - 1);
+          jumlahTambah++;
+        }
+      });
+
+      // Simpan ke LocalStorage
+      saveTransaksi(transaksiLama);
+
+      // Render ulang tabel riwayat
+      if (typeof renderRiwayat === "function") renderRiwayat();
+      if (typeof renderRankingMember === "function") renderRankingMember();
+
+      alert(
+        `✅ Berhasil!\n• ${jumlahTambah} transaksi baru ditambahkan.\n• ${jumlahSkip} transaksi dilewati (ID sudah ada).`,
+      );
+    } catch (err) {
+      console.error(err);
+      alert("Gagal memproses file Excel. Pastikan format file benar.");
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
+  event.target.value = "";
 }
 
 function cariTransaksi() {

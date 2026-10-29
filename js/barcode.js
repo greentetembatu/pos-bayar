@@ -1,18 +1,5 @@
-/* =======================
-   GENERATOR BARCODE MANDIRI
-   - Bisa dipakai untuk produk tanpa barcode
-   - Hasil bisa: copy, print, simpan PNG
-======================= */
 
-// Variabel global penampung kode barcode aktif
 let barcodeAktif = "";
-
-
-/* ------------------------------------
-   1. GENERATE KODE BARCODE (LOGIKA)
-   EAN-13 : 13 digit numerik + checksum valid
-   CODE128: prefix "PRD" + timestamp
------------------------------------- */
 function generateKodeBarcode(format) {
 
     const produk = getProduk() || [];
@@ -29,8 +16,6 @@ function generateKodeBarcode(format) {
 
         let kode;
         do {
-            // Prefix "200" = internal use (aman, tidak bentrok GS1)
-            // 9 digit dari timestamp + random
             const unik = String(
                 Date.now() + Math.floor(Math.random() * 999)
             ).slice(-9);
@@ -76,7 +61,6 @@ function generateKodeBarcode(format) {
 
 /* ------------------------------------
    2. BUAT BARCODE BARU (TOMBOL UTAMA)
-   Render ke canvas + tampilkan preview
 ------------------------------------ */
 function buatBarcodeBaru() {
 
@@ -168,7 +152,6 @@ function fallbackCopy(text) {
 
 /* ------------------------------------
    4. PRINT BARCODE
-   Buka window baru berisi gambar barcode saja
 ------------------------------------ */
 function printBarcode() {
 
