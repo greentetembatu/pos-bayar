@@ -1,4 +1,4 @@
-const CACHE_NAME = "KASIR-V3";
+const CACHE_NAME = "KASIR-V5";
 
 const ASSETS = [
   "./",
@@ -76,28 +76,56 @@ self.addEventListener("activate", event => {
 });
 
 // ✅ FETCH EVENT - Cache first, fallback to network
+// ✅ FETCH EVENT - Network First untuk HTML, Cache First untuk aset lainnya
 self.addEventListener("fetch", (event) => {
-  // Hanya tangani GET
   if (event.request.method !== "GET") return;
 
+  const url = new URL(event.request.url);
+
+  // 1. KHUSUS FILE HTML / NAVIGASI: Gunakan Network First
+  // Ini memastikan setiap halaman diakses, browser mencoba ambil dari server dulu agar selalu fresh
+  if (event.request.mode === "navigate" || url.pathname.endsWith(".html")) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          // Jika berhasil dapat dari internet, update cache dengan yang terbaru
+          if (networkResponse && networkResponse.status === 200) {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, clone);
+            });
+          }
+          return networkResponse;
+        })
+      .catch(() => {
+        // Jika offline, fallback pakai cache
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
+          return caches.match("./login.html");
+        });
+      })
+    );
+    return;
+  }
+
+  // 2. UNTUK ASET LAIN (CSS, JS, CDN, Gambar): Cache First dengan Background Update
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // KUNCI PERBAIKAN: Jika respons dari cache memiliki tanda redirect,
-        // kita buat salinan baru yang bersih tanpa tanda tersebut.
-        if (cachedResponse.redirected) {
-          return new Response(cachedResponse.body, {
-            headers: cachedResponse.headers,
-            status: cachedResponse.status,
-            statusText: cachedResponse.statusText,
-          });
-        }
+        // Ambil dari cache untuk kecepatan, tapi fetch di background untuk update cache berikutnya
+        fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, networkResponse);
+            });
+          }
+        }).catch(() => {});
+        
         return cachedResponse;
       }
 
-      // Jika tidak ada di cache, ambil dari jaringan
+      // Jika belum ada di cache, ambil dari jaringan
       return fetch(event.request).then((networkResponse) => {
-        // Simpan ke cache (hanya jika sukses)
         if (networkResponse && networkResponse.status === 200) {
           const clone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -105,21 +133,7 @@ self.addEventListener("fetch", (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => {
-        // Fallback saat offline
-        if (event.request.mode === "navigate") {
-          return caches.match("/login.html");
-        }
-        return new Response("Offline", { status: 503 });
       });
     })
   );
 });
-
-
-
-
-
-
-
-
